@@ -143,14 +143,14 @@ ST_OK, ST_N = core.selftest()
 # ---------------------------------------------------------------- style
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Geist:wght@500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
 :root{--ink:#1B2128;--muted:#4C5966;--line:#D9DEE3;--bg:#F4F6F8;--card:#FFFFFF;--accent:#6D5BD0;--dark:#0E0F13;--dark2:#16181D;--darkline:#2A2E38;--darkmuted:#A9AFB9;}
 html, body, [data-testid="stAppViewContainer"]{background:var(--bg);}
 [data-testid="stHeader"], #MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"]{display:none !important;}
 .block-container{max-width:1120px; padding:0 24px 96px 24px !important;}
-html, body, [class*="st-"], .stMarkdown, label, input, select, button, textarea{font-family:'Atkinson Hyperlegible', system-ui, sans-serif;}
+html, body, [class*="st-"], .stMarkdown, label, input, select, button, textarea{font-family:'Geist', system-ui, -apple-system, sans-serif;}
 h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spacing:-0.02em;}
-.mono{font-family:'Geist Mono', ui-monospace, monospace;}
+.mono{font-family:'Geist', system-ui, sans-serif; font-variant-numeric:tabular-nums; font-feature-settings:'zero' 0;}
 [data-testid="stIconMaterial"], .material-symbols-rounded{font-family:'Material Symbols Rounded' !important;}
 .topbar{display:flex; align-items:center; gap:10px; padding:14px 0 10px 0; font-family:'Geist',sans-serif; font-weight:600; color:var(--ink);}
 .ver{font-family:'Geist Mono',monospace; font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:2px 8px; font-weight:400;}
@@ -165,7 +165,7 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .btn.p{background:#8B7CF6; color:#0E0F13 !important;} .btn.s{border:1px solid var(--darkline); color:#E8E9ED !important;}
 .stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:40px;}
 .stat{border:1px solid var(--darkline); border-radius:14px; padding:18px; background:var(--dark2);}
-.stat .v{font-family:'Geist Mono',monospace; font-size:32px; color:#F2F3F5;} .stat .k{font-size:15px; color:#E8E9ED; margin-top:4px;} .stat .d{font-size:13px; color:var(--darkmuted); margin-top:6px; line-height:1.45;}
+.stat .v{font-family:'Geist',sans-serif; font-weight:600; font-variant-numeric:tabular-nums; font-size:32px; color:#F2F3F5;} .stat .k{font-size:15px; color:#E8E9ED; margin-top:4px;} .stat .d{font-size:13px; color:var(--darkmuted); margin-top:6px; line-height:1.45;}
 .sec-h{font-size:34px; margin:0 0 6px 0; color:var(--ink);} .sec-h.top{font-size:42px; line-height:1.08;}
 .pill-l{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:6px 14px; font-size:14px; color:var(--muted);}
 /* toggles: clearly visible in both states (the default off track is almost white) */
@@ -193,12 +193,12 @@ label p{font-size:16px !important; color:var(--ink) !important;}
 .scale{position:relative; height:10px; border-radius:999px; background:#E6E9ED; margin:18px 0 4px 0;}
 .scale .fill{position:absolute; left:0; top:0; height:10px; border-radius:999px; background:var(--accent);}
 .scale .tick{position:absolute; top:-5px; width:2px; height:20px; background:var(--ink);}
-.scale-l{position:relative; height:18px; font-family:'Geist Mono',monospace; font-size:12px; color:var(--muted);}
+.scale-l{position:relative; height:18px; font-family:'Geist',sans-serif; font-variant-numeric:tabular-nums; font-size:12px; color:var(--muted);}
 .scale-l span{position:absolute;}
 .box{border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:16px;}
-.box h4{margin:0 0 8px 0; font-size:15px; color:var(--muted); font-weight:700; font-family:'Atkinson Hyperlegible',sans-serif; letter-spacing:0;}
+.box h4{margin:0 0 8px 0; font-size:15px; color:var(--muted); font-weight:700; font-family:'Geist',sans-serif; letter-spacing:0;}
 .row{display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-top:1px solid #EEF0F3; font-size:16px;} .row:first-of-type{border-top:0;}
-.row .c{font-family:'Geist Mono',monospace; color:var(--accent); white-space:nowrap;}
+.row .c{font-family:'Geist',sans-serif; font-weight:700; font-variant-numeric:tabular-nums; color:var(--accent); white-space:nowrap;}
 .why li{margin:4px 0;}
 .badge{display:inline-block; font-size:13px; font-weight:700; padding:4px 10px; border-radius:999px; background:#EDE9FF; color:#3F2F9E;}
 .ev{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;}
@@ -219,7 +219,12 @@ label p{font-size:16px !important; color:var(--ink) !important;}
   background:#FFFFFF !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important;}
 .stApp [data-testid="stNumberInputField"]::placeholder, .stApp [data-testid="stTextInput"] input::placeholder{color:#7A8591 !important; -webkit-text-fill-color:#7A8591 !important;}
 .stApp [data-testid="stNumberInputStepDown"], .stApp [data-testid="stNumberInputStepUp"]{background:#F1F3F6 !important; color:var(--ink) !important; border-radius:8px !important;}
-.stApp [data-testid="stNumberInputStepDown"]:disabled, .stApp [data-testid="stNumberInputStepUp"]:disabled{color:#B8C0C9 !important;}
+.stApp [data-testid="stNumberInputStepDown"]:disabled, .stApp [data-testid="stNumberInputStepUp"]:disabled{color:#A3ACB6 !important; opacity:1 !important;}
+.stApp [data-testid="stNumberInputStepDown"] svg, .stApp [data-testid="stNumberInputStepUp"] svg, .stApp [data-testid="stNumberInputStepDown"] svg path, .stApp [data-testid="stNumberInputStepUp"] svg path{color:inherit !important; fill:currentColor !important; opacity:1 !important;}
+.st-key-age [data-testid="stNumberInputStepDown"], .st-key-age [data-testid="stNumberInputStepUp"], .st-key-ki67 [data-testid="stNumberInputStepDown"], .st-key-ki67 [data-testid="stNumberInputStepUp"]{display:none !important;}
+/* keep these pairs side by side on phones too */
+.st-key-actions [data-testid="stHorizontalBlock"], .st-key-agerow [data-testid="stHorizontalBlock"]{flex-wrap:nowrap !important; gap:10px !important;}
+.st-key-actions [data-testid="stColumn"], .st-key-agerow [data-testid="stColumn"]{min-width:0 !important; flex:1 1 0 !important; width:auto !important;}
 .stApp [data-testid="stNumberInput"] input:disabled{background:#F1F3F6 !important;}
 .stApp [data-testid="stSelectbox"] svg{fill:var(--ink) !important; color:var(--ink) !important;}
 [role="listbox"], [role="listbox"] [role="option"]{background:#FFFFFF !important; color:var(--ink) !important;}
@@ -244,10 +249,11 @@ label p{font-size:16px !important; color:var(--ink) !important;}
   .hero{padding:32px 22px 26px 22px; border-radius:16px;} .hero .hh{font-size:30px;} .sec-h.top{font-size:30px;} .hero p.lead{font-size:17px;}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr));} .stat .v{font-size:26px;}
   .ev{grid-template-columns:1fr;} .sec-h{font-size:26px;} .big{font-size:46px;} .lane .v{font-size:30px;}
-  .sticky{display:flex; position:fixed; left:10px; right:84px; bottom:14px; z-index:1000; align-items:center; justify-content:space-between; gap:10px;
+  .st-key-actions [data-testid="stColumn"]:nth-child(3){display:none !important;}
+  .sticky{display:flex; position:fixed; left:12px; right:12px; bottom:calc(60px + env(safe-area-inset-bottom)); z-index:1000; align-items:center; justify-content:space-between; gap:10px;
           padding:10px 14px; border-radius:14px; box-shadow:0 6px 24px rgba(0,0,0,.25); font-weight:700; font-size:15px; line-height:1.2; text-decoration:none !important; white-space:nowrap; overflow:hidden;}
   .sticky span{overflow:hidden; text-overflow:ellipsis;} .sticky .go{flex:0 0 auto; font-size:18px;}
-  .block-container{padding-bottom:120px !important;}
+  .block-container{padding-bottom:150px !important;}
   .sticky .mono{font-family:'Geist',sans-serif; font-variant-numeric:tabular-nums;}
 }
 </style>
@@ -301,7 +307,8 @@ if not ok_all:
 # ---------------------------------------------------------------- calculator
 st.html(f"<div id='hesapla'></div><p style='margin:18px 0 10px 0'><span class='pill-l'><span class='dot' style='background:#1E9E61'></span>{T['pill_ok'].format(ok=ST_OK, n=ST_N, prof=PROF)}</span></p>"
         f"<h1 class='sec-h top'>{T['calc_h']}</h1><p class='sec-lead'>{T['calc_lead']}</p>")
-b1, b2, _ = st.columns([1, 1, 3])
+with st.container(key="actions"):
+    b1, b2, _ = st.columns([1, 1, 3])
 b1.button(T["example"], on_click=load, args=(EXAMPLE,), type="primary", use_container_width=True, key="btn_example")
 b2.button(T["clear"], on_click=load, args=(DEFAULTS,), use_container_width=True, key="btn_clear")
 
@@ -312,7 +319,8 @@ with left:
         dx = st.session_state.dx or "breast"; ovarian = dx == "ovarian"
         if ovarian:
             st.session_state.tnbc = False; st.session_state.ki67 = None
-        c1, c2 = st.columns(2)
+        with st.container(key="agerow"):
+            c1, c2 = st.columns(2)
         c1.number_input(T["age"], min_value=18, max_value=95, step=1, placeholder=T["age_ph"], key="age")
         c2.number_input(T["ki67_ov"] if ovarian else T["ki67"], min_value=0.0, max_value=100.0, step=1.0, placeholder=T["ki67_ph"], key="ki67", disabled=ovarian)
         st.pills(T["dx"], ["breast", "bilateral", "breast_ovary", "ovarian", "male"], selection_mode="single", format_func=lambda x: T["dx_lbl"][x], key="dx")
@@ -322,12 +330,12 @@ with left:
         st.html(f"<div class='step' style='margin-top:14px'><b>2</b>{T['step2']}</div><p class='help'>{T['fam_help']}</p>")
         f1, f2 = st.columns(2)
         for i, k in enumerate(["fdr_breast_lt40", "fdr_breast_ge40", "fdr_ovary", "sdr_breast_lt40"]):
-            (f1 if i % 2 == 0 else f2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k)
+            (f1 if i < 2 else f2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k)
         more = sum(st.session_state[k] for k in ["sdr_breast_ge40", "sdr_ovary", "tdr_breast", "fdr_other"])
         with st.expander(T["fam_more"] + (f" · {more}" if more else "")):
             g1, g2 = st.columns(2)
             for i, k in enumerate(["sdr_breast_ge40", "sdr_ovary", "tdr_breast", "fdr_other"]):
-                (g1 if i % 2 == 0 else g2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k)
+                (g1 if i < 2 else g2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k)
         st.html(f"<div class='step' style='margin-top:14px'><b>3</b>{T['step3']}</div><p class='help'>{T['urg_help']}</p>")
         st.toggle(T["urg_dec"], key="urg_dec")
         st.toggle(T["urg_fam"], key="urg_fam")
@@ -375,8 +383,6 @@ with right:
 if d is not None:
     st.html(f"<a class='sticky' href='#sonuc' style='background:{LANE_BG[d['lane']]}; color:{LANE_FG[d['lane']]}'><span>{T['lanes'][d['lane']]}</span>"
             f"<span class='mono'>{pct(p)} · {d['total']} {T['pts']}</span><span class='go' aria-label='{T['sticky_go']}'>↓</span></a>")
-else:
-    st.html(f"<a class='sticky' href='#hesapla' style='background:#1B2128; color:#fff'><span>{T['age_needed']}</span><span class='go'>↑</span></a>")
 
 # ---------------------------------------------------------------- about band (was the hero; now below the calculator)
 st.html(f"""<section class='hero' style='margin-top:56px'>
