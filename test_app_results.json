@@ -1,0 +1,69 @@
+{
+ "pass": [
+  {
+   "test": "T1 core == HTML page on 200,000 random profiles (probability, points, card lane, model lane, final lane; rule A)",
+   "detail": "max |\u0394p| 3.3e-16, lane/points mismatches 0"
+  },
+  {
+   "test": "T1b boundary grid (points 0/3/4/5 \u00d7 model 9.99/10/19.99/20 % \u00d7 urgency none/familial/treatment): core == page",
+   "detail": "0 mismatches of 48"
+  },
+  {
+   "test": "T2 rule B = max(model lane, urgency), rapid test = model \u2265 20 %; rule A rapid test = urgent lane (50,000 profiles)",
+   "detail": "0 violations"
+  },
+  {
+   "test": "T3 self-test passes on the shipped model and fails on a corrupted one",
+   "detail": "shipped 47/47, corrupted 43/47"
+  },
+  {
+   "test": "T4a opens without exception; no result before an age is entered",
+   "detail": ""
+  },
+  {
+   "test": "T4b example patient \u2192 AC\u0130L, %25,8, 6 points, rapid test named",
+   "detail": ""
+  },
+  {
+   "test": "T4c hero numbers = model file (%78 carriers, %48 patients, %75 temporal, 1.295 patients, 47/47 self-test)",
+   "detail": ""
+  },
+  {
+   "test": "T4d low-probability patient: NORMAL SIRA; + surgery/treatment urgency \u2192 AC\u0130L; + familial variant \u2192 \u00d6NCEL\u0130KL\u0130 with targeted test",
+   "detail": ""
+  },
+  {
+   "test": "T4e ovarian diagnosis: triple-negative switched off and locked, Ki-67 cleared and locked",
+   "detail": ""
+  },
+  {
+   "test": "T4f English: URGENT, 25.8%, no Turkish lane words",
+   "detail": ""
+  },
+  {
+   "test": "T4g ?kural=B: card-only patient (4 points, model 9,2 %) is \u00d6NCEL\u0130KL\u0130 under A and NORMAL under B; B badge shown",
+   "detail": ""
+  },
+  {
+   "test": "T4h rule B: urgency-only patient is AC\u0130L but gets no rapid test (model < 20 %)",
+   "detail": ""
+  },
+  {
+   "test": "T4i extremes (age 95, Ki-67 100, every family count 6) render without exception",
+   "detail": ""
+  },
+  {
+   "test": "T5a phone 390 px: no horizontal scroll, result bar shown",
+   "detail": "{'scroll_width': 390, 'sticky': 'flex', 'errors': []}"
+  },
+  {
+   "test": "T5b desktop: result bar hidden",
+   "detail": "{'scroll_width': 1280, 'sticky': 'none', 'errors': []}"
+  },
+  {
+   "test": "T5c no console errors (phone, desktop)",
+   "detail": "[]"
+  }
+ ],
+ "fail": []
+}
