@@ -23,12 +23,12 @@ TX = {
   pill_ok="Öz-test ✓ {ok}/{n} · {prof} girdi kombinasyonunda doğrulandı", pill_bad="Öz-test başarısız ({ok}/{n}) — hesaplama durduruldu",
   h1="Test kuyruğunu taşıyıcılara göre sırala.",
   lead="Tanı gününde bilinen bilgilerle BRCA1/2 taşıyıcılık olasılığını hesaplar ve hastayı test kuyruğunda normal, öncelikli ya da acil şeride koyar. Kimse testten çıkarılmaz; yalnız sıra değişir.",
-  cta1="Hesapla ↓", cta2="Kâğıt kart (PDF)",
+  cta1="Nasıl doğrulandı ↓", cta2="Kâğıt kart (PDF)",
   s1="taşıyıcı öne alınır", s1b="hastaların %{m}'i öne alınarak",
   s2="sonraki dönemde", s2b="2015'e kadar kurulup 2016–2020 hastalarına uygulanınca",
   s3="fark", s3b="sayfa, Python ve basılı kart arasında, {prof} girdi kombinasyonunda",
-  s4="hasta", s4b="{pos} taşıyıcı · İÜ Onkoloji Enstitüsü · {y0}–{y1}",
-  calc_h="Bu hasta kuyrukta nereye girmeli?", calc_lead="Bilgileri girin; sonuç anında güncellenir. Bilinmeyen alanları boş bırakın.",
+  s4="hasta", s4b="{pos} taşıyıcı · geliştirme kohortu, tanı yılları {y0}–{y1}",
+  calc_h="BRCA1/2 taşıyıcılık olasılığı ve test önceliği", calc_lead="Tanı günündeki bilgiler yeterli; sonuç anında güncellenir. Bilinmeyen alanları boş bırakın.",
   example="Örnek hasta", clear="Temizle",
   step1="Hasta ve tümör", step2="Aile öyküsü", step3="Klinik aciliyet",
   age="Tanı yaşı", age_ph="yıl (18–95)", dx="Tanı", grade="Histolojik grade", grade_lbl={"g1": "1", "g2": "2 / bilinmiyor", "g3": "3"},
@@ -63,7 +63,7 @@ TX = {
   ev2="Hesap denetimi", ev2b="{tests} otomatik test geçti. {prof} girdi kombinasyonunda sayfa, bağımsız Python ve basılı kart aynı puanı ve şeridi verdi; {rnd} rastgele profilde olasılık farkı < 10⁻¹⁴.",
   ev3="Sınırlar", ev3b="Tek merkez, geriye dönük veri ({y0}–{y1}). Dış ve ileriye dönük doğrulama planlandı. Klinik aciliyetin etkisi kohortta ölçülemedi.",
   card_h="Kâğıt kart", card_b="Hesaplayıcı yokken aynı kural kâğıt üzerinde: 14 madde, 0–3 normal, 4 öncelikli, ≥ 5 acil.", card_dl="Tek sayfalık algoritmayı indir (PDF)",
-  rule_b_badge="Kural B önizlemesi", foot="Prof. Dr. Hülya Yazıcı · Arif Solmaz · İÜ Onkoloji Enstitüsü", build="model {b} · {tests} test ✓",
+  rule_b_badge="Kural B önizlemesi", foot="Prof. Dr. Hülya Yazıcı · Dr. Öğr. Üyesi Arif Solmaz · İstanbul Sağlık ve Teknoloji Üniversitesi (İSTÜN)", build="model {b} · {tests} test ✓",
   sticky_go="Sonuç ↓", age_needed="yaş girin",
   login_h="Bu sayfa şifre ile korunuyor", login_b="Araştırma prototipi; yalnız davet edilen katılımcılar içindir.", login_lbl="Şifre", login_btn="Giriş",
   login_bad="Şifre yanlış.", login_missing="Şifre tanımlanmamış. Yönetici: Streamlit → App settings → Secrets içine APP_PASSWORD ekleyin."),
@@ -72,12 +72,12 @@ TX = {
   pill_ok="Self-test ✓ {ok}/{n} · verified on {prof} input combinations", pill_bad="Self-test failed ({ok}/{n}) — calculation stopped",
   h1="Order the test queue by who is likely a carrier.",
   lead="From what is known on the day of diagnosis, the calculator estimates BRCA1/2 carrier probability and places the patient in the normal, priority or urgent lane of the test queue. Nobody is removed from testing; only the order changes.",
-  cta1="Calculate ↓", cta2="Paper card (PDF)",
+  cta1="How it was validated ↓", cta2="Paper card (PDF)",
   s1="of carriers moved forward", s1b="by moving {m}% of patients forward",
   s2="in a later period", s2b="built on diagnoses up to 2015, applied to 2016–2020",
   s3="mismatches", s3b="between page, Python and the printed card on {prof} input combinations",
-  s4="patients", s4b="{pos} carriers · İÜ Oncology Institute · {y0}–{y1}",
-  calc_h="Where should this patient enter the queue?", calc_lead="Enter what you know; the result updates instantly. Leave unknown fields empty.",
+  s4="patients", s4b="{pos} carriers · development cohort, diagnosed {y0}–{y1}",
+  calc_h="BRCA1/2 carrier probability and test priority", calc_lead="What is known on the day of diagnosis is enough; the result updates instantly. Leave unknown fields empty.",
   example="Example patient", clear="Clear",
   step1="Patient and tumour", step2="Family history", step3="Clinical urgency",
   age="Age at diagnosis", age_ph="years (18–95)", dx="Diagnosis", grade="Histological grade", grade_lbl={"g1": "1", "g2": "2 / unknown", "g3": "3"},
@@ -112,7 +112,7 @@ TX = {
   ev2="Calculation audit", ev2b="{tests} automatic tests pass. On {prof} input combinations the page, an independent Python version and the printed card gave the same points and lane; on {rnd} random profiles the probability differed by < 10⁻¹⁴.",
   ev3="Limits", ev3b="Single centre, retrospective data ({y0}–{y1}). External and prospective validation is planned. The effect of clinical urgency could not be measured in the cohort.",
   card_h="Paper card", card_b="The same rule on paper when the calculator is unavailable: 14 items; 0–3 normal, 4 priority, ≥ 5 urgent.", card_dl="Download the one-page algorithm (PDF, Turkish)",
-  rule_b_badge="Rule B preview", foot="Prof. Dr. Hülya Yazıcı · Arif Solmaz · İÜ Oncology Institute", build="model {b} · {tests} tests ✓",
+  rule_b_badge="Rule B preview", foot="Prof. Dr. Hülya Yazıcı · Dr. Arif Solmaz · Istanbul Health and Technology University (İSTÜN)", build="model {b} · {tests} tests ✓",
   sticky_go="Result ↓", age_needed="enter age",
   login_h="This page is password protected", login_b="Research prototype; for invited participants only.", login_lbl="Password", login_btn="Sign in",
   login_bad="Wrong password.", login_missing="No password is set. Admin: Streamlit → App settings → Secrets, add APP_PASSWORD."),
@@ -158,7 +158,7 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .hero{background:var(--dark); color:#E8E9ED; border-radius:20px; padding:56px 48px 40px 48px; margin:6px 0 40px 0;}
 .pill{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--darkline); border-radius:999px; padding:6px 14px; font-size:14px; color:#C9CDD4;}
 .dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
-.hero h1{color:#F2F3F5; font-size:52px; line-height:1.05; margin:22px 0 0 0; max-width:820px; font-weight:600;}
+.hero .hh{color:#F2F3F5; font-size:44px; letter-spacing:-0.02em; font-family:'Geist',sans-serif; font-weight:600; line-height:1.05; margin:22px 0 0 0; max-width:820px; font-weight:600;}
 .hero p.lead{font-size:19px; line-height:1.55; color:#C9CDD4; max-width:680px; margin:18px 0 0 0;}
 .ctas{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px;}
 .btn{display:inline-flex; align-items:center; min-height:48px; padding:0 22px; border-radius:10px; text-decoration:none !important; font-weight:700; font-size:16px;}
@@ -166,7 +166,13 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .stats{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:40px;}
 .stat{border:1px solid var(--darkline); border-radius:14px; padding:18px; background:var(--dark2);}
 .stat .v{font-family:'Geist Mono',monospace; font-size:32px; color:#F2F3F5;} .stat .k{font-size:15px; color:#E8E9ED; margin-top:4px;} .stat .d{font-size:13px; color:var(--darkmuted); margin-top:6px; line-height:1.45;}
-.sec-h{font-size:34px; margin:0 0 6px 0; color:var(--ink);} .sec-lead{font-size:18px; color:var(--muted); margin:0 0 18px 0;}
+.sec-h{font-size:34px; margin:0 0 6px 0; color:var(--ink);} .sec-h.top{font-size:42px; line-height:1.08;}
+.pill-l{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:6px 14px; font-size:14px; color:var(--muted);}
+/* toggles: clearly visible in both states (the default off track is almost white) */
+[data-testid='stCheckbox'] label > div:not([data-testid]){background:#8C96A3 !important; border:1px solid #6B7682 !important;}
+[data-testid='stCheckbox'] label:has(input:checked) > div:not([data-testid]){background:var(--accent) !important; border-color:var(--accent) !important;}
+[data-testid='stCheckbox'] label > div:not([data-testid]) > div{background:#FFFFFF !important; box-shadow:0 1px 3px rgba(0,0,0,.35);}
+[data-testid='stCheckbox'] label:has(input:disabled){opacity:.55;} .sec-lead{font-size:18px; color:var(--muted); margin:0 0 18px 0;}
 .st-key-formcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:14px 16px 18px 16px;}
 .st-key-resultcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:0 0 14px 0; overflow:hidden; gap:0;}
 .st-key-resultcard [data-testid='stExpander']{margin:0 16px; width:auto !important;}
@@ -201,7 +207,7 @@ label p{font-size:16px !important; color:var(--ink) !important;}
 .sticky{display:none;}
 @media (max-width: 760px){
   .block-container{padding:0 14px 96px 14px !important;}
-  .hero{padding:32px 22px 26px 22px; border-radius:16px;} .hero h1{font-size:34px;} .hero p.lead{font-size:17px;}
+  .hero{padding:32px 22px 26px 22px; border-radius:16px;} .hero .hh{font-size:30px;} .sec-h.top{font-size:30px;} .hero p.lead{font-size:17px;}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr));} .stat .v{font-size:26px;}
   .ev{grid-template-columns:1fr;} .sec-h{font-size:26px;} .big{font-size:46px;} .lane .v{font-size:30px;}
   .sticky{display:flex; position:fixed; left:12px; right:12px; bottom:12px; z-index:1000; align-items:center; justify-content:space-between; gap:12px;
@@ -251,24 +257,14 @@ with tb1:
 with tb2:
     st.segmented_control("Dil / Language", ["tr", "en"], default="tr", format_func=lambda x: x.upper(), key="lang_sel", label_visibility="collapsed")
 
-# ---------------------------------------------------------------- hero
+# ---------------------------------------------------------------- self-test (before anything is calculated)
 ok_all = ST_OK == ST_N
-pill = (f"<span class='pill'><span class='dot' style='background:#34D399'></span>{T['pill_ok'].format(ok=ST_OK, n=ST_N, prof=PROF)}</span>" if ok_all
-        else f"<span class='pill' style='color:#FCA5A5'><span class='dot' style='background:#F87171'></span>{T['pill_bad'].format(ok=ST_OK, n=ST_N)}</span>")
-st.html(f"""<section class='hero'>{pill}
-<h1>{T['h1']}</h1><p class='lead'>{T['lead']}</p>
-<div class='ctas'><a class='btn p' href='#hesapla'>{T['cta1']}</a><a class='btn s' href='#kart'>{T['cta2']}</a></div>
-<div class='stats'>
-<div class='stat'><div class='v'>{pct(S['covered'], 0)}</div><div class='k'>{T['s1']}</div><div class='d'>{T['s1b'].format(m=round(100 * S['moved']))}</div></div>
-<div class='stat'><div class='v'>{pct(S['t_covered'], 0)}</div><div class='k'>{T['s2']}</div><div class='d'>{T['s2b']}</div></div>
-<div class='stat'><div class='v'>{V['points_mismatch'] + V['lane_mismatch']}</div><div class='k'>{T['s3']}</div><div class='d'>{T['s3b'].format(prof=PROF)}</div></div>
-<div class='stat'><div class='v'>{n_int(S['n'])}</div><div class='k'>{T['s4']}</div><div class='d'>{T['s4b'].format(pos=S['n_pos'], y0=S['year_min'], y1=S['year_max'])}</div></div>
-</div></section>""")
 if not ok_all:
     st.error(T["pill_bad"].format(ok=ST_OK, n=ST_N)); st.stop()
 
 # ---------------------------------------------------------------- calculator
-st.html(f"<div id='hesapla'></div><h2 class='sec-h'>{T['calc_h']}</h2><p class='sec-lead'>{T['calc_lead']}</p>")
+st.html(f"<div id='hesapla'></div><p style='margin:18px 0 10px 0'><span class='pill-l'><span class='dot' style='background:#1E9E61'></span>{T['pill_ok'].format(ok=ST_OK, n=ST_N, prof=PROF)}</span></p>"
+        f"<h1 class='sec-h top'>{T['calc_h']}</h1><p class='sec-lead'>{T['calc_lead']}</p>")
 b1, b2, _ = st.columns([1, 1, 3])
 b1.button(T["example"], on_click=load, args=(EXAMPLE,), type="primary", use_container_width=True, key="btn_example")
 b2.button(T["clear"], on_click=load, args=(DEFAULTS,), use_container_width=True, key="btn_clear")
@@ -346,8 +342,19 @@ if d is not None:
 else:
     st.html(f"<a class='sticky' href='#hesapla' style='background:#1B2128; color:#fff'><span>{T['wait_h']}</span><span>{T['age_needed']}</span></a>")
 
+# ---------------------------------------------------------------- about band (was the hero; now below the calculator)
+st.html(f"""<section class='hero' style='margin-top:56px'>
+<h2 class='hh'>{T['h1']}</h2><p class='lead'>{T['lead']}</p>
+<div class='ctas'><a class='btn p' href='#guven'>{T['cta1']}</a><a class='btn s' href='#kart'>{T['cta2']}</a></div>
+<div class='stats'>
+<div class='stat'><div class='v'>{pct(S['covered'], 0)}</div><div class='k'>{T['s1']}</div><div class='d'>{T['s1b'].format(m=round(100 * S['moved']))}</div></div>
+<div class='stat'><div class='v'>{pct(S['t_covered'], 0)}</div><div class='k'>{T['s2']}</div><div class='d'>{T['s2b']}</div></div>
+<div class='stat'><div class='v'>{V['points_mismatch'] + V['lane_mismatch']}</div><div class='k'>{T['s3']}</div><div class='d'>{T['s3b'].format(prof=PROF)}</div></div>
+<div class='stat'><div class='v'>{n_int(S['n'])}</div><div class='k'>{T['s4']}</div><div class='d'>{T['s4b'].format(pos=S['n_pos'], y0=S['year_min'], y1=S['year_max'])}</div></div>
+</div></section>""")
+
 # ---------------------------------------------------------------- evidence
-st.html(f"""<h2 class='sec-h' style='margin-top:48px'>{T['ev_h']}</h2>
+st.html(f"""<div id='guven'></div><h2 class='sec-h' style='margin-top:48px'>{T['ev_h']}</h2>
 <div class='ev'>
 <div class='evc'><h3>{T['ev1']}</h3><p>{T['ev1b'].format(m=round(100 * S['moved']), c=round(100 * S['covered']))}</p></div>
 <div class='evc'><h3>{T['ev2']}</h3><p>{T['ev2b'].format(tests=V['tests_passed'], prof=PROF, rnd=n_int(V['random_profiles']))}</p></div>
