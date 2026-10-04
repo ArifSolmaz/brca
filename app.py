@@ -5,7 +5,7 @@ All numbers come from brca_core.py (verified against the published HTML page and
 model_full_embedded.json / verification.json (aggregate values only). Nothing typed in is stored.
 RUN: streamlit run app.py        Rule B preview: add ?kural=B to the address.
 """
-import json, os
+import json, os, hmac, time
 import streamlit as st
 import brca_core as core
 
@@ -64,7 +64,9 @@ TX = {
   ev3="Sınırlar", ev3b="Tek merkez, geriye dönük veri ({y0}–{y1}). Dış ve ileriye dönük doğrulama planlandı. Klinik aciliyetin etkisi kohortta ölçülemedi.",
   card_h="Kâğıt kart", card_b="Hesaplayıcı yokken aynı kural kâğıt üzerinde: 14 madde, 0–3 normal, 4 öncelikli, ≥ 5 acil.", card_dl="Tek sayfalık algoritmayı indir (PDF)",
   rule_b_badge="Kural B önizlemesi", foot="Prof. Dr. Hülya Yazıcı · Arif Solmaz · İÜ Onkoloji Enstitüsü", build="model {b} · {tests} test ✓",
-  sticky_go="Sonuç ↓", age_needed="yaş girin"),
+  sticky_go="Sonuç ↓", age_needed="yaş girin",
+  login_h="Bu sayfa şifre ile korunuyor", login_b="Araştırma prototipi; yalnız davet edilen katılımcılar içindir.", login_lbl="Şifre", login_btn="Giriş",
+  login_bad="Şifre yanlış.", login_missing="Şifre tanımlanmamış. Yönetici: Streamlit → App settings → Secrets içine APP_PASSWORD ekleyin."),
  "en": dict(
   brand="BRCA Priority", research="Research use only · not a clinical decision-support tool · nothing you enter is stored",
   pill_ok="Self-test ✓ {ok}/{n} · verified on {prof} input combinations", pill_bad="Self-test failed ({ok}/{n}) — calculation stopped",
@@ -111,7 +113,9 @@ TX = {
   ev3="Limits", ev3b="Single centre, retrospective data ({y0}–{y1}). External and prospective validation is planned. The effect of clinical urgency could not be measured in the cohort.",
   card_h="Paper card", card_b="The same rule on paper when the calculator is unavailable: 14 items; 0–3 normal, 4 priority, ≥ 5 urgent.", card_dl="Download the one-page algorithm (PDF, Turkish)",
   rule_b_badge="Rule B preview", foot="Prof. Dr. Hülya Yazıcı · Arif Solmaz · İÜ Oncology Institute", build="model {b} · {tests} tests ✓",
-  sticky_go="Result ↓", age_needed="enter age"),
+  sticky_go="Result ↓", age_needed="enter age",
+  login_h="This page is password protected", login_b="Research prototype; for invited participants only.", login_lbl="Password", login_btn="Sign in",
+  login_bad="Wrong password.", login_missing="No password is set. Admin: Streamlit → App settings → Secrets, add APP_PASSWORD."),
 }
 LANE_BG = ["#00703C", "#FFB81C", "#D5281B"]; LANE_FG = ["#FFFFFF", "#1B2128", "#FFFFFF"]
 
@@ -206,6 +210,38 @@ label p{font-size:16px !important; color:var(--ink) !important;}
 }
 </style>
 """, unsafe_allow_html=True)
+
+# ---------------------------------------------------------------- password gate
+# The password lives in Streamlit Secrets (APP_PASSWORD) or the BRCA_APP_PASSWORD environment variable, never in the code.
+# With neither set the app stays closed, except locally with BRCA_NO_PASSWORD=1.
+def _password():
+    try:
+        pw = st.secrets.get("APP_PASSWORD")
+    except Exception:
+        pw = None
+    return pw or os.environ.get("BRCA_APP_PASSWORD")
+if not st.session_state.get("auth"):
+    PW = _password()
+    if not PW and os.environ.get("BRCA_NO_PASSWORD") == "1":
+        st.session_state.auth = True
+    else:
+        _, mid, _ = st.columns([1, 2, 1])
+        with mid:
+            st.html(f"""<div style='margin-top:12vh; text-align:center'>
+<svg width='44' height='44' viewBox='0 0 24 24' fill='none' stroke='#6D5BD0' stroke-width='2' aria-hidden='true'><rect x='4' y='11' width='16' height='10' rx='2'/><path d='M8 11V7a4 4 0 0 1 8 0v4'/></svg>
+<h1 class='disp' style='font-size:30px; margin:14px 0 6px 0; color:var(--ink)'>{T['brand']}</h1>
+<p style='font-size:18px; margin:0; color:var(--ink)'>{T['login_h']}</p><p style='font-size:15px; color:var(--muted); margin:6px 0 0 0'>{T['login_b']}</p></div>""")
+            if not PW:
+                st.error(T["login_missing"]); st.stop()
+            with st.form("login", border=True):
+                pw_in = st.text_input(T["login_lbl"], type="password", key="pw_in")
+                go = st.form_submit_button(T["login_btn"], type="primary", use_container_width=True)
+            if go:
+                if hmac.compare_digest(pw_in.encode("utf-8"), str(PW).encode("utf-8")):
+                    st.session_state.auth = True; st.rerun()
+                time.sleep(1.0); st.error(T["login_bad"])
+            st.segmented_control("Dil / Language", ["tr", "en"], default="tr", format_func=lambda x: x.upper(), key="lang_sel", label_visibility="collapsed")
+        st.stop()
 
 # ---------------------------------------------------------------- top bar + language
 tb1, tb2 = st.columns([5, 1], vertical_alignment="center")
