@@ -205,13 +205,49 @@ label p{font-size:16px !important; color:var(--ink) !important;}
 .evc{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px;} .evc h3{font-size:20px; margin:0 0 8px 0; color:var(--ink);} .evc p{margin:0; font-size:16px; line-height:1.55; color:var(--ink);}
 .foot{display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; border-top:1px solid var(--line); margin-top:40px; padding-top:16px; font-size:14px; color:var(--muted);}
 .sticky{display:none;}
+
+/* ---- force the light look even when Streamlit runs in its dark theme (phone/OS dark mode, or no .streamlit/config.toml) ---- */
+:root, .stApp{color-scheme:light;}
+.stApp, [data-testid="stMain"], [data-testid="stMainBlockContainer"]{background:var(--bg) !important; color:var(--ink) !important;}
+.stApp [data-testid="stMarkdownContainer"] p, .stApp [data-testid="stMarkdownContainer"] li, .stApp [data-testid="stCaptionContainer"],
+.stApp [data-testid="stWidgetLabel"] p, .stApp [data-testid="stExpander"] summary, .stApp [data-testid="stExpander"] summary p{color:var(--ink) !important;}
+.stApp [data-testid="stCaptionContainer"]{color:var(--muted) !important;}
+/* number inputs, text/password inputs, select boxes */
+.stApp [data-testid="stNumberInputContainer"], .stApp [data-baseweb="input"], .stApp [data-testid="stTextInputRootElement"],
+.stApp [data-testid="stSelectbox"] [role="group"]{background:#FFFFFF !important; border:1px solid #B8C0C9 !important; border-radius:10px !important;}
+.stApp [data-testid="stNumberInputField"], .stApp [data-testid="stTextInput"] input, .stApp [data-testid="stSelectbox"] input{
+  background:#FFFFFF !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important;}
+.stApp [data-testid="stNumberInputField"]::placeholder, .stApp [data-testid="stTextInput"] input::placeholder{color:#7A8591 !important; -webkit-text-fill-color:#7A8591 !important;}
+.stApp [data-testid="stNumberInputStepDown"], .stApp [data-testid="stNumberInputStepUp"]{background:#F1F3F6 !important; color:var(--ink) !important; border-radius:8px !important;}
+.stApp [data-testid="stNumberInputStepDown"]:disabled, .stApp [data-testid="stNumberInputStepUp"]:disabled{color:#B8C0C9 !important;}
+.stApp [data-testid="stNumberInput"] input:disabled{background:#F1F3F6 !important;}
+.stApp [data-testid="stSelectbox"] svg{fill:var(--ink) !important; color:var(--ink) !important;}
+[role="listbox"], [role="listbox"] [role="option"]{background:#FFFFFF !important; color:var(--ink) !important;}
+[role="listbox"] [role="option"][data-focused="true"], [role="listbox"] [role="option"]:hover{background:#EDE9FF !important;}
+/* pills and segmented controls */
+.stApp [data-testid="stButtonGroup"] button{background:#FFFFFF !important; color:var(--ink) !important; border:1px solid #B8C0C9 !important;}
+.stApp [data-testid="stButtonGroup"] button p{color:inherit !important;}
+.stApp [data-testid="stButtonGroup"] button[aria-checked="true"]{background:#EDE9FF !important; color:#3F2F9E !important; border:1.5px solid var(--accent) !important; font-weight:700;}
+/* buttons */
+.stApp [data-testid="stBaseButton-primary"], .stApp [data-testid="stBaseButton-primaryFormSubmit"]{background:var(--accent) !important; color:#FFFFFF !important; border:1px solid var(--accent) !important;}
+.stApp [data-testid="stBaseButton-primary"] p, .stApp [data-testid="stBaseButton-primaryFormSubmit"] p{color:#FFFFFF !important;}
+.stApp [data-testid="stBaseButton-secondary"], .stApp [data-testid="stBaseButton-secondaryFormSubmit"], .stApp [data-testid="stDownloadButton"] button{
+  background:#FFFFFF !important; color:var(--ink) !important; border:1px solid #B8C0C9 !important;}
+.stApp [data-testid="stBaseButton-secondary"] p, .stApp [data-testid="stDownloadButton"] button p{color:var(--ink) !important;}
+/* expanders and the login form */
+.stApp [data-testid="stExpander"] details{background:#FFFFFF !important; border:1px solid var(--line) !important; border-radius:12px !important;}
+.stApp [data-testid="stForm"]{background:#FFFFFF !important; border:1px solid var(--line) !important;}
+.stApp [data-testid="stIconMaterial"]{color:var(--ink) !important;}
+
 @media (max-width: 760px){
   .block-container{padding:0 14px 96px 14px !important;}
   .hero{padding:32px 22px 26px 22px; border-radius:16px;} .hero .hh{font-size:30px;} .sec-h.top{font-size:30px;} .hero p.lead{font-size:17px;}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr));} .stat .v{font-size:26px;}
   .ev{grid-template-columns:1fr;} .sec-h{font-size:26px;} .big{font-size:46px;} .lane .v{font-size:30px;}
-  .sticky{display:flex; position:fixed; left:12px; right:12px; bottom:12px; z-index:1000; align-items:center; justify-content:space-between; gap:12px;
-          padding:12px 16px; border-radius:14px; box-shadow:0 6px 24px rgba(0,0,0,.25); font-weight:700; font-size:17px; text-decoration:none !important;}
+  .sticky{display:flex; position:fixed; left:10px; right:84px; bottom:14px; z-index:1000; align-items:center; justify-content:space-between; gap:10px;
+          padding:10px 14px; border-radius:14px; box-shadow:0 6px 24px rgba(0,0,0,.25); font-weight:700; font-size:15px; line-height:1.2; text-decoration:none !important; white-space:nowrap; overflow:hidden;}
+  .sticky span{overflow:hidden; text-overflow:ellipsis;} .sticky .go{flex:0 0 auto; font-size:18px;}
+  .block-container{padding-bottom:120px !important;}
   .sticky .mono{font-family:'Geist',sans-serif; font-variant-numeric:tabular-nums;}
 }
 </style>
@@ -338,9 +374,9 @@ with right:
 # mobile: a result bar fixed at the bottom of the screen
 if d is not None:
     st.html(f"<a class='sticky' href='#sonuc' style='background:{LANE_BG[d['lane']]}; color:{LANE_FG[d['lane']]}'><span>{T['lanes'][d['lane']]}</span>"
-            f"<span class='mono'>{pct(p)} · {d['total']} {T['pts']}</span><span>{T['sticky_go']}</span></a>")
+            f"<span class='mono'>{pct(p)} · {d['total']} {T['pts']}</span><span class='go' aria-label='{T['sticky_go']}'>↓</span></a>")
 else:
-    st.html(f"<a class='sticky' href='#hesapla' style='background:#1B2128; color:#fff'><span>{T['wait_h']}</span><span>{T['age_needed']}</span></a>")
+    st.html(f"<a class='sticky' href='#hesapla' style='background:#1B2128; color:#fff'><span>{T['age_needed']}</span><span class='go'>↑</span></a>")
 
 # ---------------------------------------------------------------- about band (was the hero; now below the calculator)
 st.html(f"""<section class='hero' style='margin-top:56px'>
