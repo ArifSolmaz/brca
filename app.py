@@ -29,6 +29,7 @@ TX = {
   s3="fark", s3b="sayfa, Python ve basılı kart arasında, {prof} girdi kombinasyonunda",
   s4="hasta", s4b="{pos} taşıyıcı · geliştirme kohortu, tanı yılları {y0}–{y1}",
   calc_h="BRCA1/2 taşıyıcılık olasılığı ve test önceliği", calc_lead="Tanı günündeki bilgiler yeterli; sonuç anında güncellenir. Bilinmeyen alanları boş bırakın.",
+  scope="<b>Yalnız kanser tanısı almış hastalar için.</b> Sağlıklı kişiler ve hastanın akrabaları için kullanılmaz; onlara verdiği sayı anlamsızdır.",
   example="Örnek hasta", clear="Temizle",
   step1="Hasta ve tümör", step2="Aile öyküsü", step3="Klinik aciliyet",
   age="Tanı yaşı", age_ph="yıl (18–95)", dx="Tanı", grade="Histolojik grade", grade_lbl={"g1": "1", "g2": "2 / bilinmiyor", "g3": "3"},
@@ -78,6 +79,7 @@ TX = {
   s3="mismatches", s3b="between page, Python and the printed card on {prof} input combinations",
   s4="patients", s4b="{pos} carriers · development cohort, diagnosed {y0}–{y1}",
   calc_h="BRCA1/2 carrier probability and test priority", calc_lead="What is known on the day of diagnosis is enough; the result updates instantly. Leave unknown fields empty.",
+  scope="<b>Only for patients already diagnosed with cancer.</b> Not for healthy people or a patient's relatives; any number it gives them is meaningless.",
   example="Example patient", clear="Clear",
   step1="Patient and tumour", step2="Family history", step3="Clinical urgency",
   age="Age at diagnosis", age_ph="years (18–95)", dx="Diagnosis", grade="Histological grade", grade_lbl={"g1": "1", "g2": "2 / unknown", "g3": "3"},
@@ -173,6 +175,8 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 [data-testid='stCheckbox'] label:has(input:checked) > div:not([data-testid]){background:var(--accent) !important; border-color:var(--accent) !important;}
 [data-testid='stCheckbox'] label > div:not([data-testid]) > div{background:#FFFFFF !important; box-shadow:0 1px 3px rgba(0,0,0,.35);}
 [data-testid='stCheckbox'] label:has(input:disabled){opacity:.55;} .sec-lead{font-size:18px; color:var(--muted); margin:0 0 18px 0;}
+.scope{display:flex; gap:10px; align-items:flex-start; background:#FFF6E0; border:1px solid #F0D58A; border-left:4px solid #FFB81C; border-radius:10px; padding:10px 14px; margin:-6px 0 18px 0; font-size:15px; line-height:1.45; color:var(--ink); max-width:760px;}
+.scope svg{flex:0 0 auto; margin-top:2px;}
 .st-key-formcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:14px 16px 18px 16px;}
 .st-key-resultcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:0 0 14px 0; overflow:hidden; gap:0;}
 .st-key-resultcard [data-testid='stExpander']{margin:0 16px; width:auto !important;}
@@ -306,7 +310,8 @@ if not ok_all:
 
 # ---------------------------------------------------------------- calculator
 st.html(f"<div id='hesapla'></div><p style='margin:18px 0 10px 0'><span class='pill-l'><span class='dot' style='background:#1E9E61'></span>{T['pill_ok'].format(ok=ST_OK, n=ST_N, prof=PROF)}</span></p>"
-        f"<h1 class='sec-h top'>{T['calc_h']}</h1><p class='sec-lead'>{T['calc_lead']}</p>")
+        f"<h1 class='sec-h top'>{T['calc_h']}</h1><p class='sec-lead'>{T['calc_lead']}</p>"
+        f"<div class='scope' role='note'><span>{T['scope']}</span></div>")
 with st.container(key="actions"):
     b1, b2, _ = st.columns([1, 1, 3])
 b1.button(T["example"], on_click=load, args=(EXAMPLE,), type="primary", use_container_width=True, key="btn_example")
