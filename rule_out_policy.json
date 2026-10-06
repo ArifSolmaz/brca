@@ -1,0 +1,627 @@
+{
+ "lines": [
+  0.035,
+  0.045,
+  0.05,
+  0.06
+ ],
+ "exclusions": [
+  "ovarian_or_breast_ovary",
+  "male",
+  "tnbc",
+  "ovarian_family",
+  "final lane not NORMAL (card >= 4 points or model >= 10%)",
+  "app only: urgency boxes"
+ ],
+ "strict_extra": "age at diagnosis < 45 or age unknown",
+ "cohort": {
+  "n": 1295,
+  "carriers": 167
+ },
+ "nested_cv": {
+  "std_0.035": {
+   "skipped_mean": 128.6,
+   "skipped_share": 0.0993050193050193,
+   "carriers_mean": 4.8,
+   "carriers_range": [
+    3,
+    6
+   ],
+   "skipped_range": [
+    118,
+    136
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 4.8,
+   "carrier_rate": 0.03732503888024884,
+   "one_in": 26.791666666666668,
+   "rate_ci95_approx": [
+    0.01270299172973033,
+    0.08813397841671435
+   ],
+   "share_of_all_carriers": 0.02874251497005988,
+   "tests_saved_mean": 123.8,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "std_0.045": {
+   "skipped_mean": 221.4,
+   "skipped_share": 0.17096525096525098,
+   "carriers_mean": 6.8,
+   "carriers_range": [
+    6,
+    7
+   ],
+   "skipped_range": [
+    214,
+    227
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 6.8,
+   "carrier_rate": 0.03071364046973803,
+   "one_in": 32.55882352941177,
+   "rate_ci95_approx": [
+    0.01282767175387957,
+    0.06416933229708055
+   ],
+   "share_of_all_carriers": 0.0407185628742515,
+   "tests_saved_mean": 214.6,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "std_0.05": {
+   "skipped_mean": 263.6,
+   "skipped_share": 0.20355212355212357,
+   "carriers_mean": 8.0,
+   "carriers_range": [
+    7,
+    10
+   ],
+   "skipped_range": [
+    255,
+    268
+   ],
+   "BRCA1_mean": 0.2,
+   "BRCA2_mean": 7.8,
+   "carrier_rate": 0.030349013657056143,
+   "one_in": 32.95,
+   "rate_ci95_approx": [
+    0.013171666871379713,
+    0.05883363061319722
+   ],
+   "share_of_all_carriers": 0.04790419161676647,
+   "tests_saved_mean": 255.60000000000002,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "std_0.06": {
+   "skipped_mean": 336.8,
+   "skipped_share": 0.26007722007722006,
+   "carriers_mean": 10.6,
+   "carriers_range": [
+    8,
+    13
+   ],
+   "skipped_range": [
+    322,
+    350
+   ],
+   "BRCA1_mean": 0.6,
+   "BRCA2_mean": 10.0,
+   "carrier_rate": 0.03147268408551069,
+   "one_in": 31.77358490566038,
+   "rate_ci95_approx": [
+    0.016404686604108404,
+    0.05765210756639965
+   ],
+   "share_of_all_carriers": 0.06347305389221557,
+   "tests_saved_mean": 326.2,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "age45_0.035": {
+   "skipped_mean": 49.2,
+   "skipped_share": 0.037992277992277994,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    43,
+    54
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.07251926366427738
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 49.2,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "age45_0.045": {
+   "skipped_mean": 75.8,
+   "skipped_share": 0.05853281853281853,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    72,
+    80
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.047378753866930745
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 75.8,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "age45_0.05": {
+   "skipped_mean": 86.2,
+   "skipped_share": 0.06656370656370657,
+   "carriers_mean": 0.2,
+   "carriers_range": [
+    0,
+    1
+   ],
+   "skipped_range": [
+    83,
+    88
+   ],
+   "BRCA1_mean": 0.2,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.002320185614849188,
+   "one_in": 431.0,
+   "rate_ci95_approx": [
+    0.0,
+    0.04198701530414447
+   ],
+   "share_of_all_carriers": 0.0011976047904191617,
+   "tests_saved_mean": 86.0,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "age45_0.06": {
+   "skipped_mean": 106.8,
+   "skipped_share": 0.08247104247104246,
+   "carriers_mean": 1.0,
+   "carriers_range": [
+    0,
+    2
+   ],
+   "skipped_range": [
+    103,
+    111
+   ],
+   "BRCA1_mean": 0.4,
+   "BRCA2_mean": 0.6,
+   "carrier_rate": 0.009363295880149813,
+   "one_in": 106.8,
+   "rate_ci95_approx": [
+    0.00023658703676259868,
+    0.05097254256944198
+   ],
+   "share_of_all_carriers": 0.005988023952095809,
+   "tests_saved_mean": 105.8,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "none_0.035": {
+   "skipped_mean": 137.2,
+   "skipped_share": 0.10594594594594593,
+   "carriers_mean": 6.0,
+   "carriers_range": [
+    4,
+    8
+   ],
+   "skipped_range": [
+    125,
+    150
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 6.0,
+   "carrier_rate": 0.04373177842565598,
+   "one_in": 22.866666666666664,
+   "rate_ci95_approx": [
+    0.016239392135693694,
+    0.09288618379835324
+   ],
+   "share_of_all_carriers": 0.03592814371257485,
+   "tests_saved_mean": 131.2,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "none_0.045": {
+   "skipped_mean": 245.4,
+   "skipped_share": 0.1894980694980695,
+   "carriers_mean": 9.6,
+   "carriers_range": [
+    9,
+    10
+   ],
+   "skipped_range": [
+    235,
+    255
+   ],
+   "BRCA1_mean": 0.2,
+   "BRCA2_mean": 9.4,
+   "carrier_rate": 0.039119804400977995,
+   "one_in": 25.5625,
+   "rate_ci95_approx": [
+    0.019743776041136394,
+    0.07377985494354015
+   ],
+   "share_of_all_carriers": 0.05748502994011976,
+   "tests_saved_mean": 235.8,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "none_0.05": {
+   "skipped_mean": 298.8,
+   "skipped_share": 0.23073359073359073,
+   "carriers_mean": 11.4,
+   "carriers_range": [
+    10,
+    14
+   ],
+   "skipped_range": [
+    284,
+    308
+   ],
+   "BRCA1_mean": 0.4,
+   "BRCA2_mean": 11.0,
+   "carrier_rate": 0.03815261044176707,
+   "one_in": 26.210526315789473,
+   "rate_ci95_approx": [
+    0.018505620074303692,
+    0.06487158865247632
+   ],
+   "share_of_all_carriers": 0.06826347305389222,
+   "tests_saved_mean": 287.40000000000003,
+   "n": 1295,
+   "all_carriers": 167
+  },
+  "none_0.06": {
+   "skipped_mean": 402.0,
+   "skipped_share": 0.3104247104247104,
+   "carriers_mean": 15.2,
+   "carriers_range": [
+    12,
+    19
+   ],
+   "skipped_range": [
+    380,
+    416
+   ],
+   "BRCA1_mean": 1.6,
+   "BRCA2_mean": 13.6,
+   "carrier_rate": 0.03781094527363184,
+   "one_in": 26.447368421052634,
+   "rate_ci95_approx": [
+    0.021031762681717768,
+    0.060796744893887956
+   ],
+   "share_of_all_carriers": 0.09101796407185628,
+   "tests_saved_mean": 386.8,
+   "n": 1295,
+   "all_carriers": 167
+  }
+ },
+ "method": "nested 5x5 RepeatedStratifiedKFold seed 2020; points card and model refitted in every outer fold (combined_policy.py)",
+ "temporal": {
+  "std_0.035": {
+   "skipped_mean": 30.0,
+   "skipped_share": 0.06289308176100629,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    30,
+    30
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.11570330822202778
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 30.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "std_0.045": {
+   "skipped_mean": 72.0,
+   "skipped_share": 0.1509433962264151,
+   "carriers_mean": 2.0,
+   "carriers_range": [
+    2,
+    2
+   ],
+   "skipped_range": [
+    72,
+    72
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 2.0,
+   "carrier_rate": 0.027777777777777776,
+   "one_in": 36.0,
+   "rate_ci95_approx": [
+    0.0033819003261732405,
+    0.09676728911341521
+   ],
+   "share_of_all_carriers": 0.038461538461538464,
+   "tests_saved_mean": 70.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "std_0.05": {
+   "skipped_mean": 92.0,
+   "skipped_share": 0.1928721174004193,
+   "carriers_mean": 2.0,
+   "carriers_range": [
+    2,
+    2
+   ],
+   "skipped_range": [
+    92,
+    92
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 2.0,
+   "carrier_rate": 0.021739130434782608,
+   "one_in": 46.0,
+   "rate_ci95_approx": [
+    0.0026436380721019696,
+    0.07633067175232446
+   ],
+   "share_of_all_carriers": 0.038461538461538464,
+   "tests_saved_mean": 90.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "std_0.06": {
+   "skipped_mean": 135.0,
+   "skipped_share": 0.2830188679245283,
+   "carriers_mean": 3.0,
+   "carriers_range": [
+    3,
+    3
+   ],
+   "skipped_range": [
+    135,
+    135
+   ],
+   "BRCA1_mean": 1.0,
+   "BRCA2_mean": 2.0,
+   "carrier_rate": 0.022222222222222223,
+   "one_in": 45.0,
+   "rate_ci95_approx": [
+    0.004606412895995001,
+    0.0635684018143328
+   ],
+   "share_of_all_carriers": 0.057692307692307696,
+   "tests_saved_mean": 132.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "age45_0.035": {
+   "skipped_mean": 13.0,
+   "skipped_share": 0.027253668763102725,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    13,
+    13
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.24705263800047092
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 13.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "age45_0.045": {
+   "skipped_mean": 28.0,
+   "skipped_share": 0.05870020964360587,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    28,
+    28
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.12343611850026381
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 28.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "age45_0.05": {
+   "skipped_mean": 33.0,
+   "skipped_share": 0.06918238993710692,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    33,
+    33
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.10576281007457927
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 33.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "age45_0.06": {
+   "skipped_mean": 42.0,
+   "skipped_share": 0.0880503144654088,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    42,
+    42
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.08408385494035513
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 42.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "none_0.035": {
+   "skipped_mean": 31.0,
+   "skipped_share": 0.0649895178197065,
+   "carriers_mean": 0.0,
+   "carriers_range": [
+    0,
+    0
+   ],
+   "skipped_range": [
+    31,
+    31
+   ],
+   "BRCA1_mean": 0.0,
+   "BRCA2_mean": 0.0,
+   "carrier_rate": 0.0,
+   "one_in": null,
+   "rate_ci95_approx": [
+    0.0,
+    0.11218874692236996
+   ],
+   "share_of_all_carriers": 0.0,
+   "tests_saved_mean": 31.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "none_0.045": {
+   "skipped_mean": 78.0,
+   "skipped_share": 0.16352201257861634,
+   "carriers_mean": 3.0,
+   "carriers_range": [
+    3,
+    3
+   ],
+   "skipped_range": [
+    78,
+    78
+   ],
+   "BRCA1_mean": 1.0,
+   "BRCA2_mean": 2.0,
+   "carrier_rate": 0.038461538461538464,
+   "one_in": 26.0,
+   "rate_ci95_approx": [
+    0.00800302841749741,
+    0.10831165028927246
+   ],
+   "share_of_all_carriers": 0.057692307692307696,
+   "tests_saved_mean": 75.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "none_0.05": {
+   "skipped_mean": 99.0,
+   "skipped_share": 0.20754716981132076,
+   "carriers_mean": 3.0,
+   "carriers_range": [
+    3,
+    3
+   ],
+   "skipped_range": [
+    99,
+    99
+   ],
+   "BRCA1_mean": 1.0,
+   "BRCA2_mean": 2.0,
+   "carrier_rate": 0.030303030303030304,
+   "one_in": 33.0,
+   "rate_ci95_approx": [
+    0.0062933472741720994,
+    0.08601126433737949
+   ],
+   "share_of_all_carriers": 0.057692307692307696,
+   "tests_saved_mean": 96.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "none_0.06": {
+   "skipped_mean": 151.0,
+   "skipped_share": 0.3165618448637317,
+   "carriers_mean": 4.0,
+   "carriers_range": [
+    4,
+    4
+   ],
+   "skipped_range": [
+    151,
+    151
+   ],
+   "BRCA1_mean": 2.0,
+   "BRCA2_mean": 2.0,
+   "carrier_rate": 0.026490066225165563,
+   "one_in": 37.75,
+   "rate_ci95_approx": [
+    0.007263807794649811,
+    0.06643424267424879
+   ],
+   "share_of_all_carriers": 0.07692307692307693,
+   "tests_saved_mean": 147.0,
+   "n": 477,
+   "all_carriers": 52
+  },
+  "note": "fitted on diagnoses <= 2015, applied to >= 2016 (single run; ranges are not applicable)"
+ }
+}

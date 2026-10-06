@@ -14,6 +14,8 @@ import json, math, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 M = json.load(open(os.path.join(HERE, "model_full_embedded.json"), encoding="utf-8"))
 SELFTEST = json.load(open(os.path.join(HERE, "selftest_vectors_synthetic.json"), encoding="utf-8"))
+RO = json.load(open(os.path.join(HERE, "rule_out_policy.json"), encoding="utf-8"))   # test-reduction lines: aggregate held-out counts only
+RO_LINES = tuple(RO["lines"])
 FAMILY = ["fdr_breast_lt40", "fdr_breast_ge40", "sdr_breast_lt40", "sdr_breast_ge40", "tdr_breast", "fdr_ovary", "sdr_ovary", "fdr_other"]
 RULES = ("A", "B")
 
@@ -104,3 +106,32 @@ def summary():
                 moved_model=S["model_only"]["prioritised_share"]["mean"], covered_model=S["model_only"]["carriers_prioritised"]["mean"],
                 t_moved=C["temporal"]["combined"]["prioritised_share"], t_covered=C["temporal"]["combined"]["carriers_prioritised"],
                 build=M.get("build", ""))
+
+
+# ---------------------------------------------------------------- test-reduction ("rule-out") mode, v6.3 (2026-10-06)
+# Clinic-policy option requested for Prof. Yazicı: patients below a probability LINE may skip the test, unless a safety exclusion
+# applies. Same definition as Pipeline/stage2_analysis/rule_out_policy.py, which measured the price on held-out patients.
+RO_REASONS = ("line", "card", "ovarian", "male", "tnbc", "ovfam", "urgency", "young")
+
+
+def ro_key(line, strict):
+    return f"{'age45' if strict else 'std'}_{line}"
+
+
+def skip_check(v, p_cal, d, line=0.05, strict=True):
+    """Can this patient skip the test under the chosen clinic policy? Returns eligible, the reasons it cannot, and the measured price.
+    d is the decide() result. Exclusions: probability >= line; points card >= 4 (priority); ovarian or breast+ovarian cancer (ASCO 2020:
+    test every epithelial ovarian cancer); male breast cancer; triple-negative; any relative with ovarian cancer; an urgency box;
+    and, in the strict set, age at diagnosis < 45."""
+    assert line in RO_LINES
+    r = []
+    if p_cal >= line: r.append("line")
+    if d["pl"] > 0: r.append("card")
+    if v["dx"] in ("ovarian", "breast_ovary"): r.append("ovarian")
+    if v["dx"] == "male": r.append("male")
+    if v.get("tnbc"): r.append("tnbc")
+    if v.get("fdr_ovary", 0) + v.get("sdr_ovary", 0) > 0: r.append("ovfam")
+    if v.get("urg_dec") or v.get("urg_fam"): r.append("urgency")
+    if strict and (v.get("age_missing") or v["age"] < 45): r.append("young")
+    k = ro_key(line, strict)
+    return dict(eligible=not r, reasons=r, line=line, strict=strict, cv=RO["nested_cv"][k], temporal=RO["temporal"][k])
