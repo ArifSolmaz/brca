@@ -22,7 +22,7 @@ TX = {
   brand="BRCA Öncelik", research="Araştırma amaçlıdır · klinik karar destek aracı değildir · girilen bilgiler kaydedilmez",
   pill_ok="Öz-test ✓ {ok}/{n} · {prof} girdi kombinasyonunda doğrulandı", pill_bad="Öz-test başarısız ({ok}/{n}) — hesaplama durduruldu",
   h1="Test kuyruğunu taşıyıcılara göre sırala.",
-  lead="Tanı gününde bilinen bilgilerle BRCA1/2 taşıyıcılık olasılığını hesaplar ve hastayı test kuyruğunda normal, öncelikli ya da acil şeride koyar. Kimse testten çıkarılmaz; yalnız sıra değişir.",
+  lead="Tanı gününde bilinen bilgilerle BRCA1/2 taşıyıcılık olasılığını hesaplar ve hastayı test kuyruğunda normal, öncelikli ya da acil şeride koyar. Varsayılan kullanımda kimse testten çıkarılmaz, yalnız sıra değişir; test azaltma ayrı bir klinik politika seçeneğidir.",
   cta1="Nasıl doğrulandı ↓", cta2="Kâğıt kart (PDF)",
   s1="taşıyıcı öne alınır", s1b="hastaların %{m}'i öne alınarak",
   s2="sonraki dönemde", s2b="2015'e kadar kurulup 2016–2020 hastalarına uygulanınca",
@@ -30,6 +30,22 @@ TX = {
   s4="hasta", s4b="{pos} taşıyıcı · geliştirme kohortu, tanı yılları {y0}–{y1}",
   calc_h="BRCA1/2 taşıyıcılık olasılığı ve test önceliği", calc_lead="Tanı günündeki bilgiler yeterli; sonuç anında güncellenir. Bilinmeyen alanları boş bırakın.",
   scope="<b>Yalnız kanser tanısı almış hastalar için.</b> Sağlıklı kişiler ve hastanın akrabaları için kullanılmaz; onlara verdiği sayı anlamsızdır.",
+  mode_lbl="Kullanım", mode_order="Öncelik sırası", mode_reduce="Test azaltma",
+  ro_h="Test azaltma modu · klinik politika seçeneği",
+  ro_b="Çizginin altındaki hastalar, dışlama ölçütü yoksa test edilmeyebilir. Bu bir klinik politika kararıdır: ASCO–SSO 2024 kılavuzu 65 yaş ve altı tüm yeni tanılı meme kanseri hastalarına test önerir; over kanserinde test her zaman yapılır (ASCO 2020).",
+  ro_line="Çizgi: taşıyıcılık olasılığı bunun altındaysa", ro_strict="45 yaş altını her zaman test et (daha güvenli)",
+  ro_tab_h="Seçeneklerin bedeli", ro_tab_n="Kohort {n} hasta, {c} taşıyıcı. Her seçenek, model ve puan kartı her katlamada yeniden kurularak, görmediği hastalarda sayıldı (iç içe çapraz doğrulama, 5 tekrarın ortalaması). Son sütun: 2015'e kadar kurulup 2016–2020'ye uygulandığında ({tc} taşıyıcı).",
+  ro_cols=["Çizgi", "45 yaş altı", "Test edilmeyen", "Kaçan taşıyıcı", "Test edilmeyenlerde taşıyıcı", "2016–2020'de kaçan"],
+  ro_young=["test edilir", "kurala bağlı"], ro_excl="Her zaman test edilir: over kanseri (ve meme + over), erkek meme kanseri, üçlü negatif, ailede over kanseri, puan kartı ≥ 4, klinik aciliyet kutuları.",
+  ro_ok_h="TEST ATLANABİLİR", ro_ok_k="klinik politika · negatif sonuç değildir",
+  ro_ok_b="Olasılık {p}, seçilen çizginin ({line}) altında ve dışlama ölçütü yok. Bu kurala uyan kohort hastalarında {rate}.",
+  ro_rate="yaklaşık {one} hastadan 1'i taşıyıcıydı (ortalama {k} / {n})", ro_zero="taşıyıcı neredeyse hiç çıkmadı (ortalama {k} / {n}); gerçek oran %95 güvenle en fazla {ub}",
+  ro_say="Hastaya: “Taşıyıcı olma olasılığınız düşük, ama sıfır değil. Ailede yeni bir meme veya over kanseri olursa yeniden değerlendiririz.”",
+  ro_act="Seçilen test azaltma politikası uygulanıyorsa test yapılmayabilir; uygulanmıyorsa tam test olağan sırada.",
+  ro_no_h="TEST YAPILMALI", ro_no_k="test azaltma kuralı bu hastaya uygulanmaz",
+  ro_reason=dict(line="Olasılık {p}, çizginin ({line}) üstünde", card="Puan kartı 4 puan veya üstü", ovarian="Over kanseri: her zaman test (ASCO 2020)",
+                 male="Erkek meme kanseri", tnbc="Üçlü negatif tümör", ovfam="Ailede over kanseri", urgency="Klinik aciliyet kutusu işaretli",
+                 young="Tanı yaşı 45'in altında (güvenli seçenek açık)"),
   example="Örnek hasta", clear="Temizle",
   step1="Hasta ve tümör", step2="Aile öyküsü", step3="Klinik aciliyet",
   age="Tanı yaşı", age_ph="yıl (18–95)", dx="Tanı", grade="Histolojik grade", grade_lbl={"g1": "1", "g2": "2 / bilinmiyor", "g3": "3"},
@@ -72,7 +88,7 @@ TX = {
   brand="BRCA Priority", research="Research use only · not a clinical decision-support tool · nothing you enter is stored",
   pill_ok="Self-test ✓ {ok}/{n} · verified on {prof} input combinations", pill_bad="Self-test failed ({ok}/{n}) — calculation stopped",
   h1="Order the test queue by who is likely a carrier.",
-  lead="From what is known on the day of diagnosis, the calculator estimates BRCA1/2 carrier probability and places the patient in the normal, priority or urgent lane of the test queue. Nobody is removed from testing; only the order changes.",
+  lead="From what is known on the day of diagnosis, the calculator estimates BRCA1/2 carrier probability and places the patient in the normal, priority or urgent lane of the test queue. By default nobody is removed from testing, only the order changes; test reduction is a separate clinic-policy option.",
   cta1="How it was validated ↓", cta2="Paper card (PDF)",
   s1="of carriers moved forward", s1b="by moving {m}% of patients forward",
   s2="in a later period", s2b="built on diagnoses up to 2015, applied to 2016–2020",
@@ -80,6 +96,22 @@ TX = {
   s4="patients", s4b="{pos} carriers · development cohort, diagnosed {y0}–{y1}",
   calc_h="BRCA1/2 carrier probability and test priority", calc_lead="What is known on the day of diagnosis is enough; the result updates instantly. Leave unknown fields empty.",
   scope="<b>Only for patients already diagnosed with cancer.</b> Not for healthy people or a patient's relatives; any number it gives them is meaningless.",
+  mode_lbl="Use", mode_order="Priority order", mode_reduce="Test reduction",
+  ro_h="Test-reduction mode · a clinic-policy option",
+  ro_b="Patients below the line may be left untested unless an exclusion applies. This is a clinic-policy decision: the ASCO–SSO 2024 guideline recommends testing every newly diagnosed breast-cancer patient aged 65 or younger; ovarian cancer is always tested (ASCO 2020).",
+  ro_line="Line: carrier probability below", ro_strict="Always test patients under 45 (safer)",
+  ro_tab_h="The price of each option", ro_tab_n="Cohort of {n} patients, {c} carriers. Each option was counted on patients the model had not seen, with the model and the points card rebuilt in every fold (nested cross-validation, mean of 5 repeats). Last column: built on diagnoses up to 2015, applied to 2016–2020 ({tc} carriers).",
+  ro_cols=["Line", "Under 45", "Not tested", "Carriers missed", "Carriers among untested", "Missed in 2016–2020"],
+  ro_young=["tested", "rule applies"], ro_excl="Always tested: ovarian cancer (and breast + ovarian), male breast cancer, triple-negative, a relative with ovarian cancer, points card ≥ 4, the clinical-urgency boxes.",
+  ro_ok_h="TEST CAN BE SKIPPED", ro_ok_k="clinic policy · this is not a negative result",
+  ro_ok_b="Probability {p} is below the {line} line and no exclusion applies. Among cohort patients who met this rule, {rate}.",
+  ro_rate="about 1 in {one} was a carrier (mean {k} / {n})", ro_zero="almost none were carriers (mean {k} / {n}); with 95% confidence the true rate is at most {ub}",
+  ro_say="To the patient: “Your chance of carrying a variant is low, but not zero. If a new breast or ovarian cancer appears in the family, we will look again.”",
+  ro_act="If the chosen test-reduction policy is applied, the test may be skipped; if not, full test in the usual order.",
+  ro_no_h="TEST NEEDED", ro_no_k="the test-reduction rule does not apply to this patient",
+  ro_reason=dict(line="Probability {p} is at or above the line ({line})", card="Points card 4 or more", ovarian="Ovarian cancer: always tested (ASCO 2020)",
+                 male="Male breast cancer", tnbc="Triple-negative tumour", ovfam="A relative with ovarian cancer", urgency="A clinical-urgency box is ticked",
+                 young="Age at diagnosis under 45 (safer option on)"),
   example="Example patient", clear="Clear",
   step1="Patient and tumour", step2="Family history", step3="Clinical urgency",
   age="Age at diagnosis", age_ph="years (18–95)", dx="Diagnosis", grade="Histological grade", grade_lbl={"g1": "1", "g2": "2 / unknown", "g3": "3"},
@@ -126,6 +158,9 @@ DEFAULTS = dict(age=None, dx="breast", grade="g2", tnbc=False, ki67=None, region
 EXAMPLE = dict(DEFAULTS, age=38, tnbc=True, fdr_breast_lt40=1)
 for k, v in DEFAULTS.items():
     st.session_state.setdefault(k, v)
+_mq = str(st.query_params.get("mod", st.query_params.get("mode", ""))).lower()
+st.session_state.setdefault("mode", "reduce" if _mq in ("azalt", "azaltma", "reduce") else "order")
+st.session_state.setdefault("ro_line", 0.05); st.session_state.setdefault("ro_strict", True)
 def load(d):
     for k, v in d.items(): st.session_state[k] = v
 rule = str(st.query_params.get("kural", st.query_params.get("rule", "A"))).upper()
@@ -177,6 +212,14 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 [data-testid='stCheckbox'] label:has(input:disabled){opacity:.55;} .sec-lead{font-size:18px; color:var(--muted); margin:0 0 18px 0;}
 .scope{display:flex; gap:10px; align-items:flex-start; background:#FFF6E0; border:1px solid #F0D58A; border-left:4px solid #FFB81C; border-radius:10px; padding:10px 14px; margin:-6px 0 18px 0; font-size:15px; line-height:1.45; color:var(--ink); max-width:760px;}
 .scope svg{flex:0 0 auto; margin-top:2px;}
+.st-key-robox{background:#F7F5FF; border:1px solid #D9D2FF; border-radius:14px; padding:14px 16px 6px 16px; margin-bottom:6px;}
+.ro-h{font-family:'Geist',sans-serif; font-weight:600; font-size:17px; color:var(--ink); margin:0 0 4px 0;} .ro-b{font-size:14px; color:var(--muted); line-height:1.45; margin:0 0 6px 0;}
+.rot{width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums;} .rot th{text-align:left; font-weight:700; color:var(--muted); font-size:13px; padding:6px 6px; border-bottom:1px solid var(--line);}
+.rot td{padding:6px; border-bottom:1px solid #EEF0F3; color:var(--ink);} .rot tr.sel td{background:#EDE9FF; font-weight:700;} .rot-wrap{overflow-x:auto;}
+.rv{margin:16px 22px 0 22px; border-radius:12px; padding:12px 14px; font-size:15px; line-height:1.5; color:var(--ink);} .rv h5{margin:0; font-family:'Geist',sans-serif; font-size:19px; font-weight:700; letter-spacing:.01em;}
+.rv .rk{font-size:13px; color:var(--muted); margin:0 0 6px 0;} .rv ul{margin:6px 0 0 0; padding-left:20px;} .rv p{margin:6px 0 0 0;}
+.rv.ok{background:#E8F1FB; border:1px solid #9CC3EA; border-left:6px solid #1D70B8;} .rv.ok h5{color:#0B4F8A;}
+.rv.no{background:#F4F6F8; border:1px solid var(--line); border-left:6px solid #4C5966;}
 .st-key-formcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:14px 16px 18px 16px;}
 .st-key-resultcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:0 0 14px 0; overflow:hidden; gap:0;}
 .st-key-resultcard [data-testid='stExpander']{margin:0 16px; width:auto !important;}
@@ -317,6 +360,31 @@ with st.container(key="actions"):
 b1.button(T["example"], on_click=load, args=(EXAMPLE,), type="primary", use_container_width=True, key="btn_example")
 b2.button(T["clear"], on_click=load, args=(DEFAULTS,), use_container_width=True, key="btn_clear")
 
+# use mode: priority order (default) or test reduction (clinic-policy option, v6.3)
+fl = lambda x: pct(x, 1 if round(x * 1000) % 10 else 0)
+st.segmented_control(T["mode_lbl"], ["order", "reduce"], format_func=lambda x: T["mode_" + x], key="mode")
+REDUCE = st.session_state.get("mode") == "reduce"
+RO_LINE = lambda: st.session_state.get("ro_line") or 0.05
+RO_STRICT = lambda: bool(st.session_state.get("ro_strict", True))
+if REDUCE:
+    with st.container(key="robox"):
+        st.html(f"<p class='ro-h'>{T['ro_h']}</p><p class='ro-b'>{T['ro_b']}</p>")
+        rc1, rc2 = st.columns([3, 2], vertical_alignment="bottom")
+        rc1.pills(T["ro_line"], list(core.RO_LINES), selection_mode="single", format_func=fl, key="ro_line")
+        rc2.toggle(T["ro_strict"], key="ro_strict")
+        with st.expander(T["ro_tab_h"]):
+            RO = core.RO; rows = ""
+            for strict in (True, False):
+                for ln in core.RO_LINES:
+                    cv = RO["nested_cv"][core.ro_key(ln, strict)]; tp = RO["temporal"][core.ro_key(ln, strict)]
+                    sel = " class='sel'" if (ln == RO_LINE() and strict == RO_STRICT()) else ""
+                    one = f"1 / {round(cv['one_in'])}" if cv["carriers_mean"] >= 0.5 else f"≈ 0 ({num(cv['carriers_mean'], 1)} / {round(cv['skipped_mean'])})"
+                    rows += (f"<tr{sel}><td>{fl(ln)}</td><td>{T['ro_young'][0 if strict else 1]}</td><td>{pct(cv['skipped_share'], 0)} ({round(cv['skipped_mean'])})</td>"
+                             f"<td>{num(cv['carriers_mean'], 1)} ({pct(cv['share_of_all_carriers'], 1)})</td><td>{one}</td><td>{round(tp['carriers_mean'])} / {tp['all_carriers']}</td></tr>")
+            st.html(f"<div class='rot-wrap'><table class='rot'><tr>{''.join(f'<th>{c}</th>' for c in T['ro_cols'])}</tr>{rows}</table></div>"
+                    f"<p class='ro-b' style='margin-top:8px'>{T['ro_tab_n'].format(n=n_int(RO['cohort']['n']), c=RO['cohort']['carriers'], tc=RO['temporal'][core.ro_key(0.05, True)]['all_carriers'])}</p>"
+                    f"<p class='ro-b'>{T['ro_excl']}</p>")
+
 left, right = st.columns([7, 5], gap="large")
 with left:
     with st.container(key="formcard"):
@@ -368,8 +436,21 @@ with right:
             if ss.urg_fam: why.append(T["why_urg_fam"])
             lvl = "low" if p < M["triage"]["95"]["threshold"] else "mid" if p < 0.10 else "high"
             counsel = T["counsel_fam"] if ss.urg_fam else T["counsel_" + lvl].format(f=frac.replace("≈ ", ""))
+            rbox = ""
+            if REDUCE:
+                sc = core.skip_check(v, p, d, RO_LINE(), RO_STRICT()); cv = sc["cv"]
+                if sc["eligible"]:
+                    act = T["ro_act"]
+                    rate = (T["ro_rate"].format(one=round(cv["one_in"]), k=num(cv["carriers_mean"], 1), n=round(cv["skipped_mean"])) if cv["carriers_mean"] >= 0.5
+                            else T["ro_zero"].format(k=num(cv["carriers_mean"], 1), n=round(cv["skipped_mean"]), ub=pct(cv["rate_ci95_approx"][1], 1)))
+                    rbox = (f"<div class='rv ok' data-testid='ro-verdict' data-eligible='1'><h5>{T['ro_ok_h']}</h5><p class='rk'>{T['ro_ok_k']}</p>"
+                            f"{T['ro_ok_b'].format(p=pct(p), line=fl(sc['line']), rate=rate)}<p>{T['ro_say']}</p></div>")
+                else:
+                    rs = "".join(f"<li>{T['ro_reason'][k].format(p=pct(p), line=fl(sc['line']))}</li>" for k in sc["reasons"])
+                    rbox = f"<div class='rv no' data-testid='ro-verdict' data-eligible='0'><h5>{T['ro_no_h']}</h5><p class='rk'>{T['ro_no_k']}</p><ul>{rs}</ul></div>"
             st.html(f"""
 <div class='lane' id='sonuc' style='background:{LANE_BG[d['lane']]}; color:{LANE_FG[d['lane']]}'><div class='k'>{T['lane_kicker']}</div><div class='v'>{T['lanes'][d['lane']]}</div></div>
+{rbox}
 <div class='res'>
 <p style='margin:0 0 16px 0'><b>{act}</b></p>
 <div class='big' data-testid='pcal'>{pct(p)}</div>
