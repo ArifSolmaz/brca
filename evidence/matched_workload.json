@@ -1,0 +1,215 @@
+{
+ "note": "Combined rule (max of card lane and model lane) versus the model alone given the same number of patients (its top-k). Nested-CV held-out predictions, 5 repeats; temporal = fitted <=2015, applied >=2016. diff = coverage(combined) - coverage(model top-k); bootstrap 95% interval over patients (k kept at the same share).",
+ "cv": {
+  "prioritised": [
+   {
+    "k": 626,
+    "share": 0.4833976833976834,
+    "combined": 0.7784431137724551,
+    "model_same_k": 0.7844311377245509,
+    "overlap": 0.9297124600638977,
+    "card_alone_k": 431,
+    "card_alone": 0.6526946107784432,
+    "model_same_k_as_card": 0.7125748502994012,
+    "rapid_hits_combined": 37,
+    "rapid_hits_model_same_k": 39,
+    "diff": -0.0059880239520957446,
+    "diff_ci95": [
+     -0.05084745762711862,
+     0.028739784731911498
+    ]
+   },
+   {
+    "k": 614,
+    "share": 0.47413127413127415,
+    "combined": 0.7904191616766467,
+    "model_same_k": 0.7964071856287425,
+    "overlap": 0.9381107491856677,
+    "card_alone_k": 406,
+    "card_alone": 0.6407185628742516,
+    "model_same_k_as_card": 0.6706586826347305,
+    "rapid_hits_combined": 38,
+    "rapid_hits_model_same_k": 38,
+    "diff": -0.0059880239520957446,
+    "diff_ci95": [
+     -0.03205645161290322,
+     0.018518518518518493
+    ]
+   },
+   {
+    "k": 622,
+    "share": 0.4803088803088803,
+    "combined": 0.7664670658682635,
+    "model_same_k": 0.8023952095808383,
+    "overlap": 0.9196141479099679,
+    "card_alone_k": 416,
+    "card_alone": 0.6526946107784432,
+    "model_same_k_as_card": 0.6946107784431138,
+    "rapid_hits_combined": 37,
+    "rapid_hits_model_same_k": 40,
+    "diff": -0.0359281437125748,
+    "diff_ci95": [
+     -0.06666666666666665,
+     -0.005586592178770888
+    ]
+   },
+   {
+    "k": 614,
+    "share": 0.47413127413127415,
+    "combined": 0.7664670658682635,
+    "model_same_k": 0.7784431137724551,
+    "overlap": 0.9413680781758957,
+    "card_alone_k": 416,
+    "card_alone": 0.6526946107784432,
+    "model_same_k_as_card": 0.6766467065868264,
+    "rapid_hits_combined": 37,
+    "rapid_hits_model_same_k": 39,
+    "diff": -0.0119760479041916,
+    "diff_ci95": [
+     -0.039999999999999925,
+     0.013425086159985456
+    ]
+   },
+   {
+    "k": 614,
+    "share": 0.47413127413127415,
+    "combined": 0.7904191616766467,
+    "model_same_k": 0.8143712574850299,
+    "overlap": 0.9527687296416938,
+    "card_alone_k": 425,
+    "card_alone": 0.688622754491018,
+    "model_same_k_as_card": 0.6946107784431138,
+    "rapid_hits_combined": 38,
+    "rapid_hits_model_same_k": 39,
+    "diff": -0.0239520958083832,
+    "diff_ci95": [
+     -0.046361466194363175,
+     0.0
+    ]
+   }
+  ],
+  "urgent": [
+   {
+    "k": 290,
+    "share": 0.22393822393822393,
+    "combined": 0.5568862275449101,
+    "model_same_k": 0.5868263473053892,
+    "overlap": 0.8137931034482758,
+    "card_alone_k": 250,
+    "card_alone": 0.5029940119760479,
+    "model_same_k_as_card": 0.5568862275449101,
+    "rapid_hits_combined": 28,
+    "rapid_hits_model_same_k": 29,
+    "diff": -0.029940119760479056,
+    "diff_ci95": [
+     -0.07354302832244004,
+     0.0
+    ]
+   },
+   {
+    "k": 261,
+    "share": 0.20154440154440154,
+    "combined": 0.5508982035928144,
+    "model_same_k": 0.5508982035928144,
+    "overlap": 0.8505747126436781,
+    "card_alone_k": 206,
+    "card_alone": 0.47305389221556887,
+    "model_same_k_as_card": 0.5029940119760479,
+    "rapid_hits_combined": 30,
+    "rapid_hits_model_same_k": 30,
+    "diff": 0.0,
+    "diff_ci95": [
+     -0.033333333333333326,
+     0.0337866468163078
+    ]
+   },
+   {
+    "k": 297,
+    "share": 0.22934362934362934,
+    "combined": 0.5808383233532934,
+    "model_same_k": 0.592814371257485,
+    "overlap": 0.8215488215488216,
+    "card_alone_k": 234,
+    "card_alone": 0.48502994011976047,
+    "model_same_k_as_card": 0.5209580838323353,
+    "rapid_hits_combined": 31,
+    "rapid_hits_model_same_k": 31,
+    "diff": -0.0119760479041916,
+    "diff_ci95": [
+     -0.053254437869822424,
+     0.03311349749368843
+    ]
+   },
+   {
+    "k": 275,
+    "share": 0.21235521235521235,
+    "combined": 0.5868263473053892,
+    "model_same_k": 0.5808383233532934,
+    "overlap": 0.8545454545454545,
+    "card_alone_k": 228,
+    "card_alone": 0.5149700598802395,
+    "model_same_k_as_card": 0.5389221556886228,
+    "rapid_hits_combined": 29,
+    "rapid_hits_model_same_k": 30,
+    "diff": 0.0059880239520957446,
+    "diff_ci95": [
+     -0.03226330121491409,
+     0.03550824175824169
+    ]
+   },
+   {
+    "k": 277,
+    "share": 0.2138996138996139,
+    "combined": 0.5868263473053892,
+    "model_same_k": 0.5808383233532934,
+    "overlap": 0.8447653429602888,
+    "card_alone_k": 217,
+    "card_alone": 0.5029940119760479,
+    "model_same_k_as_card": 0.5149700598802395,
+    "rapid_hits_combined": 29,
+    "rapid_hits_model_same_k": 28,
+    "diff": 0.0059880239520957446,
+    "diff_ci95": [
+     -0.038466850828729256,
+     0.04878475183353223
+    ]
+   }
+  ]
+ },
+ "temporal": {
+  "prioritised": {
+   "k": 180,
+   "share": 0.37735849056603776,
+   "combined": 0.75,
+   "model_same_k": 0.75,
+   "overlap": 0.9777777777777777,
+   "card_alone_k": 90,
+   "card_alone": 0.5576923076923077,
+   "model_same_k_as_card": 0.5961538461538461,
+   "rapid_hits_combined": 15,
+   "rapid_hits_model_same_k": 15,
+   "diff": 0.0,
+   "diff_ci95": [
+    -0.041688829787234115,
+    0.0
+   ]
+  },
+  "urgent": {
+   "k": 49,
+   "share": 0.10272536687631027,
+   "combined": 0.36538461538461536,
+   "model_same_k": 0.36538461538461536,
+   "overlap": 0.8367346938775511,
+   "card_alone_k": 30,
+   "card_alone": 0.25,
+   "model_same_k_as_card": 0.25,
+   "rapid_hits_combined": 8,
+   "rapid_hits_model_same_k": 9,
+   "diff": 0.0,
+   "diff_ci95": [
+    -0.0789473684210526,
+    0.05769230769230768
+   ]
+  }
+ }
+}

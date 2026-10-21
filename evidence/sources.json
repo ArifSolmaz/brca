@@ -1,0 +1,15 @@
+{
+  "analysis_date": "2026-10-04",
+  "retrieved_date": "2026-10-21",
+  "scope": "Aggregate development evidence only. No patient-level records. No measured waiting-time, cost or clinical-outcome improvement. Urgency overrides were not recorded in the cohort.",
+  "files": {
+    "matched_workload.json": {
+      "url": "https://drive.google.com/file/d/1Uj9IY8bgEdhv1Qim37-LQysSLLc-7Lgi/view",
+      "sha256": "2b489a8b9f0bf1469457bb3d374dca41d86ea8623194e7358965edbe759584d2"
+    },
+    "rapid_threshold.json": {
+      "url": "https://drive.google.com/file/d/1LelUqIaYDtKTbKnR-LoVbyJ0b9qZisY_/view",
+      "sha256": "65b2f7d2d556367ed8e8ed101ba6c74dbc38d10c21c871c414079860df4e6cbf"
+    }
+  }
+}

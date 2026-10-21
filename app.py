@@ -1,17 +1,19 @@
-"""BRCA1/2 Test Öncelik Hesaplayıcı — conference app (v7, 2026-10-05). Research use only.
+"""BRCA1/2 Test Öncelik Hesaplayıcı — research app (v7.1, 2026-10-21). Research use only.
 
 Look: a dark product-style landing band over a light, high-legibility clinical calculator (designs 3 + 4 of the canvas).
-All numbers come from brca_core.py (verified against the published HTML page and the printed paper card) and from
-model_full_embedded.json / verification.json (aggregate values only). Nothing typed in is stored.
+Patient probabilities use the frozen model. Historical rule-A audit records are kept separate
+from the aggregate capacity evidence in evidence/. Nothing typed in is stored.
 RUN: streamlit run app.py        Rule B preview: add ?kural=B to the address.
 """
 import json, os, hmac, time
 import streamlit as st
 import brca_core as core
+from capacity_explorer import render_capacity_explorer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-V = json.load(open(os.path.join(HERE, "verification.json")))
-S = core.summary(); M = core.M
+with open(os.path.join(HERE, "verification.json"), encoding="utf-8") as fh:
+    V = json.load(fh)
+M = core.M
 
 st.set_page_config(page_title="BRCA Öncelik Hesaplayıcı", page_icon=os.path.join(HERE, "assets", "icon.png") if os.path.exists(os.path.join(HERE, "assets", "icon.png")) else None,
                    layout="wide", initial_sidebar_state="collapsed")
@@ -20,29 +22,29 @@ st.set_page_config(page_title="BRCA Öncelik Hesaplayıcı", page_icon=os.path.j
 TX = {
  "tr": dict(
   brand="BRCA Öncelik", research="Araştırma amaçlıdır · klinik karar destek aracı değildir · girilen bilgiler kaydedilmez",
-  pill_ok="Öz-test ✓ {ok}/{n} · {prof} girdi kombinasyonunda doğrulandı", pill_bad="Öz-test başarısız ({ok}/{n}) — hesaplama durduruldu",
+  pill_ok="Olasılık öz-testi ✓ {ok}/{n} · özgün A kuralı denetimi: {prof} profil", pill_bad="Öz-test başarısız ({ok}/{n}) — hesaplama durduruldu",
   h1="Test kuyruğunu taşıyıcılara göre sırala.",
-  lead="Tanı gününde bilinen bilgilerle BRCA1/2 taşıyıcılık olasılığını hesaplar ve hastayı test kuyruğunda normal, öncelikli ya da acil şeride koyar. Varsayılan kullanımda kimse testten çıkarılmaz, yalnız sıra değişir; test azaltma ayrı bir klinik politika seçeneğidir.",
+  lead="Tanı gününde bilinen bilgilerle BRCA1/2 taşıyıcılık olasılığını hesaplar ve hastayı test kuyruğunda normal, öncelikli ya da acil şeride koyar. Varsayılan kullanımda kimse testten çıkarılmaz, yalnız sıra değişir; test azaltma yalnız varsayımsal bir araştırma senaryosudur.",
   cta1="Nasıl doğrulandı ↓", cta2="Kâğıt kart (PDF)",
   s1="taşıyıcı öne alınır", s1b="hastaların %{m}'i öne alınarak",
   s2="sonraki dönemde", s2b="2015'e kadar kurulup 2016–2020 hastalarına uygulanınca",
   s3="fark", s3b="sayfa, Python ve basılı kart arasında, {prof} girdi kombinasyonunda",
   s4="hasta", s4b="{pos} taşıyıcı · geliştirme kohortu, tanı yılları {y0}–{y1}",
-  calc_h="BRCA1/2 taşıyıcılık olasılığı ve test önceliği", calc_lead="Tanı günündeki bilgiler yeterli; sonuç anında güncellenir. Bilinmeyen alanları boş bırakın.",
+  calc_h="BRCA1/2 taşıyıcılık olasılığı ve test önceliği", calc_lead="Tanı yaşını girin; bilinmeyen isteğe bağlı alanları boş bırakın. Sonuç anında güncellenir.",
   scope="<b>Yalnız kanser tanısı almış hastalar için.</b> Sağlıklı kişiler ve hastanın akrabaları için kullanılmaz; onlara verdiği sayı anlamsızdır.",
-  mode_lbl="Kullanım", mode_order="Öncelik sırası", mode_reduce="Test azaltma",
-  ro_h="Test azaltma modu · klinik politika seçeneği",
-  ro_b="Çizginin altındaki hastalar, dışlama ölçütü yoksa test edilmeyebilir. Bu bir klinik politika kararıdır: ASCO–SSO 2024 kılavuzu 65 yaş ve altı tüm yeni tanılı meme kanseri hastalarına test önerir; over kanserinde test her zaman yapılır (ASCO 2020).",
+  mode_lbl="Kullanım", mode_order="Öncelik sırası", mode_reduce="Test azaltma · araştırma",
+  ro_h="Varsayımsal test azaltma · klinik talimat değildir",
+  ro_b="Bu görünüm, seçilen kural uygulansaydı kimlerin test dışı kalacağını ve kaç taşıyıcının kaçabileceğini araştırır. Tam test önerisini değiştirmez. Kaydedilmiş sonuçlar keşifseldir; üretici betik ve bu politika için onay kaydı mevcut pakette yoktur. Dış doğrulama yapılmamıştır.",
   ro_line="Çizgi: taşıyıcılık olasılığı bunun altındaysa", ro_strict="45 yaş altını her zaman test et (daha güvenli)",
   ro_tab_h="Seçeneklerin bedeli", ro_tab_n="Kohort {n} hasta, {c} taşıyıcı. Her seçenek, model ve puan kartı her katlamada yeniden kurularak, görmediği hastalarda sayıldı (iç içe çapraz doğrulama, 5 tekrarın ortalaması). Son sütun: 2015'e kadar kurulup 2016–2020'ye uygulandığında ({tc} taşıyıcı).",
   ro_cols=["Çizgi", "45 yaş altı", "Test edilmeyen", "Kaçan taşıyıcı", "Test edilmeyenlerde taşıyıcı", "2016–2020'de kaçan"],
   ro_young=["test edilir", "kurala bağlı"], ro_excl="Her zaman test edilir: over kanseri (ve meme + over), erkek meme kanseri, üçlü negatif, ailede over kanseri, puan kartı ≥ 4, klinik aciliyet kutuları.",
-  ro_ok_h="TEST ATLANABİLİR", ro_ok_k="klinik politika · negatif sonuç değildir",
+  ro_ok_h="VARSAYIMSAL KURALA UYUYOR", ro_ok_k="araştırma senaryosu · test atlama önerisi değildir",
   ro_ok_b="Olasılık {p}, seçilen çizginin ({line}) altında ve dışlama ölçütü yok. Bu kurala uyan kohort hastalarında {rate}.",
-  ro_rate="yaklaşık {one} hastadan 1'i taşıyıcıydı (ortalama {k} / {n})", ro_zero="taşıyıcı neredeyse hiç çıkmadı (ortalama {k} / {n}); gerçek oran %95 güvenle en fazla {ub}",
-  ro_say="Hastaya: “Taşıyıcı olma olasılığınız düşük, ama sıfır değil. Ailede yeni bir meme veya over kanseri olursa yeniden değerlendiririz.”",
-  ro_act="Seçilen test azaltma politikası uygulanıyorsa test yapılmayabilir; uygulanmıyorsa tam test olağan sırada.",
-  ro_no_h="TEST YAPILMALI", ro_no_k="test azaltma kuralı bu hastaya uygulanmaz",
+  ro_rate="yaklaşık {one} hastadan 1'i taşıyıcıydı (ortalama {k} / {n})", ro_zero="ortalama {k} / {n} taşıyıcı gözlendi; kaydedilmiş yaklaşık %95 aralığın üst sınırı {ub} (keşifsel; bağımsız doğrulama değildir)",
+  ro_say="Bu senaryo tek bir hastada sıfır risk kanıtlamaz. Ana sonuçtaki tam test planı geçerlidir.",
+  ro_act="Araştırma senaryosu tam test planını değiştirmez.",
+  ro_no_h="VARSAYIMSAL KURALA UYMUYOR", ro_no_k="bu senaryoda da tam test grubunda",
   ro_reason=dict(line="Olasılık {p}, çizginin ({line}) üstünde", card="Puan kartı 4 puan veya üstü", ovarian="Over kanseri: her zaman test (ASCO 2020)",
                  male="Erkek meme kanseri", tnbc="Üçlü negatif tümör", ovfam="Ailede over kanseri", urgency="Klinik aciliyet kutusu işaretli",
                  young="Tanı yaşı 45'in altında (güvenli seçenek açık)"),
@@ -77,38 +79,38 @@ TX = {
   counsel_fam="Ailede belgelenmiş P/LP varyant var. Bu olasılık o bilgiyi içermez; danışma, hastanın ailedeki varyantı taşıyıp taşımadığı üzerinden yapılır.",
   not_h="Ne değildir", not_b="Tanı değildir; kanser riski de değildir. Tanı almış hastada genetik testin pozitif çıkma olasılığıdır. Normal sırada da taşıyıcı vardır (çoğu BRCA2); bu yüzden herkes tam testini olur.",
   ev_h="Ne kadar güvenilir?", ev1="Doğrulama", ev1b="Model ve kart her doğrulama katında yeniden kuruldu (iç içe çapraz doğrulama, 5 tekrar). Kural hastaların %{m}'ini öne alıp taşıyıcıların %{c}'ini kapsadı.",
-  ev2="Hesap denetimi", ev2b="{tests} otomatik test geçti. {prof} girdi kombinasyonunda sayfa, bağımsız Python ve basılı kart aynı puanı ve şeridi verdi; {rnd} rastgele profilde olasılık farkı < 10⁻¹⁴.",
+  ev2="Hesap denetimi", ev2b="Özgün A kuralının tarihsel denetiminde {tests} test geçti; {prof} profilde sayfa, Python ve basılı kartın puanı ve şeridi eşleşti. Bu kayıt, yeni kapasite görünümü veya test azaltma için doğrulama değildir. Açılıştaki 47 sentetik öz-test yalnız olasılık hesabını sınar.",
   ev3="Sınırlar", ev3b="Tek merkez, geriye dönük veri ({y0}–{y1}). Dış ve ileriye dönük doğrulama planlandı. Klinik aciliyetin etkisi kohortta ölçülemedi.",
-  card_h="Kâğıt kart", card_b="Hesaplayıcı yokken aynı kural kâğıt üzerinde: 14 madde, 0–3 normal, 4 öncelikli, ≥ 5 acil.", card_dl="Tek sayfalık algoritmayı indir (PDF)",
-  rule_b_badge="Kural B önizlemesi", foot="Prof. Dr. Hülya Yazıcı · Dr. Öğr. Üyesi Arif Solmaz · İstanbul Sağlık ve Teknoloji Üniversitesi (İSTÜN)", build="model {b} · {tests} test ✓",
+  card_h="Kâğıt kart", card_b="Onaylı A kuralının kâğıt kartı: 14 madde, 0–3 normal, 4 öncelikli, ≥ 5 acil. B önizlemesi ve test azaltma senaryosunu kapsamaz. Kartın değeri elle kullanım ve açıklanabilirliktir; aynı iş yükünde modele ek üstünlük gösterilmedi.", card_dl="Tek sayfalık algoritmayı indir (PDF)",
+  rule_b_badge="Kural B önizlemesi", foot="Prof. Dr. Hülya Yazıcı · Dr. Öğr. Üyesi Arif Solmaz · İstanbul Sağlık ve Teknoloji Üniversitesi (İSTÜN)", build="model {b} · özgün A denetimi: {tests} test",
   sticky_go="Sonuç ↓", age_needed="yaş girin",
   login_h="Bu sayfa şifre ile korunuyor", login_b="Araştırma prototipi; yalnız davet edilen katılımcılar içindir.", login_lbl="Şifre", login_btn="Giriş",
   login_bad="Şifre yanlış.", login_missing="Şifre tanımlanmamış. Yönetici: Streamlit → App settings → Secrets içine APP_PASSWORD ekleyin."),
  "en": dict(
   brand="BRCA Priority", research="Research use only · not a clinical decision-support tool · nothing you enter is stored",
-  pill_ok="Self-test ✓ {ok}/{n} · verified on {prof} input combinations", pill_bad="Self-test failed ({ok}/{n}) — calculation stopped",
+  pill_ok="Probability self-test ✓ {ok}/{n} · original rule A audit: {prof} profiles", pill_bad="Self-test failed ({ok}/{n}) — calculation stopped",
   h1="Order the test queue by who is likely a carrier.",
-  lead="From what is known on the day of diagnosis, the calculator estimates BRCA1/2 carrier probability and places the patient in the normal, priority or urgent lane of the test queue. By default nobody is removed from testing, only the order changes; test reduction is a separate clinic-policy option.",
+  lead="From what is known on the day of diagnosis, the calculator estimates BRCA1/2 carrier probability and places the patient in the normal, priority or urgent lane of the test queue. By default nobody is removed from testing, only the order changes; test reduction is a hypothetical research scenario only.",
   cta1="How it was validated ↓", cta2="Paper card (PDF)",
   s1="of carriers moved forward", s1b="by moving {m}% of patients forward",
   s2="in a later period", s2b="built on diagnoses up to 2015, applied to 2016–2020",
   s3="mismatches", s3b="between page, Python and the printed card on {prof} input combinations",
   s4="patients", s4b="{pos} carriers · development cohort, diagnosed {y0}–{y1}",
-  calc_h="BRCA1/2 carrier probability and test priority", calc_lead="What is known on the day of diagnosis is enough; the result updates instantly. Leave unknown fields empty.",
+  calc_h="BRCA1/2 carrier probability and test priority", calc_lead="Enter age at diagnosis; leave unknown optional fields empty. The result updates instantly.",
   scope="<b>Only for patients already diagnosed with cancer.</b> Not for healthy people or a patient's relatives; any number it gives them is meaningless.",
-  mode_lbl="Use", mode_order="Priority order", mode_reduce="Test reduction",
-  ro_h="Test-reduction mode · a clinic-policy option",
-  ro_b="Patients below the line may be left untested unless an exclusion applies. This is a clinic-policy decision: the ASCO–SSO 2024 guideline recommends testing every newly diagnosed breast-cancer patient aged 65 or younger; ovarian cancer is always tested (ASCO 2020).",
+  mode_lbl="Use", mode_order="Priority order", mode_reduce="Test reduction · research",
+  ro_h="Hypothetical test reduction · not a clinical instruction",
+  ro_b="Explore who would be left untested and how many carriers could be missed under a hypothetical rule. The full-test recommendation is unchanged. These stored results are exploratory: the generating script and a policy approval record are absent from this package. No external validation has been completed.",
   ro_line="Line: carrier probability below", ro_strict="Always test patients under 45 (safer)",
   ro_tab_h="The price of each option", ro_tab_n="Cohort of {n} patients, {c} carriers. Each option was counted on patients the model had not seen, with the model and the points card rebuilt in every fold (nested cross-validation, mean of 5 repeats). Last column: built on diagnoses up to 2015, applied to 2016–2020 ({tc} carriers).",
   ro_cols=["Line", "Under 45", "Not tested", "Carriers missed", "Carriers among untested", "Missed in 2016–2020"],
   ro_young=["tested", "rule applies"], ro_excl="Always tested: ovarian cancer (and breast + ovarian), male breast cancer, triple-negative, a relative with ovarian cancer, points card ≥ 4, the clinical-urgency boxes.",
-  ro_ok_h="TEST CAN BE SKIPPED", ro_ok_k="clinic policy · this is not a negative result",
+  ro_ok_h="MEETS THE HYPOTHETICAL RULE", ro_ok_k="research scenario · not advice to skip testing",
   ro_ok_b="Probability {p} is below the {line} line and no exclusion applies. Among cohort patients who met this rule, {rate}.",
-  ro_rate="about 1 in {one} was a carrier (mean {k} / {n})", ro_zero="almost none were carriers (mean {k} / {n}); with 95% confidence the true rate is at most {ub}",
-  ro_say="To the patient: “Your chance of carrying a variant is low, but not zero. If a new breast or ovarian cancer appears in the family, we will look again.”",
-  ro_act="If the chosen test-reduction policy is applied, the test may be skipped; if not, full test in the usual order.",
-  ro_no_h="TEST NEEDED", ro_no_k="the test-reduction rule does not apply to this patient",
+  ro_rate="about 1 in {one} was a carrier (mean {k} / {n})", ro_zero="mean {k} / {n} carriers were observed; the stored approximate 95% interval has an upper bound of {ub} (exploratory, not independent validation)",
+  ro_say="This scenario does not establish zero risk for an individual. The full-test plan in the main result still applies.",
+  ro_act="The research scenario does not change the full-test plan.",
+  ro_no_h="DOES NOT MEET THE HYPOTHETICAL RULE", ro_no_k="remains in the full-test group in this scenario",
   ro_reason=dict(line="Probability {p} is at or above the line ({line})", card="Points card 4 or more", ovarian="Ovarian cancer: always tested (ASCO 2020)",
                  male="Male breast cancer", tnbc="Triple-negative tumour", ovfam="A relative with ovarian cancer", urgency="A clinical-urgency box is ticked",
                  young="Age at diagnosis under 45 (safer option on)"),
@@ -143,14 +145,28 @@ TX = {
   counsel_fam="A documented familial P/LP variant: this probability does not include that information; counselling is about whether the patient carries the family's variant.",
   not_h="What it is not", not_b="Not a diagnosis and not a cancer risk. It is the probability that genetic testing is positive in a patient already diagnosed. Carriers also occur in the normal queue (mostly BRCA2), which is why everybody gets the full test.",
   ev_h="How far can it be trusted?", ev1="Validation", ev1b="Model and card were refitted inside every validation fold (nested cross-validation, 5 repeats). The rule moved {m}% of patients forward and covered {c}% of carriers.",
-  ev2="Calculation audit", ev2b="{tests} automatic tests pass. On {prof} input combinations the page, an independent Python version and the printed card gave the same points and lane; on {rnd} random profiles the probability differed by < 10⁻¹⁴.",
+  ev2="Calculation audit", ev2b="The historical audit of original rule A passed {tests} checks and matched page, Python and paper-card points and lanes on {prof} profiles. This record does not validate the new capacity view or test reduction. The 47 synthetic startup checks test probability calculations only.",
   ev3="Limits", ev3b="Single centre, retrospective data ({y0}–{y1}). External and prospective validation is planned. The effect of clinical urgency could not be measured in the cohort.",
-  card_h="Paper card", card_b="The same rule on paper when the calculator is unavailable: 14 items; 0–3 normal, 4 priority, ≥ 5 urgent.", card_dl="Download the one-page algorithm (PDF, Turkish)",
-  rule_b_badge="Rule B preview", foot="Prof. Dr. Hülya Yazıcı · Dr. Arif Solmaz · Istanbul Health and Technology University (İSTÜN)", build="model {b} · {tests} tests ✓",
+  card_h="Paper card", card_b="Paper card for approved rule A: 14 items; 0–3 normal, 4 priority, ≥ 5 urgent. It does not describe the B preview or test-reduction scenario. Its value is manual use and explanation; no added advantage over the model was demonstrated at equal workload.", card_dl="Download the one-page algorithm (PDF, Turkish)",
+  rule_b_badge="Rule B preview", foot="Prof. Dr. Hülya Yazıcı · Dr. Arif Solmaz · Istanbul Health and Technology University (İSTÜN)", build="model {b} · original A audit: {tests} tests",
   sticky_go="Result ↓", age_needed="enter age",
   login_h="This page is password protected", login_b="Research prototype; for invited participants only.", login_lbl="Password", login_btn="Sign in",
   login_bad="Wrong password.", login_missing="No password is set. Admin: Streamlit → App settings → Secrets, add APP_PASSWORD."),
 }
+TX["tr"].update(
+    s3b="özgün A kuralının sayfa, Python ve basılı kart denetiminde, {prof} profilde",
+    ro_interval="Kaydedilmiş yaklaşık %95 aralık üst sınırı: {ub}. Tekrarlanan ÇD özeti keşifseldir; bağımsız bir güvenlik garantisi değildir.",
+    family_result="Aile varyantına özgü değerlendirme",
+    family_model_note=" (ailedeki belgelenmiş varyantı içermez; kişisel olasılık olarak yorumlanmaz)",
+    policy_evidence="Gösterilen kuyruk performansı: kural {rule}. Aciliyet kutuları kohortta kayıtlı değildi; bu rakamlar onların etkisini içermez. B önerisi karar bekliyor. Test azaltma sonuçları ayrı ve keşifseldir.",
+)
+TX["en"].update(
+    s3b="in the original rule A audit of page, Python and paper card on {prof} profiles",
+    ro_interval="Stored approximate 95% interval upper bound: {ub}. This repeated-CV summary is exploratory, not an independent safety guarantee.",
+    family_result="Familial-variant assessment",
+    family_model_note=" (excludes the documented familial variant; not interpreted as personal probability)",
+    policy_evidence="Queue performance shown: rule {rule}. Urgency boxes were not recorded in the cohort; these figures exclude their effect. B remains a proposal awaiting a decision. Test-reduction results are separate and exploratory.",
+)
 LANE_BG = ["#00703C", "#FFB81C", "#D5281B"]; LANE_FG = ["#FFFFFF", "#1B2128", "#FFFFFF"]
 
 # ---------------------------------------------------------------- state
@@ -165,6 +181,7 @@ def load(d):
     for k, v in d.items(): st.session_state[k] = v
 rule = str(st.query_params.get("kural", st.query_params.get("rule", "A"))).upper()
 rule = rule if rule in core.RULES else "A"
+S = core.summary(rule)
 
 L = st.session_state.get("lang_sel") or "tr"; T = TX[L]   # the language switch widget is the only source of truth
 def num(x, d=1):
@@ -341,7 +358,7 @@ if not st.session_state.get("auth"):
 # ---------------------------------------------------------------- top bar + language
 tb1, tb2 = st.columns([5, 1], vertical_alignment="center")
 with tb1:
-    st.html(f"<div class='topbar'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#6D5BD0' stroke-width='2' aria-hidden='true'><path d='M7 3c0 6 10 6 10 12s-10 6-10 6'/><path d='M17 3c0 6-10 6-10 12s10 6 10 6'/></svg><span class='disp'>{T['brand']}</span><span class='ver'>v7 · {S['build'][-10:]}</span>"
+    st.html(f"<div class='topbar'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#6D5BD0' stroke-width='2' aria-hidden='true'><path d='M7 3c0 6 10 6 10 12s-10 6-10 6'/><path d='M17 3c0 6-10 6-10 12s10 6 10 6'/></svg><span class='disp'>{T['brand']}</span><span class='ver'>v7.1 · {S['build'][-10:]}</span>"
             + (f"<span class='badge'>{T['rule_b_badge']}</span>" if rule == "B" else "") + f"</div><div class='research'>{T['research']}</div>")
 with tb2:
     st.segmented_control("Dil / Language", ["tr", "en"], default="tr", format_func=lambda x: x.upper(), key="lang_sel", label_visibility="collapsed")
@@ -378,7 +395,7 @@ if REDUCE:
                 for ln in core.RO_LINES:
                     cv = RO["nested_cv"][core.ro_key(ln, strict)]; tp = RO["temporal"][core.ro_key(ln, strict)]
                     sel = " class='sel'" if (ln == RO_LINE() and strict == RO_STRICT()) else ""
-                    one = f"1 / {round(cv['one_in'])}" if cv["carriers_mean"] >= 0.5 else f"≈ 0 ({num(cv['carriers_mean'], 1)} / {round(cv['skipped_mean'])})"
+                    one = f"1 / {round(cv['one_in'])}" if cv["carriers_mean"] > 0 else f"0 / {round(cv['skipped_mean'])}"
                     rows += (f"<tr{sel}><td>{fl(ln)}</td><td>{T['ro_young'][0 if strict else 1]}</td><td>{pct(cv['skipped_share'], 0)} ({round(cv['skipped_mean'])})</td>"
                              f"<td>{num(cv['carriers_mean'], 1)} ({pct(cv['share_of_all_carriers'], 1)})</td><td>{one}</td><td>{round(tp['carriers_mean'])} / {tp['all_carriers']}</td></tr>")
             st.html(f"<div class='rot-wrap'><table class='rot'><tr>{''.join(f'<th>{c}</th>' for c in T['ro_cols'])}</tr>{rows}</table></div>"
@@ -436,15 +453,28 @@ with right:
             if ss.urg_fam: why.append(T["why_urg_fam"])
             lvl = "low" if p < M["triage"]["95"]["threshold"] else "mid" if p < 0.10 else "high"
             counsel = T["counsel_fam"] if ss.urg_fam else T["counsel_" + lvl].format(f=frac.replace("≈ ", ""))
+            if ss.urg_fam:
+                st.warning(T["counsel_fam"])
+            probability_html = (
+                f"<div class='big' style='font-size:24px'>{T['family_result']}</div><p>{T['counsel_fam']}</p>"
+                if ss.urg_fam else
+                f"<div class='big' data-testid='pcal'>{pct(p)}</div>"
+                f"<div class='sub'>{T['prob']} · {frac} · {pc_txt} · {T['cohort'].format(p=pct(M['prevalence']))}</div>"
+                f"<div class='scale' role='img' aria-label='{pct(p)}'><div class='fill' style='width:{fill:.1f}%'></div><div class='tick' style='left:25%'></div><div class='tick' style='left:50%'></div></div>"
+                f"<div class='scale-l'><span style='left:0'>0</span><span style='left:25%; transform:translateX(-50%)'>{pct(0.10, 0)}</span><span style='left:50%; transform:translateX(-50%)'>{pct(0.20, 0)}</span><span style='right:0'>{pct(0.40, 0)}+</span></div>"
+            )
+            if ss.urg_fam:
+                why[1] += T["family_model_note"]
             rbox = ""
             if REDUCE:
                 sc = core.skip_check(v, p, d, RO_LINE(), RO_STRICT()); cv = sc["cv"]
                 if sc["eligible"]:
-                    act = T["ro_act"]
-                    rate = (T["ro_rate"].format(one=round(cv["one_in"]), k=num(cv["carriers_mean"], 1), n=round(cv["skipped_mean"])) if cv["carriers_mean"] >= 0.5
+                    act += " " + T["ro_act"]
+                    rate = (T["ro_rate"].format(one=round(cv["one_in"]), k=num(cv["carriers_mean"], 1), n=round(cv["skipped_mean"])) if cv["carriers_mean"] > 0
                             else T["ro_zero"].format(k=num(cv["carriers_mean"], 1), n=round(cv["skipped_mean"]), ub=pct(cv["rate_ci95_approx"][1], 1)))
                     rbox = (f"<div class='rv ok' data-testid='ro-verdict' data-eligible='1'><h5>{T['ro_ok_h']}</h5><p class='rk'>{T['ro_ok_k']}</p>"
-                            f"{T['ro_ok_b'].format(p=pct(p), line=fl(sc['line']), rate=rate)}<p>{T['ro_say']}</p></div>")
+                            f"{T['ro_ok_b'].format(p=pct(p), line=fl(sc['line']), rate=rate)}"
+                            f"<p>{T['ro_interval'].format(ub=pct(cv['rate_ci95_approx'][1], 1))}</p><p>{T['ro_say']}</p></div>")
                 else:
                     rs = "".join(f"<li>{T['ro_reason'][k].format(p=pct(p), line=fl(sc['line']))}</li>" for k in sc["reasons"])
                     rbox = f"<div class='rv no' data-testid='ro-verdict' data-eligible='0'><h5>{T['ro_no_h']}</h5><p class='rk'>{T['ro_no_k']}</p><ul>{rs}</ul></div>"
@@ -453,22 +483,19 @@ with right:
 {rbox}
 <div class='res'>
 <p style='margin:0 0 16px 0'><b>{act}</b></p>
-<div class='big' data-testid='pcal'>{pct(p)}</div>
-<div class='sub'>{T['prob']} · {frac} · {pc_txt} · {T['cohort'].format(p=pct(M['prevalence']))}</div>
-<div class='scale' role='img' aria-label='{pct(p)}'><div class='fill' style='width:{fill:.1f}%'></div><div class='tick' style='left:25%'></div><div class='tick' style='left:50%'></div></div>
-<div class='scale-l'><span style='left:0'>0</span><span style='left:25%; transform:translateX(-50%)'>{pct(0.10, 0)}</span><span style='left:50%; transform:translateX(-50%)'>{pct(0.20, 0)}</span><span style='right:0'>{pct(0.40, 0)}+</span></div>
+{probability_html}
 <div class='box'><h4>{T['card']} · <span class='mono' style='color:var(--ink)'>{d['total']}</span> {T['pts']}</h4>{items}</div>
 <div class='box'><h4>{T['why']}</h4><ul class='why' style='margin:0; padding-left:20px'>{''.join(f'<li>{w}</li>' for w in why)}</ul>
 <p style='margin:8px 0 0 0; font-size:14px; color:var(--muted)'>{T['why_rule_a'] if rule == 'A' else T['why_rule_b']} {T['fulltest']}</p></div>
 </div>""")
-            with st.expander(T["counsel_h"]):
+            with st.expander(T["counsel_h"], expanded=bool(ss.urg_fam)):
                 st.write(counsel)
                 st.caption(f"**{T['not_h']}.** {T['not_b']}")
 
 # mobile: a result bar fixed at the bottom of the screen
 if d is not None:
     st.html(f"<a class='sticky' href='#sonuc' style='background:{LANE_BG[d['lane']]}; color:{LANE_FG[d['lane']]}'><span>{T['lanes'][d['lane']]}</span>"
-            f"<span class='mono'>{pct(p)} · {d['total']} {T['pts']}</span><span class='go' aria-label='{T['sticky_go']}'>↓</span></a>")
+            f"<span class='mono'>{T['family_result'] if ss.urg_fam else pct(p)} · {d['total']} {T['pts']}</span><span class='go' aria-label='{T['sticky_go']}'>↓</span></a>")
 
 # ---------------------------------------------------------------- about band (was the hero; now below the calculator)
 st.html(f"""<section class='hero' style='margin-top:56px'>
@@ -482,12 +509,15 @@ st.html(f"""<section class='hero' style='margin-top:56px'>
 </div></section>""")
 
 # ---------------------------------------------------------------- evidence
+st.caption(T["policy_evidence"].format(rule=rule))
 st.html(f"""<div id='guven'></div><h2 class='sec-h' style='margin-top:48px'>{T['ev_h']}</h2>
 <div class='ev'>
 <div class='evc'><h3>{T['ev1']}</h3><p>{T['ev1b'].format(m=round(100 * S['moved']), c=round(100 * S['covered']))}</p></div>
 <div class='evc'><h3>{T['ev2']}</h3><p>{T['ev2b'].format(tests=V['tests_passed'], prof=PROF, rnd=n_int(V['random_profiles']))}</p></div>
 <div class='evc'><h3>{T['ev3']}</h3><p>{T['ev3b'].format(y0=S['year_min'], y1=S['year_max'])}</p></div>
 </div>""")
+
+render_capacity_explorer(core.M, L)
 
 st.html(f"<div id='kart'></div><h2 class='sec-h' style='margin-top:40px'>{T['card_h']}</h2><p class='sec-lead'>{T['card_b']}</p>")
 _pdf = os.path.join(HERE, "assets", "BRCA_Oncelik_Algoritmasi_TR.pdf")

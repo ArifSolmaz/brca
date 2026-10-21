@@ -1,0 +1,355 @@
+{
+ "note": "Rapid first test (BRCA1 MLPA del/dup + c.5266dupC): which model threshold should trigger it? (2026-10-04)",
+ "cv_repeats": [
+  {
+   "model>=0.2": {
+    "packages": 208,
+    "detectable_hits": 26,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.0,
+    "brca1_carriers_in": 65,
+    "carriers_in": 83
+   },
+   "model>=0.25": {
+    "packages": 131,
+    "detectable_hits": 20,
+    "of_all_detectable": 41,
+    "packages_per_hit": 6.55,
+    "brca1_carriers_in": 50,
+    "carriers_in": 61
+   },
+   "model>=0.275": {
+    "packages": 115,
+    "detectable_hits": 20,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.75,
+    "brca1_carriers_in": 46,
+    "carriers_in": 56
+   },
+   "model>=0.3": {
+    "packages": 103,
+    "detectable_hits": 20,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.15,
+    "brca1_carriers_in": 44,
+    "carriers_in": 51
+   },
+   "card>=5": {
+    "packages": 250,
+    "detectable_hits": 25,
+    "of_all_detectable": 41,
+    "packages_per_hit": 10.0,
+    "brca1_carriers_in": 63,
+    "carriers_in": 84
+   },
+   "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+    "packages": 290,
+    "detectable_hits": 28,
+    "of_all_detectable": 41,
+    "packages_per_hit": 10.357142857142858,
+    "brca1_carriers_in": 69,
+    "carriers_in": 93
+   }
+  },
+  {
+   "model>=0.2": {
+    "packages": 206,
+    "detectable_hits": 29,
+    "of_all_detectable": 41,
+    "packages_per_hit": 7.103448275862069,
+    "brca1_carriers_in": 66,
+    "carriers_in": 84
+   },
+   "model>=0.25": {
+    "packages": 144,
+    "detectable_hits": 24,
+    "of_all_detectable": 41,
+    "packages_per_hit": 6.0,
+    "brca1_carriers_in": 53,
+    "carriers_in": 65
+   },
+   "model>=0.275": {
+    "packages": 120,
+    "detectable_hits": 23,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.217391304347826,
+    "brca1_carriers_in": 49,
+    "carriers_in": 57
+   },
+   "model>=0.3": {
+    "packages": 102,
+    "detectable_hits": 21,
+    "of_all_detectable": 41,
+    "packages_per_hit": 4.857142857142857,
+    "brca1_carriers_in": 45,
+    "carriers_in": 50
+   },
+   "card>=5": {
+    "packages": 206,
+    "detectable_hits": 25,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.24,
+    "brca1_carriers_in": 61,
+    "carriers_in": 79
+   },
+   "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+    "packages": 261,
+    "detectable_hits": 30,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.7,
+    "brca1_carriers_in": 71,
+    "carriers_in": 92
+   }
+  },
+  {
+   "model>=0.2": {
+    "packages": 219,
+    "detectable_hits": 26,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.423076923076923,
+    "brca1_carriers_in": 63,
+    "carriers_in": 82
+   },
+   "model>=0.25": {
+    "packages": 153,
+    "detectable_hits": 25,
+    "of_all_detectable": 41,
+    "packages_per_hit": 6.12,
+    "brca1_carriers_in": 56,
+    "carriers_in": 70
+   },
+   "model>=0.275": {
+    "packages": 132,
+    "detectable_hits": 22,
+    "of_all_detectable": 41,
+    "packages_per_hit": 6.0,
+    "brca1_carriers_in": 51,
+    "carriers_in": 64
+   },
+   "model>=0.3": {
+    "packages": 106,
+    "detectable_hits": 19,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.578947368421052,
+    "brca1_carriers_in": 46,
+    "carriers_in": 53
+   },
+   "card>=5": {
+    "packages": 234,
+    "detectable_hits": 26,
+    "of_all_detectable": 41,
+    "packages_per_hit": 9.0,
+    "brca1_carriers_in": 64,
+    "carriers_in": 81
+   },
+   "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+    "packages": 297,
+    "detectable_hits": 31,
+    "of_all_detectable": 41,
+    "packages_per_hit": 9.580645161290322,
+    "brca1_carriers_in": 74,
+    "carriers_in": 97
+   }
+  },
+  {
+   "model>=0.2": {
+    "packages": 215,
+    "detectable_hits": 26,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.26923076923077,
+    "brca1_carriers_in": 66,
+    "carriers_in": 86
+   },
+   "model>=0.25": {
+    "packages": 152,
+    "detectable_hits": 24,
+    "of_all_detectable": 41,
+    "packages_per_hit": 6.333333333333333,
+    "brca1_carriers_in": 53,
+    "carriers_in": 68
+   },
+   "model>=0.275": {
+    "packages": 135,
+    "detectable_hits": 23,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.869565217391305,
+    "brca1_carriers_in": 50,
+    "carriers_in": 63
+   },
+   "model>=0.3": {
+    "packages": 112,
+    "detectable_hits": 21,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.333333333333333,
+    "brca1_carriers_in": 46,
+    "carriers_in": 56
+   },
+   "card>=5": {
+    "packages": 228,
+    "detectable_hits": 25,
+    "of_all_detectable": 41,
+    "packages_per_hit": 9.12,
+    "brca1_carriers_in": 65,
+    "carriers_in": 86
+   },
+   "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+    "packages": 275,
+    "detectable_hits": 29,
+    "of_all_detectable": 41,
+    "packages_per_hit": 9.482758620689655,
+    "brca1_carriers_in": 74,
+    "carriers_in": 98
+   }
+  },
+  {
+   "model>=0.2": {
+    "packages": 215,
+    "detectable_hits": 26,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.26923076923077,
+    "brca1_carriers_in": 67,
+    "carriers_in": 86
+   },
+   "model>=0.25": {
+    "packages": 149,
+    "detectable_hits": 23,
+    "of_all_detectable": 41,
+    "packages_per_hit": 6.478260869565218,
+    "brca1_carriers_in": 57,
+    "carriers_in": 68
+   },
+   "model>=0.275": {
+    "packages": 122,
+    "detectable_hits": 21,
+    "of_all_detectable": 41,
+    "packages_per_hit": 5.809523809523809,
+    "brca1_carriers_in": 51,
+    "carriers_in": 61
+   },
+   "model>=0.3": {
+    "packages": 96,
+    "detectable_hits": 20,
+    "of_all_detectable": 41,
+    "packages_per_hit": 4.8,
+    "brca1_carriers_in": 47,
+    "carriers_in": 51
+   },
+   "card>=5": {
+    "packages": 217,
+    "detectable_hits": 27,
+    "of_all_detectable": 41,
+    "packages_per_hit": 8.037037037037036,
+    "brca1_carriers_in": 63,
+    "carriers_in": 84
+   },
+   "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+    "packages": 277,
+    "detectable_hits": 29,
+    "of_all_detectable": 41,
+    "packages_per_hit": 9.551724137931034,
+    "brca1_carriers_in": 72,
+    "carriers_in": 98
+   }
+  }
+ ],
+ "cv_mean": {
+  "model>=0.2": {
+   "packages": 212.6,
+   "detectable_hits": 26.6,
+   "of_all_detectable": 41.0,
+   "packages_per_hit": 8.012997347480106,
+   "brca1_carriers_in": 65.4,
+   "carriers_in": 84.2
+  },
+  "model>=0.25": {
+   "packages": 145.8,
+   "detectable_hits": 23.2,
+   "of_all_detectable": 41.0,
+   "packages_per_hit": 6.29631884057971,
+   "brca1_carriers_in": 53.8,
+   "carriers_in": 66.4
+  },
+  "model>=0.275": {
+   "packages": 124.8,
+   "detectable_hits": 21.8,
+   "of_all_detectable": 41.0,
+   "packages_per_hit": 5.729296066252589,
+   "brca1_carriers_in": 49.4,
+   "carriers_in": 60.2
+  },
+  "model>=0.3": {
+   "packages": 103.8,
+   "detectable_hits": 20.2,
+   "of_all_detectable": 41.0,
+   "packages_per_hit": 5.143884711779448,
+   "brca1_carriers_in": 45.6,
+   "carriers_in": 52.2
+  },
+  "card>=5": {
+   "packages": 227.0,
+   "detectable_hits": 25.6,
+   "of_all_detectable": 41.0,
+   "packages_per_hit": 8.879407407407408,
+   "brca1_carriers_in": 63.2,
+   "carriers_in": 82.8
+  },
+  "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+   "packages": 280.0,
+   "detectable_hits": 29.4,
+   "of_all_detectable": 41.0,
+   "packages_per_hit": 9.534454155410774,
+   "brca1_carriers_in": 72.0,
+   "carriers_in": 95.6
+  }
+ },
+ "temporal": {
+  "model>=0.2": {
+   "packages": 40,
+   "detectable_hits": 8,
+   "of_all_detectable": 17,
+   "packages_per_hit": 5.0,
+   "brca1_carriers_in": 14,
+   "carriers_in": 17
+  },
+  "model>=0.25": {
+   "packages": 26,
+   "detectable_hits": 3,
+   "of_all_detectable": 17,
+   "packages_per_hit": 8.666666666666666,
+   "brca1_carriers_in": 9,
+   "carriers_in": 11
+  },
+  "model>=0.275": {
+   "packages": 22,
+   "detectable_hits": 3,
+   "of_all_detectable": 17,
+   "packages_per_hit": 7.333333333333333,
+   "brca1_carriers_in": 9,
+   "carriers_in": 10
+  },
+  "model>=0.3": {
+   "packages": 18,
+   "detectable_hits": 3,
+   "of_all_detectable": 17,
+   "packages_per_hit": 6.0,
+   "brca1_carriers_in": 8,
+   "carriers_in": 8
+  },
+  "card>=5": {
+   "packages": 30,
+   "detectable_hits": 4,
+   "of_all_detectable": 17,
+   "packages_per_hit": 7.5,
+   "brca1_carriers_in": 10,
+   "carriers_in": 13
+  },
+  "card>=5 or model>=0.2 (v6.2 urgent lane)": {
+   "packages": 49,
+   "detectable_hits": 8,
+   "of_all_detectable": 17,
+   "packages_per_hit": 6.125,
+   "brca1_carriers_in": 15,
+   "carriers_in": 19
+  }
+ }
+}
