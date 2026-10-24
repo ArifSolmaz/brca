@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-24",
+  "clinical_only_identifier_components": 1234,
+  "components_with_single_genetic_BR_candidate": 111,
+  "components_with_multiple_genetic_BR_candidates": 0,
+  "components_with_no_genetic_BR_candidate": 1123,
+  "BR_candidate_components_touching_confirmed_BRCA": 18,
+  "BR_candidate_components_touching_unlinked_genetic_people": 92,
+  "genetic_people_with_identity_accepted_reports_but_no_clinical_link": 230,
+  "genetic_people_without_accepted_report_or_clinical_link": 473,
+  "known_possible_family_groups_with_multiple_genetic_people": 109,
+  "largest_known_possible_family_genetic_people": 8,
+  "no_archive_wide_unique_patient_sum_certified": true,
+  "additional_links_promoted_by_this_inventory": 0,
+  "accepted_curation_link_people": 32
+}

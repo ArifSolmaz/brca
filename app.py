@@ -1,4 +1,4 @@
-"""BRCA1/2 Test Öncelik Hesaplayıcı — research app (v7.1, 2026-10-21). Research use only.
+"""BRCA1/2 Test Öncelik Hesaplayıcı — research app (v7.2, 2026-10-24). Research use only.
 
 Look: a dark product-style landing band over a light, high-legibility clinical calculator (designs 3 + 4 of the canvas).
 Patient probabilities use the frozen model. Historical rule-A audit records are kept separate
@@ -9,6 +9,7 @@ import json, os, hmac, time
 import streamlit as st
 import brca_core as core
 from capacity_explorer import render_capacity_explorer
+from research_overview import render_research_overview
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(HERE, "verification.json"), encoding="utf-8") as fh:
@@ -358,7 +359,7 @@ if not st.session_state.get("auth"):
 # ---------------------------------------------------------------- top bar + language
 tb1, tb2 = st.columns([5, 1], vertical_alignment="center")
 with tb1:
-    st.html(f"<div class='topbar'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#6D5BD0' stroke-width='2' aria-hidden='true'><path d='M7 3c0 6 10 6 10 12s-10 6-10 6'/><path d='M17 3c0 6-10 6-10 12s10 6 10 6'/></svg><span class='disp'>{T['brand']}</span><span class='ver'>v7.1 · {S['build'][-10:]}</span>"
+    st.html(f"<div class='topbar'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#6D5BD0' stroke-width='2' aria-hidden='true'><path d='M7 3c0 6 10 6 10 12s-10 6-10 6'/><path d='M17 3c0 6-10 6-10 12s10 6 10 6'/></svg><span class='disp'>{T['brand']}</span><span class='ver'>v7.2 · {S['build'][-10:]}</span>"
             + (f"<span class='badge'>{T['rule_b_badge']}</span>" if rule == "B" else "") + f"</div><div class='research'>{T['research']}</div>")
 with tb2:
     st.segmented_control("Dil / Language", ["tr", "en"], default="tr", format_func=lambda x: x.upper(), key="lang_sel", label_visibility="collapsed")
@@ -367,6 +368,32 @@ with tb2:
 ok_all = ST_OK == ST_N
 if not ok_all:
     st.error(T["pill_bad"].format(ok=ST_OK, n=ST_N)); st.stop()
+
+# ---------------------------------------------------------------- research presentation / calculator navigation
+st.session_state.setdefault("app_view", "research" if st.query_params.get("sayfa") == "arastirma" else "calculator")
+view = st.segmented_control(
+    "Görünüm" if L == "tr" else "View", ["calculator", "research"],
+    format_func=lambda key: ({"calculator": "Hesaplayıcı", "research": "Araştırma özeti"} if L == "tr" else
+                            {"calculator": "Calculator", "research": "Research overview"})[key],
+    key="app_view", selection_mode="single", required=True)
+previous_view = st.session_state.get("_active_view", "calculator")
+if view != previous_view:
+    if view == "research":
+        # Streamlit prunes hidden widgets. Keep their values across a presentation visit.
+        keys = set(DEFAULTS) | {"mode", "ro_line", "ro_strict", "capacity_period", "capacity_strategy",
+                                "capacity_budget_cv", "capacity_budget_temporal"}
+        st.session_state["_calculator_snapshot"] = {key: st.session_state[key] for key in keys if key in st.session_state}
+    else:
+        for key, value in st.session_state.get("_calculator_snapshot", {}).items():
+            st.session_state[key] = value
+st.session_state["_active_view"] = view
+if view == "research":
+    if st.query_params.get("sayfa") != "arastirma":
+        st.query_params["sayfa"] = "arastirma"
+    render_research_overview(L, M["n"])
+    st.stop()
+elif "sayfa" in st.query_params:
+    del st.query_params["sayfa"]
 
 # ---------------------------------------------------------------- calculator
 st.html(f"<div id='hesapla'></div><p style='margin:18px 0 10px 0'><span class='pill-l'><span class='dot' style='background:#1E9E61'></span>{T['pill_ok'].format(ok=ST_OK, n=ST_N, prof=PROF)}</span></p>"

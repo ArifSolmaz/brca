@@ -30,12 +30,16 @@ Varsayılan karar kuralı A'dır (onaylı v6.2). `?kural=B` adresi, karar bekley
 
 Aggregate evidence is copied unchanged from the October 4 Drive analysis into `evidence/rapid_threshold.json` and `evidence/matched_workload.json`. Source links, retrieval date and SHA-256 checksums are in `evidence/sources.json`. No patient-level records are included. B remains a proposal; its displayed queue figures use model-only validation (44% prioritised / 76.5% of carriers), while A uses combined validation (48% / 77.8%). Urgency effects were not measurable in the cohort. A familial P/LP variant suppresses the personal probability headline and one-in-N interpretation because that information is absent from the cohort model.
 
+**Araştırma özeti / Research overview (v7.2):** Select **Araştırma özeti** above the calculator, or open `?sayfa=arastirma`. The Turkish/English presentation shows the October 24 curated archive (2,148 genetic identities, 1,445 accepted clinical links, 143 confirmed-BRCA breast family representatives), the existing 87-family tumor-size result and its uncertainty, remaining identity/family gaps, and the exact independent-validation data requirements. The size ratio is 0.6487 (95% CI 0.4206–1.0007), p=0.05035, cumulative q=0.5273; it remains unvalidated. These are distinct cohorts from the calculator's 1,295-patient development evidence.
+
+The overview reads five aggregate-only snapshots in `evidence/research/`, with source SHA-256 checksums in its `sources.json`. It runs no statistical analyses and changes no model coefficients or clinical decision rules. The download is a self-contained HTML summary that opens offline and can be printed. Patient-level files, private identifiers, and local research-folder paths are excluded. Switching views preserves calculator inputs and laboratory-capacity controls; the existing password gate protects both views and downloads.
+
 **Verification:**
 
 ```
 python -m unittest discover -s tests -v
 ```
 
-The suite tests source checksums, recorded workload/yield totals, budget boundaries, policy-specific evidence, bilingual app flows, familial-variant output, hypothetical reduction, and independence of capacity controls from patient decisions. `verification.json` and `test_app_results.json` remain historical records of the original calculator; the 47 synthetic startup checks cover probability calculation only. Model coefficients and patient decision rules A/B are unchanged.
+The suite tests source checksums, recorded workload/yield totals, budget boundaries, policy-specific evidence, bilingual app flows, familial-variant output, hypothetical reduction, independence of capacity controls from patient decisions, research-view routing/authentication, preserved inputs across views, and uncertainty/source fidelity in the offline summary. `verification.json` and `test_app_results.json` remain historical records of the original calculator; the 47 synthetic startup checks cover probability calculation only. Model coefficients and patient decision rules A/B are unchanged.
 
 Prof. Dr. Hülya Yazıcı · Dr. Öğr. Üyesi Arif Solmaz · İstanbul Sağlık ve Teknoloji Üniversitesi (İSTÜN)

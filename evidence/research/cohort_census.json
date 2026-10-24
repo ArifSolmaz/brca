@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-24",
+  "curation_version": "original_report_identity_bridges_v1",
+  "baseline_audit": "systematic_audit_2026-10-24",
+  "association_tests": 0,
+  "association_models": 0,
+  "statistical_ledger_unchanged": 25329,
+  "folder_inventory_matches_fresh_Drive": true,
+  "patient_folders": 2259,
+  "folder_title_single_BR": 2211,
+  "folder_mapping": {
+    "single_registry_candidate": 2185,
+    "no_registry_candidate": 72,
+    "multiple_registry_candidates": 2
+  },
+  "folder_BR_tokens": 2258,
+  "genetic_specimen_codes": 2156,
+  "operational_genetic_patient_entities": 2148,
+  "repeat_specimen_person_groups": 8,
+  "unique_patients_archive_wide_certifiable": false,
+  "identity_note": "2148 established operational genetic entities. Clinical-only components, pending aliases and unassigned folders are not automatically additional unique people. No exact global patient total is certified.",
+  "original_clinical_version_rows": 7939,
+  "clinical_source_rows": {
+    "2022_genetics": 1958,
+    "2022_clinical": 1694,
+    "2020": 1765,
+    "2019": 2070,
+    "2022_ovarian": 452
+  },
+  "source_row_dispositions": {
+    "clinical_only_identifier_component": 3108,
+    "established_accepted_link": 4827,
+    "unidentified_row": 3,
+    "audit_extension_candidate_not_promoted": 1
+  },
+  "established_accepted_link_rows": 4827,
+  "strict_accepted_link_rows": 4827,
+  "strict_clinical_linked_genetic_people": 1445,
+  "audit_extension_candidate_rows": 1,
+  "clinical_only_identifier_components": 1234,
+  "clinical_only_multisource_components": 731,
+  "ambiguous_multi_genetic_components": 0,
+  "quarantined_accepted_link_rows": 0,
+  "family_status": {
+    "consistent": 2113,
+    "missing": 26,
+    "conflicting": 9
+  },
+  "consistent_recorded_family_ids": 1989,
+  "known_possible_family_components": 1988,
+  "all_possible_components_including_unassigned_singletons": 2014,
+  "raw_combined_retained_call_rows": 84736,
+  "conservative_analysis_call_rows": 84492,
+  "genetic_people_with_analysis_calls": 2146,
+  "annotation_tiers": {
+    "existing_allele": 83330,
+    "legacy_only": 1147,
+    "unreviewed": 15
+  },
+  "full_callable_genotype_masks_available": false,
+  "BRCA_single_curated_PLP_people": 224,
+  "BRCA_multi_PLP_call_people": 4,
+  "report_corroborated_CNV_people": 22,
+  "prior_report_extract_rows": 4698,
+  "new_verified_original_report_overlay_rows": 38,
+  "genetic_people_with_readable_cached_extracts": 1488,
+  "genetic_people_with_identity_accepted_extracts": 1453,
+  "clinical_sites": {
+    "breast": 1243,
+    "ovarian": 232
+  },
+  "linked_female_breast_people": 1228,
+  "confirmed_BRCA_female_breast_people": 152,
+  "confirmed_BRCA_female_breast_family_representatives": 143,
+  "count_feasible_fixed_gene_questions": 7,
+  "input_hashes": {
+    "archive222_combined_person_map_private.pkl": "40a0ea3e4cbf037635aa8337605b9947f0fb76c4a3cf3bddf334ff7938348e94",
+    "expanded_sources.pkl": "a8c36b37d0e6469163f60a7ba2a365fdf61da355425a754d9f942d188a784fa3",
+    "expanded_links.pkl": "d6275c209ed273475a178ec61eee8e5a50634e096a6b88a6baa664df68614769",
+    "archive222_links_private.pkl": "5f05a7a653ba70ba5f24ac5ce216038e3eec8272d2a0921188fa9c9cfb901142",
+    "gene_pathway_calls_private.pkl": "5c6832bfcc8a396db6e322bb9fd61d25afbc3d6cfe683fcccc3b59692e87ffd6",
+    "archive222_combined_calls_private.pkl": "f3057bbb8b682d04aaf824d1cf764645a09bc60861c13807512a92f1a9a98417",
+    "expanded_targets.pkl": "29c5ed97bca1034c77776a812476b084e5d3b513e1d83b4f7e97a58648cd3ad0",
+    "archive222_targets_private.pkl": "d6132486bb27548d1d0bbf4d78a4b9f1a87b10a5ab712f68888d33906dd743fc",
+    "report_coverage_all_extracts_private.json": "3677394c18f2dee2d87920e598642031ecc51413630c6e8a70ee0937dbb94445",
+    "Ki67_size_all_private.pkl": "c788972e6bcae6c1c1ac1f334f7fdb0aeef5edde186161f23c46bda564fe47c0",
+    "brca_location_carriers_private.pkl": "c1b5610e6789421540e429b8774cf7f3147f52cac5aff24f6131ef38ff45f85e"
+  }
+}

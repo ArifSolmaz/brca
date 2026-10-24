@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-24",
+  "descriptive_only": true,
+  "unique_fresh_document_reads": 505,
+  "nonempty_document_reads": 498,
+  "unique_downloaded_original_files": 43,
+  "accepted_clinical_link_rows": 120,
+  "newly_clinically_linked_genetic_people": 32,
+  "newly_clinically_linked_confirmed_BRCA_people": 7,
+  "new_family_identifiers": 5,
+  "family_identifiers_withheld_for_genetic_identity_conflict": 4,
+  "source_row_dispositions": {
+    "clinical_only_identifier_component": 3108,
+    "established_accepted_link": 4827,
+    "unidentified_row": 3,
+    "audit_extension_candidate_not_promoted": 1
+  },
+  "residual_BR_candidate_components": 111,
+  "remaining_missing_family_ids": 26,
+  "remaining_conflicting_family_ids": 9,
+  "new_association_tests": 0,
+  "new_association_models": 0,
+  "cumulative_statistical_ledger_unchanged": 25329
+}

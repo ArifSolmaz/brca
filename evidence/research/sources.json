@@ -1,0 +1,36 @@
+{
+  "as_of": "2026-10-24",
+  "role": "Aggregate reporting snapshot; no new analyses or model updates",
+  "files": {
+    "cohort_census.json": {
+      "sha256": "1eced167f545d7ca72153cfe0970104126ed1a7ef06d532fc0c3241e4b1dbaf8",
+      "source_report": "census.json",
+      "source_collection": "cohort_curation_2026-10-24",
+      "role": "curated_availability"
+    },
+    "curation_results.json": {
+      "sha256": "d8d42b462dbb2bb8d921cb653a222df874a70b6b6d2271048fa62ad3c296e492",
+      "source_report": "curation_results.json",
+      "source_collection": "cohort_curation_2026-10-24",
+      "role": "curated_availability"
+    },
+    "identity_gaps.json": {
+      "sha256": "6f08e71dfff90fe93a3628ec84fba36da5b7426b140ae97d987ff820fa602586",
+      "source_report": "identity_resolution_summary.json",
+      "source_collection": "cohort_curation_2026-10-24",
+      "role": "curated_availability"
+    },
+    "size_results.json": {
+      "sha256": "6c2a233364970f89e5fce093517d8e95a21866b58e64ec032f1a95bd013ef16d",
+      "source_report": "results.json",
+      "source_collection": "stopgain_curated_size_2026-10-24",
+      "role": "frozen_result"
+    },
+    "previous_size_primary.json": {
+      "sha256": "634fd320c55f174c4ed26f3d89a59dea56fb96c2ab6658242667cb4a0aa7c1d0",
+      "source_report": "stopgain_familymerge_size_results.json",
+      "original_source_sha256": "f80eb8054c0243f0f57de04ccdcccd731f723eae3e5153147289f0a48d626c25",
+      "role": "previous_aggregate_primary_only"
+    }
+  }
+}
