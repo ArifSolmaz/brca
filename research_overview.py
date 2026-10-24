@@ -9,7 +9,7 @@ EVIDENCE = Path(__file__).parent / "evidence" / "research"
 def calculator_evidence_note(lang="tr", calculator_n=1295):
     if lang == "tr":
         n = f"{calculator_n:,}".replace(",", ".")
-        return (f"Arşiv genişledi; hesaplayıcının kanıtı henüz güncellenmedi. Hesaplayıcı hâlâ özgün {n} hastalık "
+        return (f"Arşiv genişledi; hesaplayıcının modeli henüz yeni kayıtlarla doğrulanmadı. Hesaplayıcı hâlâ özgün {n} hastadan oluşan "
                 "geliştirme kohortuna dayanıyor; yeni kayıtlarla yeniden eğitilmedi veya yeniden doğrulanmadı. "
                 "87 ailedeki henüz doğrulanmamış tümör boyutu bulgusu, olasılık ve test önceliği hesabına dahil değil.")
     return (f"The archive has expanded; the calculator’s evidence has not yet been updated. The calculator still uses "
@@ -27,6 +27,28 @@ def calculator_update_requirements(lang="tr"):
             "model inputs known at diagnosis, and checks for patient/family duplicates and missing data. "
             "First evaluate the existing model in these records; recalibrate or retrain if needed, then test on separate "
             "validation data. The total archive count alone is insufficient.")
+
+
+def calculator_audit_body(lang="tr"):
+    """Present the source-record eligibility audit, never fit or score a model."""
+    d=json.loads((EVIDENCE.parent/'calculator_validation_eligibility.json').read_text(encoding='utf-8'))
+    def t(tr,en):return tr if lang=='tr' else en
+    rows=[
+        (t('Özgün modelde olmayan, klinik bağlantısı kabul edilmiş hastalar','Linked patients outside the original model'),d['linked_outside_training_patients']),
+        (t('Geliştirme aileleriyle örtüştüğü için dışlanan','Excluded for development-family overlap'),d['excluded_training_family_overlap']),
+        (t('Uygun meme/over klinik kaydı olmadığı için dışlanan','Excluded without an eligible breast/ovarian record'),d['excluded_no_eligible_cancer_record']),
+        (t('Kalan adaylar','Remaining candidates'),t('185 hasta / 184 kayıtlı aile grubu','185 patients / 184 recorded family groups')),
+        (t('Temel model girdileri tam aile temsilcisi','Family representatives with complete core inputs'),d['complete_core_input_families']),
+        (t('Girdileri tam ve sonucu özgün raporla desteklenen','Complete inputs and original-report-supported outcome'),t('49: 14 pozitif / 35 negatif','49: 14 positive / 35 negative')),
+    ]
+    table=''.join(f'<tr><td>{escape(label)}</td><td>{escape(str(value))}</td></tr>' for label,value in rows)
+    return f"""<p><b>{escape(t('Hesaplayıcı güncelleme denetimi · 24 Ekim 2026','Calculator update eligibility audit · 24 October 2026'))}</b></p>
+<table><tbody>{table}</tbody></table>
+<p>{escape(t('Yeni eşleşen 32 hastanın 29’u zaten özgün geliştirme grubundaydı. Bu nedenle 32 yeni doğrulama hastası sayılmıyor. Aile başına temsilci, girdi ve sonuç tamlığına bakılmadan seçildi; önceki tartışmalı aile çifti tek grup tutuldu. Kayıtlı aile ayrılığı, genetik olarak ilişkisizliği kanıtlamaz.', 'Of 32 newly linked patients, 29 were already in development; they are not 32 new validation patients. One representative per family was selected before input/outcome completeness, preserving the earlier conservative family merge. Recorded-family separation is not proof of genomic unrelatedness.'))}</p>
+<p><b>{escape(t('49 kişi doğrulama adayıdır; doğrulanmış yeni model değildir.','The 49 are validation candidates, not a validated updated model.'))}</b> {escape(t('Hepsi meme kanseri hastasıdır; over grubunu doğrulamaz. Her girdinin tahmin tarihinde bilindiği henüz belgelenmedi. 10 kişide tanı yılı eksik. 25 kişide Ki67 yok; bu isteğe bağlı alan için mevcut eksik-veri kuralı korunur.', 'All are breast-cancer patients; they cannot validate the ovarian subgroup. Inputs have not yet been verified as known at prediction time. Ten lack diagnosis year. Twenty-five lack optional Ki67; the existing missing-value rule is retained.'))}</p>
+<p>{escape(t('73 aile temsilcisinde en az bir temel girdi eksik/çelişkili: yaş 8, tanı grubu 1, grade 36, bölge 18, TNBC 36, aile öyküsü 4. Bu alan sayıları örtüşür. Girdileri tam diğer 62 kişide ilk rapor engeli: 53 varyant/transkript ve mevcut sınıflama eşleştirmesi, 4 her iki gen için kopya sayısı sonucu, 3 her iki genin dizilendiğinin teyidi, 2 okunabilir imzalı özgün rapor.', 'Seventy-three family representatives lack at least one core input: age 8, diagnosis group 1, grade 36, region 18, TNBC 36, family history 4; field counts overlap. Among another 62 with complete inputs, first report blockers are: 53 allele/transcript-to-existing-classification reconciliations, four both-gene copy-number results, three confirmations of both-gene sequencing scope and two interpretable signed original reports.'))}</p>
+<p>{escape(t('35 negatif sonuç yalnız çağrı tablosunda varyant bulunmamasına dayanmıyor: özgün rapordaki aleller mevcut sınıflamalarla eşleşiyor ve her iki genin kopya sayısı normal. Tam laboratuvar kapsamı ve kalite kontrolü ayrıca teyit edilmeli; eşleşmeyen aleller negatif sayılmadı.', 'The 35 negatives are supported by mapped original-report alleles under existing classifications and explicit normal copy numbers in both genes, rather than absence of a positive call. Full laboratory scope/QC still requires confirmation; unmapped alleles were not treated as negative.'))}</p>
+<p>{escape(t('Seçim yanlılığı: 26 belgeli taşıyıcının 14’ü, 158 kayıtlı negatifin yalnız 35’i bu alt gruba girebildi. Bu seçilmiş grubun taşıyıcılık oranıyla hesaplayıcı doğrudan yeniden kalibre edilemez. Sonraki adım: tarihli girdileri, test kapsamını ve dahil/dışlama kayıtlarını tamamlamak; sabit modeli değerlendirmek; gerekiyorsa ayrı doğrulama verisi ayırarak güncellemek. Henüz yeni performans hesabı, model eğitimi veya eşik değişikliği yapılmadı.', 'Selection bias: 14 of 26 documented carriers but only 35 of 158 registry-negative patients enter this subset. Its selected carrier fraction cannot directly recalibrate the calculator. Next: verify dated inputs, assay scope and inclusion/exclusion logs; evaluate the frozen model; update if needed while reserving separate validation data. No new performance estimates, model fitting or threshold changes have been run.'))}</p>"""
 
 
 def snapshot():
@@ -131,6 +153,7 @@ def overview_article(lang="tr", calculator_n=1295):
 <div class='ro-grid'>{card_html}</div>
 <p class='ro-muted'>{e(t('Özgün raporlarla 32 hastanın klinik bağlantısı ve 5 eksik aile kimliği tamamlandı. Kayıtlı 1.988 olası aile grubu, genetik olarak ilişkisiz aile sayısı olarak yorumlanmamalı.', 'Original reports recovered clinical links for 32 patients and five missing family IDs. The 1,988 recorded possible-family groups are not proven genomically unrelated families.'))}</p>
 <div class='ro-notice' role='note'><p><b>{e(calculator_evidence_note(lang, calculator_n))}</b></p><p>{e(calculator_update_requirements(lang))}</p></div>
+<details><summary>{e(t('Hesaplayıcı güncellemesi: 49 aday ve kalan veri açıkları', 'Calculator update: 49 candidates and remaining data gaps'))}</summary>{calculator_audit_body(lang)}</details>
 <section class='ro-result' aria-labelledby='size-title'><h2 id='size-title'>{e(t('87 aile bize ne söylüyor?', 'What do the 87 families tell us?'))}</h2>
 <p>{e(t('İki tür BRCA değişikliği karşılaştırıldı: 20 aile ve 67 aile. Dört yeni aile eklendiğinde tahmin neredeyse değişmedi.', 'Two types of BRCA changes were compared: 20 and 67 families. Adding four families barely changed the estimate.'))}</p>
 <div class='ro-result-grid'><div><div class='ro-number'>{number(p['effect'],3)}</div><b>{e(t('Düzeltilmiş tümör boyutu oranı', 'Adjusted tumor-size ratio'))}</b><p>{e(t('Oranın 1 olması, fark olmamasıyla uyumludur.', 'A ratio of 1 is compatible with no difference.'))}</p><p><b>{e(t('%95 güven aralığı', '95% confidence interval'))}: {interval}</b></p><p>p = {number(p['empirical_p'],5)} · q = {number(p['q_cumulative'],3)}</p></div><div><h3>{e(t('Neden henüz doğrulanmış değil?', 'Why does it remain unvalidated?'))}</h3>{items(limitations)}</div></div>
