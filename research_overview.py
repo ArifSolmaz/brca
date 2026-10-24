@@ -6,6 +6,29 @@ from pathlib import Path
 EVIDENCE = Path(__file__).parent / "evidence" / "research"
 
 
+def calculator_evidence_note(lang="tr", calculator_n=1295):
+    if lang == "tr":
+        n = f"{calculator_n:,}".replace(",", ".")
+        return (f"Arşiv genişledi; hesaplayıcının kanıtı henüz güncellenmedi. Hesaplayıcı hâlâ özgün {n} hastalık "
+                "geliştirme kohortuna dayanıyor; yeni kayıtlarla yeniden eğitilmedi veya yeniden doğrulanmadı. "
+                "87 ailedeki henüz doğrulanmamış tümör boyutu bulgusu, olasılık ve test önceliği hesabına dahil değil.")
+    return (f"The archive has expanded; the calculator’s evidence has not yet been updated. The calculator still uses "
+            f"the original {calculator_n:,}-patient development cohort; it has not been retrained or revalidated with the recovered records. "
+            "The unvalidated 87-family tumor-size finding does not contribute to probabilities or test priority.")
+
+
+def calculator_update_requirements(lang="tr"):
+    if lang == "tr":
+        return ("Hesaplayıcıyı güncellemek için: uygun hastalarda doğrulanmış BRCA pozitif ve negatif sonuçları, "
+                "tanı gününde bilinen model girdileri, hasta/aile tekrarlarının ve eksik verilerin denetimi gerekir. "
+                "Önce mevcut model bu verilerde değerlendirilmeli; gerekirse yeniden kalibre edilmeli veya eğitilmeli "
+                "ve ayrı doğrulama verisinde sınanmalı. Arşivdeki toplam kayıt sayısı tek başına yeterli değildir.")
+    return ("Updating the calculator requires verified BRCA-positive and negative results in eligible patients, "
+            "model inputs known at diagnosis, and checks for patient/family duplicates and missing data. "
+            "First evaluate the existing model in these records; recalibrate or retrain if needed, then test on separate "
+            "validation data. The total archive count alone is insufficient.")
+
+
 def snapshot():
     def read(name):
         return json.loads((EVIDENCE / name).read_text(encoding="utf-8"))
@@ -107,7 +130,7 @@ def overview_article(lang="tr", calculator_n=1295):
 <span class='ro-badge'>{e(t('Biyolojik sonuç henüz doğrulanmış değil', 'The biological result remains unvalidated'))}</span>
 <div class='ro-grid'>{card_html}</div>
 <p class='ro-muted'>{e(t('Özgün raporlarla 32 hastanın klinik bağlantısı ve 5 eksik aile kimliği tamamlandı. Kayıtlı 1.988 olası aile grubu, genetik olarak ilişkisiz aile sayısı olarak yorumlanmamalı.', 'Original reports recovered clinical links for 32 patients and five missing family IDs. The 1,988 recorded possible-family groups are not proven genomically unrelated families.'))}</p>
-<p class='ro-notice'>{e(t(f'Bu sayılar araştırma arşivine ait. Hesaplayıcının geliştirme ve kuyruk doğrulama kanıtı {number(calculator_n)} hastadan oluşan ayrı bir kohorta dayanıyor.', f'These counts describe the research archive. The calculator’s development and queue-validation evidence uses a separate cohort of {number(calculator_n)} patients.'))}</p>
+<div class='ro-notice' role='note'><p><b>{e(calculator_evidence_note(lang, calculator_n))}</b></p><p>{e(calculator_update_requirements(lang))}</p></div>
 <section class='ro-result' aria-labelledby='size-title'><h2 id='size-title'>{e(t('87 aile bize ne söylüyor?', 'What do the 87 families tell us?'))}</h2>
 <p>{e(t('İki tür BRCA değişikliği karşılaştırıldı: 20 aile ve 67 aile. Dört yeni aile eklendiğinde tahmin neredeyse değişmedi.', 'Two types of BRCA changes were compared: 20 and 67 families. Adding four families barely changed the estimate.'))}</p>
 <div class='ro-result-grid'><div><div class='ro-number'>{number(p['effect'],3)}</div><b>{e(t('Düzeltilmiş tümör boyutu oranı', 'Adjusted tumor-size ratio'))}</b><p>{e(t('Oranın 1 olması, fark olmamasıyla uyumludur.', 'A ratio of 1 is compatible with no difference.'))}</p><p><b>{e(t('%95 güven aralığı', '95% confidence interval'))}: {interval}</b></p><p>p = {number(p['empirical_p'],5)} · q = {number(p['q_cumulative'],3)}</p></div><div><h3>{e(t('Neden henüz doğrulanmış değil?', 'Why does it remain unvalidated?'))}</h3>{items(limitations)}</div></div>
