@@ -397,7 +397,7 @@ elif "sayfa" in st.query_params:
 
 # ---------------------------------------------------------------- calculator
 st.info(calculator_evidence_note(L, M["n"]))
-with st.expander("Güncelleme denetimi: 49 aday ve eksik veriler" if L == "tr" else "Update audit: 49 candidates and missing data"):
+with st.expander("Güncelleme denetimi: 51 temkinli / 91 arşiv adayı" if L == "tr" else "Update audit: 51 conservative / 91 archival candidates"):
     st.html(calculator_audit_body(L))
     st.write(calculator_update_requirements(L))
 st.html(f"<div id='hesapla'></div><p style='margin:18px 0 10px 0'><span class='pill-l'><span class='dot' style='background:#1E9E61'></span>{T['pill_ok'].format(ok=ST_OK, n=ST_N, prof=PROF)}</span></p>"
