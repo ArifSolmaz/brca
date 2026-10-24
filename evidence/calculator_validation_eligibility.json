@@ -43,7 +43,7 @@
   "predictions_run": 0,
   "models_fitted": 0,
   "new_biological_tests": 0,
-  "audit_stage": "53 allele/classification gaps reconciled; historical evidence explicitly tiered",
+  "audit_stage": "Conservative 51 prediction-date provenance review completed; none passes dated-input eligibility",
   "optional_Ki67_missing_in_candidates": 59,
   "diagnosis_year_missing_in_candidates": 20,
   "historical_VUS_dependent_candidates": 40,
@@ -69,5 +69,6 @@
     "current_clinical_classification_claimed": false
   },
   "source_audit_summary_sha256": "05bb63e5b25f0025fef16fb39ff38155393610d5ea181eff18a54f37e0ea5447",
-  "source_QA_sha256": "49e1f8e9969e0f449755cef89c98d6fb85a17f1690e43d0d24dfd0eaa189941e"
+  "source_QA_sha256": "49e1f8e9969e0f449755cef89c98d6fb85a17f1690e43d0d24dfd0eaa189941e",
+  "prediction_date_audit_file": "calculator_prediction_date_audit.json"
 }

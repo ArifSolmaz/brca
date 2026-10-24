@@ -1,0 +1,71 @@
+{
+  "as_of": "2026-10-24",
+  "scope": "Presentation of the completed Drive-only provenance audit; no new analyses.",
+  "summary": {
+    "patients": 51,
+    "recorded_family_groups": 51,
+    "positive": 14,
+    "negative": 37,
+    "known_development_patient_overlap": 0,
+    "known_development_family_overlap": 0,
+    "original_diagnosis_year_available": 41,
+    "missing_diagnosis_year_before": 10,
+    "new_diagnosis_years_recovered": 0,
+    "missing_diagnosis_year_after": 10,
+    "dated_complete_pre_result_profiles": 0,
+    "validation_eligible": 0,
+    "missing_year_positive": {
+      "missing": 6,
+      "total": 14
+    },
+    "missing_year_negative": {
+      "missing": 4,
+      "total": 37
+    },
+    "ki67_unrecorded_positive": {
+      "missing": 11,
+      "total": 14
+    },
+    "ki67_unrecorded_negative": {
+      "missing": 15,
+      "total": 37
+    },
+    "patient_root_folders": 52,
+    "nested_folders": 17,
+    "folder_reads": 69,
+    "inventoried_files": 543,
+    "readable_document_fetches": 192,
+    "patient_workbooks_inspected": 52,
+    "clinical_source_rows_checked": 186,
+    "raw_breast_clinical_rows_checked": 179,
+    "older_identifier_free_rows": 2992,
+    "caveat": "Missingness and availability are descriptive counts only; no association tests or new predictions. A diagnosis year is not a calculator feature; its absence limits chronology checks. Even the 41 with a year lack dated full pre-result profiles."
+  },
+  "validation": {
+    "status": "not_estimable_no_provenance_eligible_patients",
+    "candidate_patients": 51,
+    "candidate_families": 51,
+    "candidate_positive": 14,
+    "candidate_negative": 37,
+    "eligible_patients": 0,
+    "eligible_families": 0,
+    "eligible_positive": 0,
+    "eligible_negative": 0,
+    "prediction_calls": 0,
+    "auc": null,
+    "brier": null,
+    "calibration": null,
+    "fixed_threshold_performance": null,
+    "confidence_intervals": null,
+    "fit_calls": 0,
+    "new_hypotheses": 0,
+    "model_sha256": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
+    "calculation_core_sha256": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
+    "frozen_plan_sha256": "be0385fb95b1c28b4a5ec5d04b22565081a6710d38b19f4830674042b4023412"
+  },
+  "source_sha256": {
+    "provenance_summary.json": "1b805978d6c5605e6a5d88791591a7922e1c3aa4f178600e5255c449e1e046e4",
+    "validation_gate_result.json": "ed2c8e0b4e49a9d1acde5f166a265ea24b52afcabe727d69c48d6e5472168ec3",
+    "Prediction_date_provenance_and_validation.md": "8fd2b3196b7ba1e774163ab49ffd16ac60d709cc6160f65a14116322c7fe2c79"
+  }
+}

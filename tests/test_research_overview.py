@@ -34,6 +34,19 @@ class ResearchEvidenceTests(unittest.TestCase):
         self.assertGreater(d['primary']['q_cumulative'], .05)
         self.assertEqual(d['result']['cumulative_attempts'], 26035)
 
+        audit = json.loads((EVIDENCE.parent / 'calculator_prediction_date_audit.json').read_text())
+        summary, validation = audit['summary'], audit['validation']
+        self.assertEqual((summary['patients'], summary['recorded_family_groups']), (51, 51))
+        self.assertEqual((summary['positive'], summary['negative']), (14, 37))
+        self.assertEqual(summary['original_diagnosis_year_available'] + summary['missing_diagnosis_year_after'], 51)
+        self.assertEqual(summary['missing_diagnosis_year_after'], 10)
+        self.assertEqual(summary['validation_eligible'], 0)
+        self.assertEqual(validation['prediction_calls'] + validation['fit_calls'] + validation['new_hypotheses'], 0)
+        self.assertIsNone(validation['auc'])  # Not estimable must never be displayed as zero performance.
+        for filename, key in [('model_full_embedded.json', 'model_sha256'), ('brca_core.py', 'calculation_core_sha256')]:
+            self.assertEqual(hashlib.sha256((APP.parent / filename).read_bytes()).hexdigest(), validation[key])
+        self.assertNotRegex(json.dumps(audit), r'BR\d{3,}|/Users/|download_url|protocol_ids|patient_action_list')
+
     def test_offline_presentation_keeps_uncertainty_and_data_request(self):
         for lang, upper, unvalidated, independent in [
             ('tr', '1,0007', 'henüz doğrulanmış değil', 'Bağımsız hastalar ve aileler'),
@@ -49,6 +62,12 @@ class ResearchEvidenceTests(unittest.TestCase):
                 self.assertNotIn('<script', text)
                 self.assertNotRegex(text, r'(?:src|href)=[\'"]https?://')
                 self.assertNotIn('/Users/', text)
+                self.assertIn("id='hesaplayici-dogrulama'", text)
+                self.assertEqual(text.count("id='provenance-title'"), 1)
+                self.assertIn('0’ı tarihli veri kontrolünü geçti' if lang == 'tr' else '0 of 51 candidates passed', text)
+                self.assertIn('sekiz aile öyküsü' if lang == 'tr' else 'eight family-history', text)
+                self.assertIn('ilk BRCA sonucunun' if lang == 'tr' else 'first BRCA result/disclosure', text)
+                self.assertIn('Tanı yılı hesaplayıcının bir girdisi değil' if lang == 'tr' else 'Diagnosis year is not a calculator input', text)
 
 
 class ResearchAppTests(unittest.TestCase):
