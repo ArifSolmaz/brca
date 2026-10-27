@@ -66,7 +66,10 @@
     "table": 2,
     "printed_page": 166,
     "pdf_page": 5,
-    "current_clinical_classification_claimed": false
+    "current_clinical_classification_claimed": false,
+    "doi": "10.1016/j.jmoldx.2014.11.004",
+    "url": "https://doi.org/10.1016/j.jmoldx.2014.11.004",
+    "pmid": "25556971"
   },
   "source_audit_summary_sha256": "05bb63e5b25f0025fef16fb39ff38155393610d5ea181eff18a54f37e0ea5447",
   "source_QA_sha256": "49e1f8e9969e0f449755cef89c98d6fb85a17f1690e43d0d24dfd0eaa189941e",

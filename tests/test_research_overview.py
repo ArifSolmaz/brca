@@ -100,7 +100,10 @@ class ResearchEvidenceTests(unittest.TestCase):
                 self.assertIn(independent, text)
                 self.assertIn('703', text)
                 self.assertNotIn('<script', text)
-                self.assertNotRegex(text, r'(?:src|href)=[\'"]https?://')
+                external_links = re.findall(r"""(?:src|href)=['"](https?://[^'"]+)""", text)
+                self.assertEqual(external_links, ['https://doi.org/10.1016/j.jmoldx.2014.11.004'])
+                self.assertNotIn('Drive’daki 2015', text)
+                self.assertNotIn('paper stored in Drive', text)
                 self.assertNotIn('/Users/', text)
                 self.assertNotIn('Hülya hoca', text)
                 if lang == 'tr':
