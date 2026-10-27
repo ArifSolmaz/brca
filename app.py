@@ -8,12 +8,14 @@ RUN: streamlit run app.py        Rule B preview: add ?kural=B to the address.
 import json, os, hmac, time
 import streamlit as st
 import brca_core as core
-from capacity_explorer import render_capacity_explorer
 import importlib
+import capacity_explorer
 import research_overview
 # Cloud hot deployments can rerun app.py while retaining an imported presentation
 # module. Reload this stateless UI module so headings, body and downloads agree.
 importlib.reload(research_overview)
+importlib.reload(capacity_explorer)
+from capacity_explorer import render_capacity_explorer
 from research_overview import render_research_overview, calculator_evidence_note, calculator_update_requirements, calculator_audit_body
 
 HERE = os.path.dirname(os.path.abspath(__file__))

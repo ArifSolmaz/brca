@@ -137,12 +137,17 @@ def render_capacity_explorer(model, lang):
     chart_rows = [dict(strategy=label(r), packages=r["packages"], hits=r["hits"]) for r in rows]
     st.vega_lite_chart({"data": {"values": chart_rows}, "mark": {"type": "point", "filled": True, "size": 150},
                        "encoding": {
-                           "x": {"field": "packages", "type": "quantitative", "title": t("Hızlı test paketi", "Rapid-test packages"), "scale": {"zero": True}},
-                           "y": {"field": "hits", "type": "quantitative", "title": t("Saptanabilir pozitif", "Detectable positives"), "scale": {"zero": True}},
+                           "x": {"field": "packages", "type": "quantitative", "title": t("Hızlı test paketi", "Rapid-test packages"), "scale": {"zero": True, "nice": True}, "axis": {"tickCount": 8, "titlePadding": 12}},
+                           "y": {"field": "hits", "type": "quantitative", "title": t("Saptanabilir pozitif", "Detectable positives"), "scale": {"zero": True, "nice": True}, "axis": {"tickCount": 6, "titlePadding": 12}},
                            "color": {"field": "strategy", "type": "nominal", "title": t("Strateji", "Strategy"),
                                      "legend": {"orient": "bottom", "columns": 1, "labelLimit": 340}},
                            "tooltip": [{"field": "strategy", "title": t("Strateji", "Strategy")}, {"field": "packages", "format": ".1f"}, {"field": "hits", "format": ".1f"}]
-                       }, "height": 280}, width="stretch")
+                       },
+                       # Streamlit's fitted height includes axes and the six-row legend.
+                       # Reserve room for both so the plot is not reduced to a thin strip.
+                       "autosize": {"type": "fit", "contains": "padding"},
+                       "padding": {"top": 16, "right": 16, "bottom": 16, "left": 16}},
+                       width="stretch", height=560)
 
     table = [{t("Strateji", "Strategy"): label(r),
               t("Paket", "Packages"): round(r["packages"], 1),
