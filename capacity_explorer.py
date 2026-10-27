@@ -89,7 +89,7 @@ def render_capacity_explorer(model, lang):
     st.html("<div id='kapasite'></div>")
     st.subheader(t("Laboratuvar kapasitesi: iş yükü ve verim", "Laboratory capacity: workload and yield"))
     st.write(t(
-        "Aynı kohortta kaç hızlı test paketi kullanılır, kaç taşıyıcıda hızlı test pozitif olabilir? Kuyruk önceliği ve hızlı test seçimi aşağıda ayrı karşılaştırılır. Tam test herkes için devam eder.",
+        "Aynı hasta grubunda kaç hızlı test paketi kullanılır, kaç taşıyıcıda hızlı test pozitif olabilir? Kuyruk önceliği ve hızlı test seçimi aşağıda ayrı karşılaştırılır. Tam test herkes için devam eder.",
         "How many rapid-test packages are used, and how many carriers have a detectable result? Queue priority and rapid-test selection are compared separately below. Full testing continues for everyone."))
     st.info(t(
         "Araştırma görünümü · Buradaki seçimler yukarıdaki hastanın şeridini veya test planını değiştirmez. Sonuç süresi, maliyet ve ameliyat sonucunda iyileşme ölçülmedi. Hızlı test negatifse taşıyıcılık dışlanmaz.",
@@ -160,7 +160,7 @@ def render_capacity_explorer(model, lang):
         f"Bu kümede toplam {chosen['carriers']} BRCA1/2 taşıyıcısının {chosen['detectable']:.0f}'i hızlı testin hedeflerini taşır. Seçilmeyenler tam testte kalır. Paket/pozitif, gösterilen toplamların oranıdır.",
         f"In this set, {chosen['detectable']:.0f} of {chosen['carriers']} BRCA1/2 carriers have a target covered by the rapid test. Unselected patients retain full testing. Packages/positive is the ratio of the displayed totals."))
 
-    budget = st.slider(t("Bu kohort için hızlı test paket tavanı", "Rapid-test package ceiling for this cohort"),
+    budget = st.slider(t("Bu hasta grubu için hızlı test paket tavanı", "Rapid-test package ceiling for this cohort"),
                        min_value=0, max_value=chosen["patients"], value=220 if period == "cv" else 40,
                        key="capacity_budget_" + period)
     options = budget_options(period, budget)
@@ -170,7 +170,7 @@ def render_capacity_explorer(model, lang):
         st.write(t("Ölçülmüş seçeneklerin hiçbiri bu tavana uymuyor. Yeni bir eşik için ayrı analiz gerekir.",
                    "None of the measured options fits this ceiling. A new threshold requires a separate analysis."))
     st.caption(t(
-        "Tavan aynı kohorta aittir; aylık kapasite veya yeni hasta sayısına projeksiyon yapılmaz. ÇD ortalamasının tavana uyması her tekrarda veya gerçek hizmette tavana uyacağını garanti etmez. Aradaki eşikler tahmin edilmez.",
+        "Tavan aynı hasta grubuna aittir; aylık kapasite veya yeni hasta sayısına projeksiyon yapılmaz. ÇD ortalamasının tavana uyması her tekrarda veya gerçek hizmette tavana uyacağını garanti etmez. Aradaki eşikler tahmin edilmez.",
         "The ceiling applies to this cohort; there is no projection to monthly capacity or a new patient population. A CV mean below the ceiling does not guarantee that every repeat or real service will fit it. Intermediate thresholds are not estimated."))
     st.download_button(t("Karşılaştırmayı indir (CSV)", "Download comparison (CSV)"), export_csv(period),
                        file_name=f"BRCA_capacity_{period}.csv", mime="text/csv", key="capacity_csv")

@@ -1,16 +1,39 @@
 """Portable, aggregate-only presentation of existing research. No fitting or analysis."""
 from html import escape
 import json
+import hashlib
+import io
+import zipfile
 from pathlib import Path
 
 EVIDENCE = Path(__file__).parent / "evidence" / "research"
+
+
+def build_evidence_bundle():
+    """Package only explicitly allowlisted, already-published aggregate evidence."""
+    root = EVIDENCE.parent.parent
+    names = ['evidence/KANIT_REHBERI_TR.md', 'model_full_embedded.json',
+             'evidence/calculator_prediction_date_audit.json',
+             'evidence/calculator_validation_eligibility.json',
+             'evidence/rapid_threshold.json', 'evidence/matched_workload.json', 'evidence/sources.json']
+    names += ['evidence/research/' + name for name in
+              ['cohort_census.json', 'curation_results.json', 'identity_gaps.json',
+               'size_results.json', 'previous_size_primary.json', 'sources.json']]
+    files = {name.removeprefix('evidence/'): (root / name).read_bytes() for name in names}
+    manifest = {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}
+    out = io.BytesIO()
+    with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as archive:
+        for name, data in files.items():
+            archive.writestr(name, data)
+        archive.writestr('paket_manifestosu.json', json.dumps(manifest, indent=2))
+    return out.getvalue()
 
 
 def calculator_evidence_note(lang="tr", calculator_n=1295):
     if lang == "tr":
         n = f"{calculator_n:,}".replace(",", ".")
         return (f"Arşiv genişledi; hesaplayıcının modeli henüz yeni kayıtlarla doğrulanmadı. Hesaplayıcı hâlâ özgün {n} hastadan oluşan "
-                "geliştirme kohortuna dayanıyor; yeni kayıtlarla yeniden eğitilmedi veya yeniden doğrulanmadı. "
+                "geliştirme grubuna dayanıyor; yeni kayıtlarla yeniden eğitilmedi veya yeniden doğrulanmadı. "
                 "87 ailedeki henüz doğrulanmamış tümör boyutu bulgusu, olasılık ve test önceliği hesabına dahil değil.")
     return (f"The archive has expanded; the calculator’s evidence has not yet been updated. The calculator still uses "
             f"the original {calculator_n:,}-patient development cohort; it has not been retrained or revalidated with the recovered records. "
@@ -186,14 +209,26 @@ def overview_article(lang="tr", calculator_n=1295):
         "Tek karşılaştırma: stop-gain / frameshift. Log tümör boyutu; tanı yaşı/yılı, BRCA geni, bildirilen köken, bölge ve test kaynağıyla aynı sabit model. Aile kümeli belirsizlik; en düşük BR aile temsilcisi bütün sonuç filtrelerinden önce seçildi. Daha önce tartışmalı olan aile çifti tek grup tutuldu. Aynı destek eşikleri ve yanlılık kontrolleri korundu.",
         "One comparison: stop-gain versus frameshift. The same frozen model for log tumor size adjusts for diagnosis age/year, BRCA gene, reported ancestry, region and genotype source. Family-clustered uncertainty; the lowest-BR representative is selected before outcome filtering. The previously disputed family pair remains one group. Support gates and bias checks are unchanged.")
     evidence_rows = [
-        [t("Kohort ve eşleştirme", "Cohort and linkage"), "24.10.2026", t("Kaynak kayıt ve aile denetimi", "Source-record and family audit")],
+        [t("Hasta grubu ve eşleştirme", "Cohort and linkage"), "24.10.2026", t("Kaynak kayıt ve aile denetimi", "Source-record and family audit")],
         [t("87 ailelik sabit karşılaştırma", "Frozen 87-family comparison"), "24.10.2026", t("Önceki sonuç ve bütün yanlılık kontrolleri korunarak", "Preserving the previous result and all registered bias checks")],
     ]
     source_html = "".join(f"<li>{e(name)} · <code>SHA-256 {e(value['sha256'])}</code></li>" for name, value in d['sources']['files'].items())
+    evidence_map = table(
+        [t('Gösterilen bilgi', 'Displayed information'), t('Kaynak ve denetim', 'Source and audit')],
+        [[t('2.148 genetik kimlik · 1.445 klinik bağlantı · 143 aile temsilcisi', '2,148 genetic identities · 1,445 clinical links · 143 family representatives'),
+          t('Drive kaynaklarının kimlik/aile eşleştirme sayımı · 24.10.2026 · cohort_census.json, curation_results.json, identity_gaps.json', 'Drive identity/family linkage census · 24 Oct 2026 · cohort_census.json, curation_results.json, identity_gaps.json')],
+         [t('87 ailelik tümör boyutu karşılaştırması', '87-family tumor-size comparison'),
+          t('Önceden sabitlenmiş karşılaştırmanın kayıtlı sonucu · 24.10.2026 · size_results.json. Bağımsız doğrulanmış bulgu değil.', 'Recorded result of the frozen comparison · 24 Oct 2026 · size_results.json. Not an independently validated finding.')],
+         [t('51 aday · 41 tanı yılı kayıtlı / 10 eksik · 0 uygun hasta', '51 candidates · 41 diagnosis years recorded / 10 missing · 0 eligible'),
+          t('Tamamlanmış Drive zamanlama denetimi · 24.10.2026 · calculator_prediction_date_audit.json. Performans testi yapılamadı.', 'Completed Drive timing audit · 24 Oct 2026 · calculator_prediction_date_audit.json. Performance evaluation was not possible.')],
+         [t('Hesaplayıcı: 1.295 hasta / 167 taşıyıcı', 'Calculator: 1,295 patients / 167 carriers'),
+          t('Özgün geliştirme grubunun model paketi · model_full_embedded.json. Genişleyen arşiv bu sayıya eklenmedi.', 'Original development-group model package · model_full_embedded.json. Expanded archive records were not added to this evidence.')],
+         [t('Kapasite grafiği', 'Capacity chart'),
+          t('04.10.2026 tarihli hızlı test ve aynı iş yükü analizleri · rapid_threshold.json, matched_workload.json. Özgün Drive bağlantıları hesaplayıcıdaki “Kaynaklar ve model kanıtı” bölümünde.', 'Recorded rapid-test and matched-workload analyses dated 4 Oct 2026 · rapid_threshold.json, matched_workload.json. Original Drive links are in the calculator’s Sources and model evidence section.')]])
     return f"""<article class='research-overview' id='arastirma' aria-labelledby='research-title'>
 <p class='ro-muted'>{e(t('Araştırma özeti · 24 Ekim 2026', 'Research overview · 24 October 2026'))}</p>
 <h1 id='research-title'>{e(t('Elimizde ne var, neye ihtiyacımız var?', 'What do we have, and what do we need?'))}</h1>
-<p class='ro-lead'>{e(t('Hülya hoca için güncel kohort, tek öncelikli biyolojik aday ve onu doğrulamak için gereken veri.', 'The current cohort, the one prioritized biological candidate, and the data needed to validate it.'))}</p>
+<p class='ro-lead'>{e(t('Proje ekibi için güncel hasta grubu, öncelikli biyolojik aday ve onu doğrulamak için gereken veri.', 'The current cohort, the one prioritized biological candidate, and the data needed to validate it.'))}</p>
 <span class='ro-badge'>{e(t('Biyolojik sonuç henüz doğrulanmış değil', 'The biological result remains unvalidated'))}</span>
 <div class='ro-grid'>{card_html}</div>
 <p class='ro-muted'>{e(t('Özgün raporlarla 32 hastanın klinik bağlantısı ve 5 eksik aile kimliği tamamlandı. Kayıtlı 1.988 olası aile grubu, genetik olarak ilişkisiz aile sayısı olarak yorumlanmamalı.', 'Original reports recovered clinical links for 32 patients and five missing family IDs. The 1,988 recorded possible-family groups are not proven genomically unrelated families.'))}</p>
@@ -206,7 +241,7 @@ def overview_article(lang="tr", calculator_n=1295):
 </section>
 <details><summary>{e(t('Önceki sonuç ve sabit model', 'Previous result and frozen methods'))}</summary>{previous_table}<p>{e(method)}</p><p class='ro-muted'>{e(t('Kaynakta kayıtlı boyut karşılaştırmasıdır; nedensel etki veya kanser riski tahmini değildir. Bu görünüm mevcut sonuçları gösterir, yeni analiz çalıştırmaz.', 'This compares recorded sizes; it is not a causal effect or cancer-risk estimate. This view displays existing results and runs no new analysis.'))}</p></details>
 <h2>{e(t('Bugün veriyle ne yapabiliriz?', 'What can the data support today?'))}</h2>
-<p>{e(t('Kaynakları izlenebilir kalıtsal kanser başvuru kohortunu, genetik bulguları ve kayıtlı tümör özelliklerini tanımlayabiliriz. Nadir genetik değiştiriciler, sağkalım ve tedavi yanıtı için karşılaştırılabilir genetik negatifler, yeterli taşıyıcı sayısı ve doğrulanmış takip verileri hâlâ eksik.', 'We can describe a source-traceable hereditary-cancer referral cohort, its genetic findings and recorded tumor features. Rare-modifier, survival and treatment-response questions still lack comparable genetic negatives, sufficient carrier groups or verified longitudinal endpoints.'))}</p>
+<p>{e(t('Kaynakları izlenebilir kalıtsal kanser başvuru grubunu, genetik bulguları ve kayıtlı tümör özelliklerini tanımlayabiliriz. Nadir genetik değiştiriciler, sağkalım ve tedavi yanıtı için karşılaştırılabilir genetik negatifler, yeterli taşıyıcı sayısı ve doğrulanmış takip verileri hâlâ eksik.', 'We can describe a source-traceable hereditary-cancer referral cohort, its genetic findings and recorded tumor features. Rare-modifier, survival and treatment-response questions still lack comparable genetic negatives, sufficient carrier groups or verified longitudinal endpoints.'))}</p>
 <h2>{e(t('Doğrulama için tam olarak hangi veri gerekiyor?', 'Exactly which data are needed for validation?'))}</h2>
 <p>{e(t('Öncelik, aynı tek soruyu bağımsız hasta verisiyle sınamak. Aşağıdaki alanlar olmadan yeni kayıt sayısı tek başına sonucu doğrulamaz.', 'The priority is to test this one frozen question in independent patient data. More records alone cannot validate it without the following information.'))}</p>
 <div class='ro-needs'>{need_html}</div>
@@ -214,7 +249,11 @@ def overview_article(lang="tr", calculator_n=1295):
 {table([t('Sayı','Count'),t('Veri açığı','Data gap')],gaps_rows)}
 <p class='ro-muted'>{e(t('Tüm 2.259 hasta klasörünün metadata sayımı yapıldı; her ekin yeni okunması tamamlanmış değil. Okunabilir kabul edilmiş rapor bulunmaması, Drive’da hiç rapor olmadığı anlamına gelmez. Eksik veya çelişkili bilgi yok sayılmadı.', 'Metadata for all 2,259 patient folders was counted; not every attachment has been freshly read. No accepted readable report in the cache does not establish that Drive contains no report. Missing/conflicting information remains unknown.'))}</p>
 <p>{e(t('Daha geniş taşıyıcı karşılaştırmaları için tam laboratuvar negatifleri ve panel/çağrılabilirlik bilgisi; sağkalım veya yanıt için olay tanımı, başlangıç, tedavi ve olaysız takip bitişi de gerekir.', 'Broader carrier comparisons also need complete laboratory-negative findings and panel/callability information; survival or response studies need event definitions, entry, treatment chronology and event-free censoring.'))}</p>
-<details><summary>{e(t('Kanıt, kaynak ve kapsam', 'Evidence, sources and scope'))}</summary>{table([t('Kaynak','Source'),t('Tarih','Date'),t('Kapsam','Scope')],evidence_rows)}<p>{e(t('Yalnız toplu sonuçlar kullanıldı. Önceki 26.035 test/duyarlılık/yanlılık girişimi kaydı korunuyor; uygulamaya bu özet eklenirken yeni analiz yapılmadı.', 'Aggregate results only. The existing 26,035 test/sensitivity/bias-check attempt ledger is retained; adding this overview runs no new analysis.'))}</p><ul>{source_html}</ul></details>
+<section id='kanit-rehberi'><h2>{e(t('Bu rakamlar nereden geliyor?', 'Where do these numbers come from?'))}</h2>
+{evidence_map}
+<p>{e(t('Özgün genetik raporlar Drive’daki bireysel hasta klasörlerinde; klinik kaynaklar Veri1/Veri2 altındaki 2019, 2020 ve 2022 dosyalarında. Hasta bazındaki eşleştirme, kaynak belge/satır ve dahil/dışlama listeleri özel araştırma çalışma dosyalarında tutuluyor. Bu sayfa ve indirilebilir kanıt paketi yalnız toplu sonuçları içerir; özgün hasta raporlarını paylaşmaz.', 'Original genetic reports are in individual patient folders in Drive; clinical sources are the 2019, 2020 and 2022 files under Veri1/Veri2. Patient-level linkage, source-document/row and inclusion/exclusion lists remain in private research working files. This page and its downloadable evidence bundle contain aggregate results only, without original patient reports.'))}</p>
+<p>{e(t('Sayfanın altındaki “Toplu kanıt paketini indir” düğmesi, kaynak rehberini ve bu rakamların dayandığı kayıtlı sonuç dosyalarını birlikte verir. Dosya sağlama toplamları sürümü doğrular; bilimsel geçerliliği tek başına kanıtlamaz. Toplu dosyalar, hasta bazındaki özgün kayıt denetiminin yerine geçmez.', 'The Download aggregate evidence bundle button below provides the source guide and recorded result files supporting these numbers. Checksums identify file versions; they do not establish scientific validity. Aggregate files do not replace review of original patient-level records.'))}</p></section>
+<details><summary>{e(t('Teknik kaynak sürümleri ve kapsam', 'Technical source versions and scope'))}</summary>{table([t('Kaynak','Source'),t('Tarih','Date'),t('Kapsam','Scope')],evidence_rows)}<p>{e(t('Yalnız toplu sonuçlar kullanıldı. Önceki 26.035 test/duyarlılık/yanlılık girişimi kaydı korunuyor; uygulamaya bu özet eklenirken yeni analiz yapılmadı.', 'Aggregate results only. The existing 26,035 test/sensitivity/bias-check attempt ledger is retained; adding this overview runs no new analysis.'))}</p><ul>{source_html}</ul></details>
 <p class='ro-foot'>{e(t('Sunum için mevcut araştırma özeti · 24 Ekim 2026. Bağımsız doğrulama hâlâ gerekli.', 'Presentation of existing research · 24 October 2026. Independent validation is still required.'))}</p>
 </article>"""
 
@@ -236,5 +275,9 @@ def render_research_overview(lang, calculator_n):
         build_overview_html(lang, calculator_n).encode("utf-8"),
         file_name=f"BRCA_arastirma_ozeti_{lang.upper()}.html", mime="text/html",
         key="research_overview_download")
+    st.download_button(
+        "Toplu kanıt paketini indir (ZIP)" if tr else "Download aggregate evidence bundle (ZIP)",
+        build_evidence_bundle(), file_name="BRCA_toplu_kanit_paketi.zip", mime="application/zip",
+        key="research_evidence_download")
     st.caption("İndirilen dosya çevrimdışı açılır; tarayıcıdan yazdırılabilir. Yalnız toplu verileri içerir."
                if tr else "The downloaded file opens offline and can be printed from the browser. Aggregate data only.")

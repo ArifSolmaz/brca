@@ -1,13 +1,15 @@
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import re
 import unittest
+import zipfile
 from unittest.mock import patch
 
 from streamlit.testing.v1 import AppTest
-from research_overview import EVIDENCE, build_overview_html, overview_article, snapshot
+from research_overview import EVIDENCE, build_overview_html, build_evidence_bundle, overview_article, snapshot
 
 APP = Path(__file__).resolve().parents[1] / 'app.py'
 
@@ -21,6 +23,20 @@ def control(at, key):
 
 
 class ResearchEvidenceTests(unittest.TestCase):
+    def test_download_bundle_is_aggregate_only_and_matches_display_sources(self):
+        with zipfile.ZipFile(io.BytesIO(build_evidence_bundle())) as archive:
+            hashes = json.loads(archive.read('paket_manifestosu.json'))
+            self.assertEqual(set(archive.namelist()), set(hashes) | {'paket_manifestosu.json'})
+            self.assertIn('KANIT_REHBERI_TR.md', hashes)
+            self.assertIn('calculator_prediction_date_audit.json', hashes)
+            self.assertIn('research/size_results.json', hashes)
+            for name, expected in hashes.items():
+                data = archive.read(name)
+                self.assertEqual(hashlib.sha256(data).hexdigest(), expected)
+                self.assertNotRegex(data.decode(), r'BR\d{3,}|/Users/|download_url|patient_action_list|protocol_ids')
+            self.assertEqual(json.loads(archive.read('model_full_embedded.json'))['n'], 1295)
+            self.assertEqual(json.loads(archive.read('research/size_results.json')), snapshot()['result'])
+
     def test_frozen_source_integrity_and_aggregate_only(self):
         manifest = json.loads((EVIDENCE / 'sources.json').read_text())
         for name, source in manifest['files'].items():
@@ -62,6 +78,10 @@ class ResearchEvidenceTests(unittest.TestCase):
                 self.assertNotIn('<script', text)
                 self.assertNotRegex(text, r'(?:src|href)=[\'"]https?://')
                 self.assertNotIn('/Users/', text)
+                self.assertNotIn('Hülya hoca', text)
+                if lang == 'tr':
+                    self.assertNotIn('kohort', text.lower())
+                    self.assertIn('Bu rakamlar nereden geliyor?', text)
                 self.assertIn("id='hesaplayici-dogrulama'", text)
                 self.assertEqual(text.count("id='provenance-title'"), 1)
                 self.assertIn('0’ı tarihli veri kontrolünü geçti' if lang == 'tr' else '0 of 51 candidates passed', text)
@@ -91,6 +111,7 @@ class ResearchAppTests(unittest.TestCase):
                 self.assertEqual(control(at, 'app_view').value, 'research')
                 self.assertEqual(len(at.number_input), 0)
                 self.assertIn('research_overview_download', [getattr(n, 'key', None) for n in at])
+                self.assertIn('research_evidence_download', [getattr(n, 'key', None) for n in at])
 
     def test_view_round_trip_preserves_patient_and_capacity_state(self):
         at = self.start()
@@ -119,3 +140,4 @@ class ResearchAppTests(unittest.TestCase):
         self.assertFalse(at.exception)
         self.assertNotIn("id='arastirma'", rendered(at))
         self.assertNotIn('research_overview_download', [getattr(n, 'key', None) for n in at])
+        self.assertNotIn('research_evidence_download', [getattr(n, 'key', None) for n in at])
