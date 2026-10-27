@@ -28,7 +28,12 @@ styles.add(ParagraphStyle(name='TitleTR',fontName='ReportBold',fontSize=19,leadi
 styles.add(ParagraphStyle(name='SubTR',fontName='Report',fontSize=10,leading=14,textColor=muted,spaceAfter=11))
 styles.add(ParagraphStyle(name='CallTR',parent=styles['BodyTR'],fontName='ReportBold',fontSize=9.4,leading=13.3,spaceAfter=0))
 width=A4[0]-88
-def para(t,style='BodyTR'):return Paragraph(escape(t),styles[style])
+references={b['id']: b['url'] for p in D['pages'] for b in p['blocks'] if b['type']=='reference'}
+def para(t,style='BodyTR'):
+    text=escape(t)
+    for key,url in references.items():
+        text=text.replace('['+key+']',f'<link href="{escape(url)}" color="#6554a9">[{key}]</link>')
+    return Paragraph(text,styles[style])
 def table(b):
     flow=b['type']=='flow'; headers=b.get('headers',['Seçim aşaması','Açıklama'])
     rows=[[para(x,'HeadCellTR') for x in headers]]+[[para(x,'CellTR') for x in r] for r in b['rows']]
@@ -60,7 +65,13 @@ for i,page in enumerate(D['pages']):
         story.append(para(D['subtitle'],'SubTR'))
         story.append(para('Rapor: '+D['prepared']+' | Mevcut sonuçların kesim tarihi: '+D['evidence_date'],'SubTR'))
     for b in page['blocks']:
-        if b['type']=='p':story.append(para(b['text']))
+        if b['type']=='reference':
+            story.append(para('['+b['id']+'] '+b['citation']))
+            link=escape(b['url'])
+            story.append(Paragraph(f'<link href="{link}" color="#6554a9"><u>{link}</u></link>',styles['BodyTR']))
+            story.append(para(b['note']))
+            story.append(Spacer(1,12))
+        elif b['type']=='p':story.append(para(b['text']))
         elif b['type']=='callout':
             box=Table([[para(b['text'],'CallTR')]],colWidths=[width])
             box.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.HexColor('#f2effa')),('BOX',(0,0),(-1,-1),.6,colors.HexColor('#c8bedf')),('LEFTPADDING',(0,0),(-1,-1),11),('RIGHTPADDING',(0,0),(-1,-1),11),('TOPPADDING',(0,0),(-1,-1),10),('BOTTOMPADDING',(0,0),(-1,-1),10)]))

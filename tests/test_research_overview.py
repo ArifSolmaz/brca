@@ -47,7 +47,7 @@ class ResearchEvidenceTests(unittest.TestCase):
         for name, expected in manifest['files'].items():
             self.assertEqual(hashlib.sha256((APP.parent / name).read_bytes()).hexdigest(), expected)
         d = report_data()
-        self.assertEqual(len(d['pages']), 6)
+        self.assertEqual(len(d['pages']), 7)
         self.assertEqual(d['prepared'], '25 Ekim 2026')
         self.assertEqual(d['pages'][0]['title'], 'Önce kısa özet')
         self.assertIn('Bu çalışma neyi gösteriyor, neyi henüz göstermiyor?', report_html())
@@ -59,6 +59,16 @@ class ResearchEvidenceTests(unittest.TestCase):
         self.assertIn('0,4206 - 1,0007', text)
         self.assertIn('0,5273', text)
         self.assertIn('0 doğrulamaya uygun hasta', text)
+        self.assertIn('[P1]', text)
+        self.assertIn('[P4]', text)
+        self.assertNotIn('[1]', text)
+        refs = [b for p in d['pages'] for b in p['blocks'] if b['type'] == 'reference']
+        self.assertEqual({b['id'] for b in refs}, {'M1', 'M2'})
+        urls = {b['url'] for b in refs}
+        self.assertEqual(urls, {'https://doi.org/10.1016/j.jmoldx.2014.11.004',
+                                'https://doi.org/10.1111/j.2517-6161.1995.tb02031.x'})
+        for url in urls:
+            self.assertIn(f"href='{url}'", text)
         self.assertNotRegex(text, r'BR\d{3,}|/Users/|Hülya hoca|kohort')
 
     def test_frozen_source_integrity_and_aggregate_only(self):

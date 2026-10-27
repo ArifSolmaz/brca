@@ -4,7 +4,11 @@ import json
 import hashlib
 import io
 import zipfile
+import importlib
 from pathlib import Path
+import research_report
+# Refresh this stateless renderer when Cloud keeps imported modules between deployments.
+importlib.reload(research_report)
 from research_report import report_html, PDF as REPORT_PDF
 
 EVIDENCE = Path(__file__).parent / "evidence" / "research"
