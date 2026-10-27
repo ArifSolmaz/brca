@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 from streamlit.testing.v1 import AppTest
 from research_overview import EVIDENCE, build_overview_html, build_evidence_bundle, overview_article, snapshot
+from research_report import report_data, report_html, PDF as REPORT_PDF
 
 APP = Path(__file__).resolve().parents[1] / 'app.py'
 
@@ -33,9 +34,27 @@ class ResearchEvidenceTests(unittest.TestCase):
             for name, expected in hashes.items():
                 data = archive.read(name)
                 self.assertEqual(hashlib.sha256(data).hexdigest(), expected)
-                self.assertNotRegex(data.decode(), r'BR\d{3,}|/Users/|download_url|patient_action_list|protocol_ids')
+                if name.endswith('.pdf'):
+                    self.assertTrue(data.startswith(b'%PDF-'))
+                    self.assertEqual(data, REPORT_PDF.read_bytes())
+                else:
+                    self.assertNotRegex(data.decode(), r'BR\d{3,}|/Users/|download_url|patient_action_list|protocol_ids')
             self.assertEqual(json.loads(archive.read('model_full_embedded.json'))['n'], 1295)
             self.assertEqual(json.loads(archive.read('research/size_results.json')), snapshot()['result'])
+
+    def test_report_versions_match_frozen_sources_and_pdf(self):
+        manifest = json.loads((EVIDENCE.parent / 'research_report_manifest.json').read_text())
+        for name, expected in manifest['files'].items():
+            self.assertEqual(hashlib.sha256((APP.parent / name).read_bytes()).hexdigest(), expected)
+        d = report_data()
+        self.assertEqual(len(d['pages']), 5)
+        self.assertEqual(d['evidence_date'], '24 Ekim 2026')
+        text = report_html()
+        self.assertIn('20 stop-gain, 67 frameshift', text)
+        self.assertIn('0,4206 - 1,0007', text)
+        self.assertIn('0,5273', text)
+        self.assertIn('0 doğrulamaya uygun hasta', text)
+        self.assertNotRegex(text, r'BR\d{3,}|/Users/|Hülya hoca|kohort')
 
     def test_frozen_source_integrity_and_aggregate_only(self):
         manifest = json.loads((EVIDENCE / 'sources.json').read_text())
@@ -112,6 +131,8 @@ class ResearchAppTests(unittest.TestCase):
                 self.assertEqual(len(at.number_input), 0)
                 self.assertIn('research_overview_download', [getattr(n, 'key', None) for n in at])
                 self.assertIn('research_evidence_download', [getattr(n, 'key', None) for n in at])
+                self.assertIn('research_report_pdf_download', [getattr(n, 'key', None) for n in at])
+                self.assertIn("id='arastirma-rapor-metni'", rendered(at))
 
     def test_view_round_trip_preserves_patient_and_capacity_state(self):
         at = self.start()
@@ -141,3 +162,4 @@ class ResearchAppTests(unittest.TestCase):
         self.assertNotIn("id='arastirma'", rendered(at))
         self.assertNotIn('research_overview_download', [getattr(n, 'key', None) for n in at])
         self.assertNotIn('research_evidence_download', [getattr(n, 'key', None) for n in at])
+        self.assertNotIn('research_report_pdf_download', [getattr(n, 'key', None) for n in at])

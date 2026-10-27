@@ -1,0 +1,111 @@
+{
+  "title": "BRCA araştırma raporu",
+  "subtitle": "Hasta seçimi, mevcut sonuçlar ve doğrulama için gereken kayıtlar",
+  "prepared": "27 Ekim 2026",
+  "evidence_date": "24 Ekim 2026",
+  "version": "1.0",
+  "scope": "Mevcut toplu sonuçların raporlanmasıdır. Bu rapor hazırlanırken yeni analiz, hipotez testi, model eğitimi veya eşik değişikliği yapılmadı. Hesaplayıcı değişmedi.",
+  "pages": [
+    {
+      "title": "1. Veri kaynağı ve hasta grubunun tanımı",
+      "blocks": [
+        {"type": "callout", "text": "Arşivin genişlemesi, hesaplayıcının yeni hastalarda doğrulandığı anlamına gelmez. 87 ailelik biyolojik karşılaştırma da henüz bağımsız olarak doğrulanmış değildir."},
+        {"type": "p", "text": "Amaç; Drive'daki mevcut genetik ve klinik kayıtların hangi soruları desteklediğini, seçilmiş gruplara nasıl ulaşıldığını ve belirsizlikleri açıkça göstermektir. Bu, tek merkezli, geriye dönük, kalıtsal kanser değerlendirmesine yönlendirilmiş bir başvuru arşividir. Genel toplumda kanser riski veya nedensel etki çalışması değildir. [1]"},
+        {"type": "table", "headers": ["Kayıt düzeyi", "Kayıtlı sayı", "Nasıl yorumlanmalı?"], "rows": [
+          ["Hasta klasörü", "2.259", "Klasör envanteri; benzersiz hasta sayısı değildir."],
+          ["Genetik örnek kodu", "2.156", "Tekrar örnekler aynı kişiye ait olabilir."],
+          ["Genetik hasta kimliği", "2.148", "Kabul edilmiş operasyonel kimlikler; arşivin kesin benzersiz kişi toplamı değildir."],
+          ["Klinik bağlantısı kabul edilmiş genetik hasta", "1.445", "Kimlik eşleştirmesi kabul edilmiş kişiler."],
+          ["Klinik kaynak satırı", "7.939", "2019, 2020, 2022 sürümleri; aynı kişi birden fazla satırda bulunabilir."]
+        ]},
+        {"type": "p", "text": "Özgün genetik raporlar bireysel hasta klasörlerinde; klinik kaynaklar Veri1/Veri2 altındaki 2019 ve 2020 Excel dosyaları ile 2022 meme/over dosyalarındadır. Kimlik eşleştirmesinde isim, aile numarası, protokol ve örnek kodları birlikte değerlendirilmiştir. Uyuşmazlıklar otomatik birleştirilmemiştir. Eksik veri 'yok' olarak kodlanmamıştır. [1]"},
+        {"type": "table", "headers": ["Klinik/genetik altgrup", "Kişi veya aile sayısı"], "rows": [
+          ["Klinik bağlantısı kabul edilmiş kadın meme kanseri hastası", "1.228 kişi"],
+          ["Doğrulanmış BRCA bulgusu olan kadın meme kanseri hastası", "152 kişi"],
+          ["Bu gruptaki kayıtlı aile temsilcisi", "143 aile temsilcisi"]
+        ]},
+        {"type": "p", "text": "Aile kimliği 26 kişide eksik, dokuz kişide çelişkilidir. Kayıtlı 1.988 olası aile grubu, genetik olarak ilişkisiz aile sayısı değildir. Klinik bağlantılarının kabulü, her tümör ölçümünün özgün hastane patolojisiyle doğrulandığı anlamına gelmez. [1]"},
+        {"type": "p", "text": "Aşağıdaki biyolojik karşılaştırma ve hesaplayıcı denetimi farklı seçim kuralları olan iki ayrı altgruptur. Bu grupların sayıları toplanarak yeni bir hasta toplamı oluşturulamaz."}
+      ]
+    },
+    {
+      "title": "2. Biyolojik karşılaştırma: seçim ve yöntem",
+      "blocks": [
+        {"type": "p", "text": "Mevcut tek öncelikli soru: doğrulanmış BRCA1/BRCA2 küçük varyantı taşıyan meme kanseri hastalarında, erken dur kodonu oluşturan değişiklikler (stop-gain) ile okuma çerçevesini kaydıran değişiklikler (frameshift) kayıtlı tümör boyutu açısından farklı mı? Yeni varyant sınıfı veya yeni sonuç değişkeni aranmadı. [2]"},
+        {"type": "flow", "rows": [
+          ["130 kişi", "Küçük varyantlı meme kanseri giriş grubu."],
+          ["123 aile temsilcisi", "Aile temsilcisi, varyant sınıfına ve ölçüm tamlığına bakılmadan en düşük örnek koduyla seçildi."],
+          ["99 aile temsilcisi", "Sabit tanıma göre iki varyant sınıfından birine uygun: 21 stop-gain, 78 frameshift."],
+          ["87 tam aile temsilcisi", "Boyut, tanı yaşı ve tanı yılı tam: 20 stop-gain, 67 frameshift. Diğer 12 temsilcide bu alanlardan en az biri eksik."]
+        ]},
+        {"type": "p", "text": "Önceden tartışmalı iki kayıt konservatif olarak tek aile tutuldu. Akrabalar ana karşılaştırmada ayrı bağımsız gözlemler sayılmadı; tüm kişileri tutan kontrol de aileye göre kümelendi. Dört yeni tam frameshift ailesiyle önceki 83 ailelik grup 87 aileye çıktı; eski klinik/genetik değerler değiştirilmedi. [2]"},
+        {"type": "p", "text": "Sabit ana model, kayıtlı tümör boyutunun logaritmasını karşılaştırdı. Tanı yaşı, tanı yılı, BRCA geni, bildirilen köken, bölge ve genetik test kaynağı için aynı düzeltme korundu. Belirsizlik aileye göre kümelendi. Tam modelde 19 parametre bulunması, sınırlı örneklemde sonuçların modele duyarlılığı açısından önemlidir. Bu raporda model yeniden çalıştırılmadı. [2]"},
+        {"type": "table", "headers": ["Sabit ana sonuç", "Mevcut kayıtlı değer"], "rows": [
+          ["Karşılaştırma", "20 aile / 67 aile"],
+          ["Düzeltilmiş kayıtlı boyut oranı", "0,6487"],
+          ["%95 güven aralığı", "0,4206 - 1,0007"],
+          ["Çoklu test düzeltmesi öncesi p", "0,05035"],
+          ["Geçmiş denemeleri içeren BH q", "0,5273"]
+        ]},
+        {"type": "callout", "text": "Oran 1, fark olmamasıyla uyumludur; güven aralığı 1'i içerir. Sonuç çoklu test düzeltmesinden sonra anlamlı değildir. Bu oran kanser riski, nedensel etki veya bağımsız doğrulanmış bir biyolojik fark değildir."}
+      ]
+    },
+    {
+      "title": "3. Dayanıklılık, eksiklik ve seçim yanlılığı",
+      "blocks": [
+        {"type": "p", "text": "Aşağıdaki kontroller, 24 Ekim tarihli mevcut sabit analizden aktarılmıştır; bu rapor için yeniden hesaplanmamıştır. Daha olumlu bir alt analiz ana sonucun yerine seçilmemiştir. [2]"},
+        {"type": "table", "headers": ["Önceden belirlenmiş kontrol", "Kayıtlı sonuç ve sınırı"], "rows": [
+          ["Aynı örneklemde daha basit yaş/yıl/gen düzeltmesi", "Oran 0,7261; aralık 0,5021 - 1,0500; p=0,0890. Basit modelle doğrulanmadı."],
+          ["Tüm kişiler, aileye göre kümeli", "91 kişi / 87 aile; oran 0,6676; aralık 0,4422 - 1,0079. Belirsizlik sürüyor."],
+          ["Özgün raporla birebir cDNA eşleşmesi", "83 tam aile; oran 0,6734; aralık 0,4384 - 1,0342."],
+          ["Sonuca bakılmadan eşleştirme", "Altı tam çift bulundu; önceden gereken en az on çift yok. Eşleştirilmiş p verilmedi."],
+          ["BRCA genlerine ayrı bakış", "BRCA1'de 13, BRCA2'de yedi stop-gain ailesi. Her sınıfta en az 15 aile şartı sağlanmadı."],
+          ["Tek aile / tek varyant çıkarma", "Yön benzer kalsa da p değerleri eşik aşıyor; örneklem bileşimine duyarlılık var."]
+        ]},
+        {"type": "table", "headers": ["Sınıfa uygun ailelerde kayıt tamlığı", "Stop-gain / 21", "Frameshift / 78"], "rows": [
+          ["Boyut kayıtlı", "20", "68"], ["Tanı yılı kayıtlı", "20", "69"], ["Boyut, yaş ve yıl birlikte tam", "20", "67"]
+        ]},
+        {"type": "p", "text": "Mevcut eksiklik kontrolleri, verinin rastgele eksik olduğunu kanıtlamaz. Hastaların genetik değerlendirmeye yönlendirilmesi, klinik kaydın bulunması ve keşif sırasında belirli dosyaların geri kazanılması seçim yanlılığı oluşturabilir. Bu seçim olasılıkları bilinmediğinden güvenilir ağırlıklandırma yapılamadı. Eksik boyut veya tarihler sıfırla doldurulmadı. [2]"},
+        {"type": "p", "text": "Her hastada özgün hastane patolojisi, tümör boyutunun birimi ve tedavi öncesinde ölçüldüğünün aynı standartta teyidi sağlanamadı. Kayıtlı boyut ile biyolojik tümör büyümesi bu nedenle eş anlamlı değildir. Köken/bölge değişkenleri ve modele yapılan düzeltme de kalan karıştırıcı etkileri tamamen ortadan kaldırmaz. [2]"},
+        {"type": "p", "text": "Geçmiş 25.329 deneme korundu; 706 değişen-girdi denemesi eklenerek kayıt 26.035'e ulaştı. Bu sayı bağımsız 26.035 biyolojik hipotez demek değildir; duyarlılık ve yanlılık kontrollerini de içerir. Ana sonucun tarihsel BH q değeri 0,5273'tür. Olumlu görünen bazı duyarlılık sonuçları da geçmiş denemeleri kapsayan düzeltmeyi geçmedi. [2]"}
+      ]
+    },
+    {
+      "title": "4. Hesaplayıcının doğrulama adayları",
+      "blocks": [
+        {"type": "p", "text": "Hesaplayıcı, özgün 1.295 hasta ve 167 taşıyıcıdan oluşan geliştirme grubunun sabit modelini kullanır; tanı yılları 1988-2020'dir. Arşivdeki yeni kimlik sayıları bu gruba eklenmedi. 87 ailelik tümör boyutu sonucu olasılık veya öncelik hesabına katılmadı. [3]"},
+        {"type": "flow", "rows": [
+          ["206 kişi", "Özgün geliştirme hastaları dışında, klinik bağlantısı kabul edilmiş kişiler."],
+          ["185 kişi / 184 aile grubu", "Geliştirme ailesiyle örtüşen 20 kişi ve uygun meme/over kaydı olmayan bir kişi dışlandı; aile başına bir temsilci seçildi."],
+          ["111 tam temel girdili temsilci", "73 temsilcide en az bir temel girdi eksik veya çelişkili."],
+          ["91 rapor destekli aday", "20 tam girdili kişide genetik sonuç/kapsam/kalite belgesi hâlâ yetersiz."],
+          ["51 temkinli aday", "Tarihsel VUS sınıflamasına dayanan 40 kişi ayrıldı. Kalan grup: 14 pozitif, 37 negatif, 51 kayıtlı aile."],
+          ["0 doğrulamaya uygun hasta", "51 kişideki girdilerin tamamının BRCA sonucu öncesinde bilindiğini gösteren yeterli tarihli klinik profil yok."]
+        ]},
+        {"type": "p", "text": "Genetik raporlar Drive'da mevcuttur. Eksik olan; aile öyküsü ve tümör bilgilerinin BRCA sonucu öğrenilmeden önce mevcut olduğunu gösteren tarihli klinik kayıtlardır. Sonraki bir tabloda aynı değerin bulunması, önceki tarihte bilindiğini kanıtlamaz. O tarihte hesaplayıcının kullanılmış olması şart değildir; savunulabilir bir test öncesi değerlendirme gerekir. [4]"},
+        {"type": "p", "text": "41 kişide meme tanı yılı kayıtlıdır, on kişide eksiktir; yeni yıl bulunamadı. İki over tanı tarihi meme tanı tarihi yerine kullanılmadı. Tanı yılı hesaplayıcının girdisi değildir; burada olayların sırasını kontrol etmek için aranır. Yılı kayıtlı 41 kişi de sonuç öncesi tam profil şartını geçemedi. [4]"},
+        {"type": "p", "text": "Tanı yılı taşıyıcılarda 6/14, negatiflerde 4/37 kişide eksiktir. Ki67 sırasıyla 11/14 ve 15/37 kişide kayıtlı değildir. Sadece tam kayıtları seçmek grupları eşit etkilemez. Ki67 için yeni tamlık şartı konmadı; mevcut isteğe bağlı eksik-veri kuralı korundu. [4]"},
+        {"type": "callout", "text": "Hiçbir kişi zamanlama şartını geçmediği için yeni hasta tahmini veya model eğitimi yapılmadı. Yeni AUC, Brier, kalibrasyon ve eşik performansı hesaplanamadı. Bunlar sıfır performans sonuçları değildir; model başarısızlığına ilişkin bir test de yapılmış değildir."}
+      ]
+    },
+    {
+      "title": "5. Karar, gereken kayıtlar ve izlenebilirlik",
+      "blocks": [
+        {"type": "p", "text": "Bugünkü karar: mevcut başvuru grubunun genetik ve klinik özellikleri tanımlanabilir; 87 ailelik boyut farkı yalnız bağımsız doğrulama adayı olarak tutulur. Hesaplayıcının katsayılarını veya eşiklerini bu arşiv sayımlarıyla değiştirmek için yeni doğrulama kanıtı yoktur. Yeni hipotez taraması bu raporun kapsamı dışındadır."},
+        {"type": "table", "headers": ["Amaç", "Kararı değiştirebilecek veri"], "rows": [
+          ["87 ailelik biyolojik bulgunun bağımsız sınanması", "Keşif arşiviyle hasta/aile örtüşmesi olmayan bağımsız bir grup; doğrulanmış gen/varyant sınıfı, açık indeks meme tümörü ve tanı yaşı/yılı; tedavi öncesi boyut, birim, yöntem ve ölçüm tarihi; tedavi zamanlaması; köken, bölge, test kaynağı; sonuçtan önce sabitlenmiş seçim ve analiz planı."],
+          ["51 hesaplayıcı adayının uygunluğunun değişmesi", "Tarihli test öncesi değerlendirme ve ilk BRCA sonucu/öğrenilme tarihi veya açık tarih sınırları; o gün bilinen sekiz aile öyküsü girdisi; tanı türü, yaş, bölge, grade ve ER/PR/HER2 kayıtları. Varsa Ki67'nin o gün mevcut olması; on hastada açık meme tanı tarihi/yılı."],
+          ["Seçim yanlılığının izlenmesi", "Uygun bütün hastaları, eksikleri olanlar dahil, kapsayan dahil/dışlama günlüğü; hasta/aile bağlantıları, merkez ve başvuru ölçütleri. Sonradan gelişen ikinci veya karşı taraf tümörü önceki profile taşınmamalı."]
+        ]},
+        {"type": "p", "text": "Mevcut arşivden gelecekte uygun bir hesaplayıcı altgrubu elde edilse bile, bu aynı arşivde aileleri ayrılmış geriye dönük değerlendirme olur; bağımsız dış doğrulama sayılmaz. Bağımsız tasarımda klinik olarak anlamlı etki ve örneklem hedefi önceden belirlenmelidir. Bu raporda yeni güç veya örneklem hesabı yapılmadı."},
+        {"type": "table", "headers": ["Kaynak", "Denetlenebilir dayanak"], "rows": [
+          ["[1] Hasta grubu ve kimlik/aile denetimi, 24.10.2026", "Özgün Drive kayıtları + kayıtlı toplu sayım ve eşleştirme sonuçları."],
+          ["[2] Sabit tümör boyutu karşılaştırması, 24.10.2026", "Önceden sabit plan, 87 ailelik sonuç, eksiklik ve dayanıklılık kontrolleri; geçmiş test kaydı korundu."],
+          ["[3] Özgün hesaplayıcı modeli", "Kayıtlı model paketi: 1.295 hasta / 167 taşıyıcı; hesaplama çekirdeği ve katsayılar değiştirilmedi."],
+          ["[4] 51 adayın tarihli veri denetimi, 24.10.2026", "52 ana ve 17 alt klasör, 543 dosya envanteri; 192 belge okuma isteği, 52 çalışma kitabı ve 186 kabul edilmiş klinik kaynak satırı kontrolü."]
+        ]},
+        {"type": "p", "text": "Raporun dayandığı toplu dosyalar ve sürüm sağlama toplamları sitedeki kanıt paketinde bulunur. Hasta bazındaki kimlik, özgün belge/satır bağlantıları, dahil/dışlama listeleri ve tarih değerlendirmeleri özel araştırma çalışma dosyalarındadır; özgün raporlar Drive'da kalır. Bu rapor hasta kimliği içermez. Sağlama toplamı sürümü doğrular; bilimsel geçerliliği veya bağımsız doğrulamayı tek başına kanıtlamaz."}
+      ]
+    }
+  ]
+}

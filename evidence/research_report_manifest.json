@@ -1,0 +1,23 @@
+{
+  "report_prepared": "2026-10-27",
+  "evidence_as_of": "2026-10-24",
+  "version": "1.0",
+  "scope": "Presentation only; no new analysis or calculator changes.",
+  "files": {
+    "evidence/research_report_tr.json": "ae536532b8745d14deab9515615f2274a915b4cec97807a27c0ad09970e04665",
+    "output/pdf/BRCA_arastirma_raporu_TR.pdf": "e10b43e85c4d6289accea77720bea4365232a55c9d4e5872c5d030850e8008e9",
+    "evidence/research/cohort_census.json": "1eced167f545d7ca72153cfe0970104126ed1a7ef06d532fc0c3241e4b1dbaf8",
+    "evidence/research/curation_results.json": "d8d42b462dbb2bb8d921cb653a222df874a70b6b6d2271048fa62ad3c296e492",
+    "evidence/research/size_results.json": "6c2a233364970f89e5fce093517d8e95a21866b58e64ec032f1a95bd013ef16d",
+    "evidence/research/previous_size_primary.json": "634fd320c55f174c4ed26f3d89a59dea56fb96c2ab6658242667cb4a0aa7c1d0",
+    "evidence/calculator_validation_eligibility.json": "58b31fa4d771d6539fe82c731644cd6f8398ec617dabb63df6b9d95f40a12674",
+    "evidence/calculator_prediction_date_audit.json": "168dbeda2d56f1978c70a8e75e8c4fd46fe323218b3e697ad86f54125b139794",
+    "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
+    "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356"
+  },
+  "upstream_report_sha256": {
+    "Hasta grubu ve eşleştirme denetimi (24.10.2026)": "c27ec13da16403549a2b740427f1dc8754e0a6c20977f213774d9700f1c34a89",
+    "Sabit boyut karşılaştırması raporu (24.10.2026)": "6cac47d91c698dfb5acbc9fc832ae815b9f2036db75571a47ecb96535f73f206",
+    "51 adayın tarihli veri denetimi (24.10.2026)": "8fd2b3196b7ba1e774163ab49ffd16ac60d709cc6160f65a14116322c7fe2c79"
+  }
+}

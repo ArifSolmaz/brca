@@ -5,6 +5,7 @@ import hashlib
 import io
 import zipfile
 from pathlib import Path
+from research_report import report_html, PDF as REPORT_PDF
 
 EVIDENCE = Path(__file__).parent / "evidence" / "research"
 
@@ -13,6 +14,8 @@ def build_evidence_bundle():
     """Package only explicitly allowlisted, already-published aggregate evidence."""
     root = EVIDENCE.parent.parent
     names = ['evidence/KANIT_REHBERI_TR.md', 'model_full_embedded.json',
+             'evidence/research_report_tr.json', 'evidence/research_report_manifest.json',
+             'output/pdf/BRCA_arastirma_raporu_TR.pdf',
              'evidence/calculator_prediction_date_audit.json',
              'evidence/calculator_validation_eligibility.json',
              'evidence/rapid_threshold.json', 'evidence/matched_workload.json', 'evidence/sources.json']
@@ -270,6 +273,15 @@ def render_research_overview(lang, calculator_n):
     import streamlit as st
     st.html(f"<style>{STYLE}</style>" + overview_article(lang, calculator_n))
     tr = lang == "tr"
+    st.subheader('Araştırma raporu' if tr else 'Research report (Turkish)')
+    st.caption('Hasta seçim akışı, sabit yöntemler ve belirsizlikler · Rapor: 27 Ekim 2026 · Mevcut sonuçlar: 24 Ekim 2026. Yeni analiz yapılmadı.'
+               if tr else 'Patient selection, frozen methods and uncertainty · Report: 27 October 2026 · Existing results: 24 October 2026. No new analyses.')
+    st.download_button(
+        'Araştırma raporunu indir (PDF)' if tr else 'Download research report (Turkish PDF)',
+        REPORT_PDF.read_bytes(), file_name=REPORT_PDF.name, mime='application/pdf',
+        key='research_report_pdf_download')
+    with st.expander('Tam araştırma raporunu web sayfasında oku' if tr else 'Read the full research report in Turkish'):
+        st.html(f'<style>{STYLE}</style>' + report_html())
     st.download_button(
         "Sunum özetini indir" if tr else "Download the presentation summary",
         build_overview_html(lang, calculator_n).encode("utf-8"),
