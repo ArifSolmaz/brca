@@ -3,9 +3,71 @@
   "subtitle": "Hasta seçimi, mevcut sonuçlar ve doğrulama için gereken kayıtlar",
   "prepared": "25 Ekim 2026",
   "evidence_date": "24 Ekim 2026",
-  "version": "1.0",
+  "version": "1.1",
   "scope": "Mevcut toplu sonuçların raporlanmasıdır. Bu rapor hazırlanırken yeni analiz, hipotez testi, model eğitimi veya eşik değişikliği yapılmadı. Hesaplayıcı değişmedi.",
   "pages": [
+    {
+      "title": "Önce kısa özet",
+      "blocks": [
+        {
+          "type": "callout",
+          "text": "Bu çalışma neyi gösteriyor, neyi henüz göstermiyor?"
+        },
+        {
+          "type": "p",
+          "text": "Elimizde ne var? Genetik raporlar ve farklı yıllara ait klinik kayıtlar bir araya getirildi; aynı kişi ve ailelerin tekrar sayılmaması için bağlantılar kontrol edildi. Böylece arşivde hangi verilerin kullanılabildiği ve hangi kayıtların eksik olduğu daha açık hâle geldi. Arşivdeki her klasör ayrı bir hasta değildir."
+        },
+        {
+          "type": "p",
+          "text": "Biyolojik soru neydi? 87 ailede, iki tür BRCA değişikliği taşıyan hastaların kayıtlı tümör boyutları karşılaştırıldı. Bir grupta boyutun daha küçük olabileceğine işaret eden bir tahmin var; ancak belirsizlik ve çok sayıda deneme dikkate alındığında güvenilir bir fark gösterilemedi. Sonuç, başka hastalarda doğrulanmış bir bulgu değildir."
+        },
+        {
+          "type": "p",
+          "text": "Hesaplayıcı açısından ne anlama geliyor? 51 adayın genetik raporları var. Ancak aile öyküsü ve tümör bilgilerinin BRCA sonucu öğrenilmeden önce bilindiğini yeterince belgeleyemiyoruz. Bu nedenle henüz hiçbiri yeni doğrulama için uygun sayılmadı. Bu, hesaplayıcının başarısız olduğunu göstermez; değerlendirme için gereken tarihli kayıtların eksik olduğunu gösterir. Hesaplayıcı hâlâ özgün 1.295 hastalık geliştirme grubuna dayanıyor."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Terim",
+            "Bu raporda ne demek?"
+          ],
+          "rows": [
+            [
+              "Aile temsilcisi",
+              "Aynı aileden birden fazla kişi varsa ana karşılaştırmada önceden belirlenen kuralla seçilen tek kişi. Böylece aile daha fazla ağırlık kazanmaz."
+            ],
+            [
+              "Taşıyıcı",
+              "Bu raporda BRCA1/BRCA2 geninde hastalıkla ilişkili kabul edilen bir değişikliği bulunan kişi. Tek başına kanserin nedenini veya gelecekteki kesin sonucu göstermez."
+            ],
+            [
+              "VUS",
+              "Hastalıkla ilişkisi henüz kesinleşmemiş genetik değişiklik. Kesin hastalık yapıcı sonuç olarak sunulmaz."
+            ],
+            [
+              "Boyut oranı",
+              "İki grubun düzeltilmiş kayıtlı tümör boyutlarını karşılaştırır. 1 fark olmamasıyla uyumludur; 1’den küçük tahmin ilk grupta daha küçük boyuta işaret eder. Kanser riski değildir."
+            ],
+            [
+              "Güven aralığı",
+              "Tahminin belirsizliğini gösterir. Bu boyut karşılaştırmasında aralık 1’i de içerdiğinden fark olmaması ihtimali dışlanamıyor."
+            ],
+            [
+              "p ve q",
+              "p, fark olmadığı varsayımı altında verinin ne kadar sıra dışı olduğunu özetler. q, çok sayıda denemenin yanlış olumlu sonuç üretme riskini hesaba katar. İkisi de bulgunun doğru olma olasılığı değildir."
+            ],
+            [
+              "Karıştırıcı etki / seçim yanlılığı",
+              "Yaş, gen veya başvuru özellikleri karşılaştırmayı etkileyebilir; kaydı bulunan hastalar bütün hastaları temsil etmeyebilir. İstatistiksel düzeltme bu sorunları tamamen gidermeyebilir."
+            ],
+            [
+              "Bağımsız doğrulama",
+              "Aynı arşivden yeni kayıt bulmak yerine, keşif grubuyla hasta/aile örtüşmesi olmayan ayrı hastalarda aynı sorunun önceden belirlenmiş kurallarla sınanması."
+            ]
+          ]
+        }
+      ]
+    },
     {
       "title": "1. Veri kaynağı ve hasta grubunun tanımı",
       "blocks": [

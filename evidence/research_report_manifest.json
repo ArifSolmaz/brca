@@ -1,11 +1,11 @@
 {
   "report_prepared": "2026-10-25",
   "evidence_as_of": "2026-10-24",
-  "version": "1.0",
+  "version": "1.1",
   "scope": "Presentation only; no new analysis or calculator changes.",
   "files": {
-    "evidence/research_report_tr.json": "822ac7a97cbc14cc397ce2dea18ec37b9d312065d8d87b87998e28bc2368a19f",
-    "output/pdf/BRCA_arastirma_raporu_TR.pdf": "b138011684347296e0b1b35b89b4e9527eb064fe142143625146e40bbadb8628",
+    "evidence/research_report_tr.json": "8cc1d4fad36c0e8290f236714420e159a543b1e0121b78abaab4828655ae6c6b",
+    "output/pdf/BRCA_arastirma_raporu_TR.pdf": "7187cc81ac093c5b61cb65c6fe426fe2222da76b0fe9b9ffe2226d0e42c945dd",
     "evidence/research/cohort_census.json": "1eced167f545d7ca72153cfe0970104126ed1a7ef06d532fc0c3241e4b1dbaf8",
     "evidence/research/curation_results.json": "d8d42b462dbb2bb8d921cb653a222df874a70b6b6d2271048fa62ad3c296e492",
     "evidence/research/size_results.json": "6c2a233364970f89e5fce093517d8e95a21866b58e64ec032f1a95bd013ef16d",

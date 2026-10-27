@@ -47,7 +47,12 @@ class ResearchEvidenceTests(unittest.TestCase):
         for name, expected in manifest['files'].items():
             self.assertEqual(hashlib.sha256((APP.parent / name).read_bytes()).hexdigest(), expected)
         d = report_data()
-        self.assertEqual(len(d['pages']), 5)
+        self.assertEqual(len(d['pages']), 6)
+        self.assertEqual(d['prepared'], '25 Ekim 2026')
+        self.assertEqual(d['pages'][0]['title'], 'Önce kısa özet')
+        self.assertIn('Bu çalışma neyi gösteriyor, neyi henüz göstermiyor?', report_html())
+        self.assertIn('p ve q', report_html())
+        self.assertIn('İkisi de bulgunun doğru olma olasılığı değildir.', report_html())
         self.assertEqual(d['evidence_date'], '24 Ekim 2026')
         text = report_html()
         self.assertIn('20 stop-gain, 67 frameshift', text)
