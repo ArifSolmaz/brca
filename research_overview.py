@@ -274,8 +274,8 @@ def render_research_overview(lang, calculator_n):
     st.html(f"<style>{STYLE}</style>" + overview_article(lang, calculator_n))
     tr = lang == "tr"
     st.subheader('Araştırma raporu' if tr else 'Research report (Turkish)')
-    st.caption('Hasta seçim akışı, sabit yöntemler ve belirsizlikler · Rapor: 27 Ekim 2026 · Mevcut sonuçlar: 24 Ekim 2026. Yeni analiz yapılmadı.'
-               if tr else 'Patient selection, frozen methods and uncertainty · Report: 27 October 2026 · Existing results: 24 October 2026. No new analyses.')
+    st.caption('Hasta seçim akışı, sabit yöntemler ve belirsizlikler · Rapor: 25 Ekim 2026 · Mevcut sonuçlar: 24 Ekim 2026. Yeni analiz yapılmadı.'
+               if tr else 'Patient selection, frozen methods and uncertainty · Report: 25 October 2026 · Existing results: 24 October 2026. No new analyses.')
     st.download_button(
         'Araştırma raporunu indir (PDF)' if tr else 'Download research report (Turkish PDF)',
         REPORT_PDF.read_bytes(), file_name=REPORT_PDF.name, mime='application/pdf',

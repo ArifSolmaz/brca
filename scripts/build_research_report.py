@@ -47,7 +47,7 @@ def decorate(c,doc):
     c.setTitle(D['title']);c.setAuthor('Proje ekibi');c.setSubject(D['subtitle'])
     c.setStrokeColor(accent);c.setLineWidth(1.3);c.line(44,A4[1]-39,A4[0]-44,A4[1]-39)
     c.setFont('ReportBold',8);c.setFillColor(accent);c.drawString(44,A4[1]-29,'BRCA | ARAŞTIRMA RAPORU')
-    c.setFont('Report',8);c.setFillColor(muted);c.drawRightString(A4[0]-44,A4[1]-29,'Sürüm 1.0 | 27 Ekim 2026')
+    c.setFont('Report',8);c.setFillColor(muted);c.drawRightString(A4[0]-44,A4[1]-29,'Sürüm '+D['version']+' | '+D['prepared'])
     c.setStrokeColor(colors.HexColor('#dce1e7'));c.setLineWidth(.4);c.line(44,35,A4[0]-44,35)
     c.setFont('Report',7.5);c.drawString(44,23,'Mevcut sonuçların sunumu | Hasta kimliği içermez | Yeni analiz yapılmadı')
     c.drawRightString(A4[0]-44,23,f'{doc.page} / {len(D["pages"])}')
