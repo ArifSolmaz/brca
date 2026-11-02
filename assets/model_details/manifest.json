@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "327b38ac435bb7dcacc9218516f806ee8ffb98205201b40336edcaa98c9ae175",
-    "model_teaching.py": "2c328e93a09d0c703297216db307157e31646a2f76d2212f6a7e682c720e44a8",
+    "model_teaching.py": "cb763de56584eded6999928ae0109dffde8d911ede1c806e7411ca548c73334a",
     "model_teaching_content.py": "6e42d9d547320f4a1403812f5e087af9fd22223b4d6c2f1884907eb1d83904c3",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -43,7 +43,6 @@
       "en"
     ],
     "typeset_formulas_visually_checked": true,
-    "persistent_result_bar_visually_checked": true,
     "age_edit": {
       "from": 38,
       "to": 48,
@@ -54,5 +53,16 @@
       "card_after": 5
     },
     "tests_passed": 27
+  },
+  "desktop_teaching_layout": {
+    "columns": [
+      "inputs",
+      "coefficient products and running sum",
+      "full substituted manual calculation"
+    ],
+    "full_browser_width": true,
+    "floating_percentage_bar": false,
+    "mobile": "stacked",
+    "pdf_files_unchanged": true
   }
 }
