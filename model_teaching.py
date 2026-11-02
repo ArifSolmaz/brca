@@ -101,7 +101,10 @@ def render_model_teaching(lang):
         st.latex(r'\operatorname{logit}(p)=\log\!\left(\frac{p}{1-p}\right),\qquad\mathrm{odds}=\frac{p}{1-p}')
     st.header(t('Kurgu hasta üzerinde adım adım hesap','Step-by-step calculation for a synthetic patient'))
     names = [t('Temel profil: 50 yaş','Baseline profile: age 50'),t('Sitedeki örnek hasta: 38 yaş','Site example patient: age 38'),t('Kart ile modelin ayrıldığı profil','Card/model disagreement example')]
-    preset = st.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=1,format_func=lambda i:names[i],key='teaching_preset')
+    preset_key = 'teaching_preset_'+lang
+    st.session_state.setdefault(preset_key,st.session_state.get('_teaching_selected_preset',st.session_state.get('teaching_preset',1)))
+    preset = st.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=None,format_func=lambda i:names[i],key=preset_key)
+    st.session_state['_teaching_selected_preset']=preset
     if st.button(t('Seçili örneği sıfırla','Reset selected example'),key='teaching_reset'):
         st.session_state.pop('_teaching_loaded',None)
     live_metrics = st.container()
@@ -114,12 +117,18 @@ def render_model_teaching(lang):
         st.session_state['_teaching_loaded']=preset
         st.session_state.pop('_teaching_previous',None)
         st.session_state.pop('_teaching_change',None)
+        for category in ('dx','grade'):
+            st.session_state['teaching_'+category+'_'+lang]=st.session_state['teaching_'+category]
+    for category in ('dx','grade'):
+        st.session_state.setdefault('teaching_'+category+'_'+lang,st.session_state['teaching_'+category])
     with st.expander(t('Örnek girdileri değiştirin','Change the example inputs'),expanded=True):
         a,b,c=st.columns(3)
         age=a.number_input(t('Tanı yaşı','Age at diagnosis'),18,95,key='teaching_age')
         dx_names=dict(zip(['breast','bilateral','breast_ovary','male','ovarian'],t(['Tek taraflı meme','Bilateral meme','Meme + over','Erkek meme','Yalnız over'],['Unilateral breast','Bilateral breast','Breast and ovarian','Male breast','Ovarian only'])))
-        dx=b.selectbox(t('Tanı','Diagnosis'),list(dx_names),format_func=dx_names.get,key='teaching_dx')
-        grade=c.selectbox('Grade',['g1','g2','g3'],format_func=lambda g:t({'g1':'1','g2':'2 / bilinmiyor','g3':'3'},{'g1':'1','g2':'2 / unknown','g3':'3'})[g],key='teaching_grade')
+        dx=b.selectbox(t('Tanı','Diagnosis'),list(dx_names),format_func=dx_names.get,key='teaching_dx_'+lang)
+        st.session_state['teaching_dx']=dx
+        grade=c.selectbox('Grade',['g1','g2','g3'],format_func=lambda g:t({'g1':'1','g2':'2 / bilinmiyor','g3':'3'},{'g1':'1','g2':'2 / unknown','g3':'3'})[g],key='teaching_grade_'+lang)
+        st.session_state['teaching_grade']=grade
         region=a.selectbox(t('Köken bölgesi','Origin region'),core.M['categorical']['region'],key='teaching_region')
         ovarian=dx=='ovarian'
         if ovarian:
@@ -141,7 +150,7 @@ def render_model_teaching(lang):
     with live_metrics:
         m1,m2,m3=st.columns(3)
         m1.metric(t('Gösterilen olasılık','Displayed probability'),t('Aileye özgü değerlendirme','Family-specific assessment') if urg_fam else fmt(r['p_cal']*100,1)+'%',
-                  delta=None if urg_fam else f"{100*(r['p_cal']-baseline['p_cal']):+.2f}"+t(' yüzde puan',' percentage points'),delta_color='off')
+                  delta=None if urg_fam else fmt(100*(r['p_cal']-baseline['p_cal']),2)+t(' yüzde puan',' percentage points'),delta_color='off')
         m2.metric(t('Kart toplamı','Card score'),d['total'],delta=d['total']-baseline['A']['total'],delta_color='off')
         m3.metric(t('A / B şeridi','A / B lane'),lanes[d['lane']]+' / '+lanes[r['B']['lane']])
     st.html(live_result_html(r,baseline,change,lang))

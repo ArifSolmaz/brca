@@ -34,11 +34,13 @@ class ModelTeachingTests(unittest.TestCase):
             self.assertEqual(len(at.get('download_button')),2)
         control(at,'lang_sel').set_value('tr').run();self.assertFalse(at.exception);self.assertEqual(at.query_params['dil'],['tr'])
         self.assertEqual(at.metric[0].value,'25,8%')
+        self.assertEqual(at.selectbox(key='teaching_preset_tr').value,1)
+        self.assertEqual(at.selectbox(key='teaching_dx_tr').value,'breast')
 
     def test_teaching_and_research_round_trip_preserves_calculator(self):
         at=self.start(teaching=False);at.button(key='btn_example').click().run();before=result(at)
         control(at,'app_view').set_value('model').run();self.assertFalse(at.exception)
-        at.selectbox(key='teaching_preset').set_value(2).run();self.assertFalse(at.exception);self.assertEqual(at.metric[0].value,'8.6%')
+        at.selectbox(key='teaching_preset_en').set_value(2).run();self.assertFalse(at.exception);self.assertEqual(at.metric[0].value,'8.6%')
         control(at,'app_view').set_value('research').run();self.assertFalse(at.exception)
         control(at,'app_view').set_value('calculator').run();self.assertFalse(at.exception)
         self.assertEqual(result(at),before)
@@ -65,6 +67,12 @@ class ModelTeachingTests(unittest.TestCase):
         at.button(key='teaching_reset').click().run()
         self.assertFalse(at.exception);self.assertEqual(at.metric[0].value,'25.8%')
         self.assertNotIn('_teaching_change',at.session_state)
+        at.selectbox(key='teaching_preset_en').set_value(2).run()
+        control(at,'lang_sel').set_value('tr').run()
+        self.assertFalse(at.exception)
+        self.assertEqual(at.metric[0].value,'8,6%')
+        self.assertEqual(at.selectbox(key='teaching_preset_tr').value,2)
+        self.assertEqual(at.selectbox(key='teaching_grade_tr').value,'g3')
 
     def test_teaching_route_keeps_password_gate(self):
         with patch.dict('os.environ',{'BRCA_APP_PASSWORD':'test-password','BRCA_NO_PASSWORD':'0'}):
