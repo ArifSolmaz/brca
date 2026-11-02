@@ -51,8 +51,8 @@ def comparison(current, previous):
 
 WORKBENCH_STYLE = """<style>
 @media(min-width:1100px){
-.block-container:has(#teaching-layout){max-width:none!important;width:100%;padding:0 28px 36px!important}
-.block-container:has(#teaching-layout) h1{font-size:28px!important;margin:8px 0 4px!important;padding:0!important}
+.block-container:has(.st-key-teaching_workbench){max-width:none!important;width:100%;padding:0 28px 36px!important}
+.block-container:has(.st-key-teaching_workbench) h1{font-size:28px!important;margin:8px 0 4px!important;padding:0!important}
 .st-key-teaching_inputs,.st-key-teaching_terms,.st-key-teaching_equations{height:calc(100dvh - 305px)!important;max-height:calc(100dvh - 305px)!important;overflow-y:auto;overflow-x:hidden;border:1px solid #dce1e8;border-radius:12px;padding:14px;background:#fff;box-sizing:border-box;scrollbar-gutter:stable}
 .st-key-teaching_inputs [data-testid=stVerticalBlock],.st-key-teaching_terms [data-testid=stVerticalBlock],.st-key-teaching_equations [data-testid=stVerticalBlock]{gap:6px}
 .st-key-teaching_inputs [data-testid=stWidgetLabel] p{font-size:12px;line-height:1.2}
@@ -77,7 +77,7 @@ WORKBENCH_STYLE = """<style>
 .teaching-arithmetic th{background:#f0f2f8;font-size:11px}.teaching-arithmetic .edited{background:#fff1c7}
 .teaching-arithmetic .product{white-space:nowrap}.teaching-arithmetic small{color:#627181}
 .teaching-edit{padding:8px 10px;margin-top:8px;border-left:3px solid #7560ce;background:#f4f1fc;font-size:12px;line-height:1.45;color:#17212b}
-</style><div id="teaching-layout"></div>"""
+</style>"""
 
 
 def contribution_html(current, change, lang):
@@ -133,9 +133,10 @@ def render_model_teaching(lang):
         names = [t('Temel profil: 50 yaş','Baseline profile: age 50'),t('Sitedeki örnek hasta: 38 yaş','Site example patient: age 38'),t('Kart ile modelin ayrıldığı profil','Card/model disagreement example')]
         preset_key = 'teaching_preset_'+lang
         st.session_state.setdefault(preset_key,st.session_state.get('_teaching_selected_preset',st.session_state.get('teaching_preset',1)))
-        preset = st.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=None,format_func=lambda i:names[i],key=preset_key)
+        preset_col,reset_col=st.columns([3,1],vertical_alignment='bottom')
+        preset = preset_col.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=None,format_func=lambda i:names[i],key=preset_key)
         st.session_state['_teaching_selected_preset']=preset
-        if st.button(t('Seçili örneği sıfırla','Reset selected example'),key='teaching_reset'):
+        if reset_col.button(t('Sıfırla','Reset'),key='teaching_reset',width='stretch'):
             st.session_state.pop('_teaching_loaded',None)
         st.caption(t('Sayı yazınca Enter’a basın veya alandan çıkın. Orta sütun çarpımları, sağ sütun tüm hesap zincirini günceller.', 'After typing, press Enter or leave the field. The middle column updates the products; the right column updates the full calculation chain.'))
         if st.session_state.get('_teaching_loaded') != preset or 'teaching_age' not in st.session_state:
