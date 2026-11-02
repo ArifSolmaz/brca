@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 from streamlit.testing.v1 import AppTest
 from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS
+from model_teaching_content import ORIGIN_INTRO
 ROOT=Path(__file__).resolve().parents[1]
 
 def control(at,key):return next(n for n in at if getattr(n,'key',None)==key)
@@ -104,6 +105,18 @@ class ModelTeachingTests(unittest.TestCase):
             self.assertEqual(at.session_state['_teaching_change']['previous'],saved)
             at.button(key='teaching_reset').click().run()
             self.assertNotIn('_teaching_change',at.session_state)
+
+    def test_simple_origin_explanation_precedes_formulas_in_both_languages(self):
+        for lang in ['tr','en']:
+            at=self.start(lang)
+            nodes=list(at)
+            intro=next((i,n.value) for i,n in enumerate(nodes) if n.type=='html' and 'class="teaching-origin"' in n.value)
+            self.assertIn(ORIGIN_INTRO[lang]['title'],intro[1])
+            for paragraph in ORIGIN_INTRO[lang]['paragraphs']:self.assertIn(paragraph,intro[1])
+            self.assertLess(intro[0],next(i for i,n in enumerate(nodes) if n.type=='latex'))
+            control(at,'app_view').set_value('calculator').run()
+            self.assertFalse(at.exception)
+            self.assertFalse(any(n.type=='html' and 'class="teaching-origin"' in n.value for n in at))
 
     def test_teaching_route_keeps_password_gate(self):
         with patch.dict('os.environ',{'BRCA_APP_PASSWORD':'test-password','BRCA_NO_PASSWORD':'0'}):

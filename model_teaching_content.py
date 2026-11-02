@@ -63,3 +63,21 @@ METHODS = {
  ]}
 LABELS_EN={'intercept':'Intercept','age':'Age at diagnosis','age_missing':'Age missing indicator','tnbc':'TNBC indicator','ki67':'Ki-67 (%)','ki67_missing':'Ki-67 missing indicator','fdr_breast_lt40':'First-degree breast cancer <40','fdr_breast_ge40':'First-degree breast cancer ≥40','sdr_breast_lt40':'Second-degree breast cancer <40','sdr_breast_ge40':'Second-degree breast cancer ≥40','tdr_breast':'Third/fourth-degree breast cancer','fdr_ovary':'First-degree ovarian cancer','sdr_ovary':'Second–fourth-degree ovarian cancer','fdr_other':'First-degree other cancer'}
 LABELS_TR={'intercept':'Sabit','age':'Tanı yaşı','age_missing':'Yaş eksik göstergesi','tnbc':'TNBC göstergesi','ki67':'Ki-67 (%)','ki67_missing':'Ki-67 eksik göstergesi','fdr_breast_lt40':'1. derece meme <40','fdr_breast_ge40':'1. derece meme ≥40','sdr_breast_lt40':'2. derece meme <40','sdr_breast_ge40':'2. derece meme ≥40','tdr_breast':'3.–4. derece meme','fdr_ovary':'1. derece over','sdr_ovary':'2.–4. derece over','fdr_other':'1. derece başka kanser'}
+
+# Shared wording for the student page and both teaching PDFs.
+ORIGIN_INTRO = {
+    'en': {
+        'title': 'Where this model came from',
+        'paragraphs': [
+            'We used records from 1,295 past patients whose BRCA test results were already recorded. The computer looked for combinations of age, family history and tumour features that helped distinguish positive results from other recorded results.',
+            'The calculator applies that learned pattern to the inputs you enter. We checked its performance within the original patient group, but we still need a separate group of patients to show how reliably it works beyond that group. Having more records in the archive does not automatically provide that proof.',
+        ],
+    },
+    'tr': {
+        'title': 'Bu model nasıl geliştirildi',
+        'paragraphs': [
+            'Bu model, BRCA test sonucu kayıtlarda bulunan 1.295 hastanın geçmiş verileriyle geliştirildi. Bilgisayar; yaş, aile öyküsü ve tümör özelliklerini birlikte değerlendirerek pozitif test sonuçlarını diğer kayıtlı sonuçlardan ayırt etmeye yardımcı olan örüntüleri öğrendi.',
+            'Hesaplayıcı, girdiğiniz bilgilere bu öğrenilmiş örüntüyü uygular. Başarısını ilk hasta grubunun içinde kontrol ettik; başka hastalarda ne kadar güvenilir olduğunu göstermek için bağımsız bir hasta grubuna hâlâ ihtiyaç var. Arşivde daha fazla kayıt bulunması, tek başına bu doğrulamayı sağlamaz.',
+        ],
+    },
+}

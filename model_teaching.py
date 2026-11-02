@@ -5,7 +5,7 @@ from html import escape
 from pathlib import Path
 import streamlit as st
 import brca_core as core
-from model_teaching_content import ASSETS, SYMBOLS_TR, SYMBOLS_EN, METHODS, LABELS_TR, LABELS_EN
+from model_teaching_content import ASSETS, SYMBOLS_TR, SYMBOLS_EN, METHODS, LABELS_TR, LABELS_EN, ORIGIN_INTRO
 
 PUBLIC_URL = 'https://brca-istun.streamlit.app/'
 PDF = {lang: ASSETS / f'BRCA_Model_Details_{lang.upper()}.pdf' for lang in ('tr', 'en')}
@@ -76,6 +76,7 @@ WORKBENCH_STYLE = """<style>
 .teaching-arithmetic th:first-child,.teaching-arithmetic td:first-child{text-align:left;width:28%}
 .teaching-arithmetic th{background:#f0f2f8;font-size:11px}.teaching-arithmetic .edited{background:#fff1c7}
 .teaching-arithmetic .product{white-space:normal}.formula-current{background:#fff1c7;color:#784000;padding:1px 2px;border-radius:3px}.formula-previous{color:#596579;white-space:nowrap;font-size:.78em;display:inline-block}.st-key-teaching_equations .katex{max-width:100%}.st-key-teaching_equations [data-testid=stLatex]{overflow-x:auto;overflow-y:hidden}.teaching-arithmetic small{color:#627181}
+.teaching-origin{padding:10px 14px;border-left:3px solid #7560ce;background:#eef2f7;border-radius:6px;color:#17212b}.teaching-origin h2{font-size:16px!important;line-height:1.3;margin:0 0 5px!important;padding:0!important}.teaching-origin>div{display:grid;grid-template-columns:1fr 1fr;gap:24px}.teaching-origin p{font-size:13px;line-height:1.45;margin:0}@media(max-width:1099px){.teaching-origin>div{grid-template-columns:1fr;gap:8px}}
 .teaching-edit{padding:8px 10px;margin-top:8px;border-left:3px solid #7560ce;background:#f4f1fc;font-size:12px;line-height:1.45;color:#17212b}
 </style>"""
 
@@ -166,6 +167,8 @@ def render_model_teaching(lang):
     st.html(WORKBENCH_STYLE)
     st.title(t('Model ayrıntıları ve elle hesap','Model details and manual calculations'))
     st.caption(t('Öğrenci eğitim sayfası · 2 Kasım 2026 · sabit model ', 'Student teaching page · 2 November 2026 · frozen model ')+core.M['build'])
+    origin=ORIGIN_INTRO[lang]
+    st.html('<section class="teaching-origin" aria-label="'+escape(origin['title'])+'"><h2>'+escape(origin['title'])+'</h2><div>'+''.join('<p>'+escape(paragraph)+'</p>' for paragraph in origin['paragraphs'])+'</div></section>')
     with st.container(key='teaching_workbench'):
         input_col,terms_col,steps_col=st.columns([0.95,1.15,1.05],gap='medium')
     with input_col:

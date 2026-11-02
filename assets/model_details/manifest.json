@@ -14,15 +14,15 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "327b38ac435bb7dcacc9218516f806ee8ffb98205201b40336edcaa98c9ae175",
-    "model_teaching.py": "61f5a8086887f0bcb6b6b61e3a76db67a6492821d19839c763a578216c00e1c5",
-    "model_teaching_content.py": "6e42d9d547320f4a1403812f5e087af9fd22223b4d6c2f1884907eb1d83904c3",
+    "model_teaching.py": "b2dddcf348f146bf2d5dcbe9dae7b66a7a67f83f950fb6620679c62fed5c0f43",
+    "model_teaching_content.py": "93e6a60128a85e0a23a08c937ba4c6ba6720551dd6b8dc5fe356c82a3c8f0417",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
     "assets/model_details/symbols_tr.json": "b78dfa801ee6fb37779a256810a21c69b9dde7a92fce1924b4deaa82b84099f2",
     "assets/model_details/synthetic_examples.csv": "4d63abe482c23775e109fac3c5b5ed78eefb3f03042808d04b9f0bafa11f7716",
-    "assets/model_details/BRCA_Model_Details_EN.pdf": "d6781dc12041cc9aeef0c3f0c2d1265c45b0f63bd2f847b71f23a174ca953af7",
+    "assets/model_details/BRCA_Model_Details_EN.pdf": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
-    "assets/model_details/BRCA_Model_Details_TR.pdf": "f07e452dc8aac8c21fe855e7b9506d76a0f90abb1dfe72f785feabb98e6910fe"
+    "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e"
   },
   "live_pdf_downloads_verified": {
     "date": "2026-11-02",
@@ -34,7 +34,8 @@
     "en": {
       "pages": 14,
       "matches_published_sha256": "d6781dc12041cc9aeef0c3f0c2d1265c45b0f63bd2f847b71f23a174ca953af7"
-    }
+    },
+    "superseded_by": "PDFs updated with origin explanation; repeat live download verification for this revision."
   },
   "live_teaching_verification": {
     "date": "2026-11-02",
@@ -69,5 +70,16 @@
     "live_edit_checked": "Age 38 to 48: weighted contributions, z, raw sigmoid, eta, final sigmoid, card and lanes update together",
     "before_after_formula_values": true,
     "comparison_reference": "Immediately preceding input edit; retained on unchanged reruns and language switches; cleared on reset or profile change."
+  },
+  "simple_origin_explanation": {
+    "languages": [
+      "tr",
+      "en"
+    ],
+    "shared_text": "model_teaching_content.ORIGIN_INTRO",
+    "web_position": "before the manual calculation workspace",
+    "pdf_position": "first page before formulas",
+    "pdf_layout_verified": true,
+    "tests_passed": 29
   }
 }
