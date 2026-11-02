@@ -75,10 +75,15 @@ WORKBENCH_STYLE = """<style>
 .teaching-arithmetic th,.teaching-arithmetic td{padding:6px 5px;border-bottom:1px solid #e2e6eb;text-align:right;vertical-align:top}
 .teaching-arithmetic th:first-child,.teaching-arithmetic td:first-child{text-align:left;width:28%}
 .teaching-arithmetic th{background:#f0f2f8;font-size:11px}.teaching-arithmetic .edited{background:#fff1c7}
-.teaching-arithmetic .product{white-space:normal}.formula-current{background:#fff1c7;color:#784000;padding:1px 2px;border-radius:3px}.formula-previous{color:#596579;white-space:nowrap;font-size:.78em;display:inline-block}.st-key-teaching_equations .katex{max-width:100%}.st-key-teaching_equations [data-testid=stLatex]{overflow-x:auto;overflow-y:hidden}.teaching-arithmetic small{color:#627181}
+.teaching-arithmetic .product{white-space:normal}.formula-current{background:#fff1c7;color:#784000;padding:1px 2px;border-radius:3px}.formula-previous{color:#596579;white-space:nowrap;font-size:.78em;display:inline-block}.st-key-teaching_equations .katex{max-width:100%}.teaching-arithmetic small{color:#627181}
 .st-key-teaching_origin_header h1{font-size:24px!important}.st-key-teaching_origin_header [data-testid=stCaptionContainer] p{font-size:12px}@media(max-width:1799px){.st-key-teaching_origin_header [data-testid=stHorizontalBlock]{flex-direction:column}.st-key-teaching_origin_header [data-testid=stColumn]{width:100%!important;flex:1 1 100%!important}}
 .teaching-origin{padding:10px 14px;border-left:3px solid #7560ce;background:#eef2f7;border-radius:6px;color:#17212b}.teaching-origin h2{font-size:16px!important;line-height:1.3;margin:0 0 5px!important;padding:0!important}.teaching-origin>div{display:grid;grid-template-columns:1fr 1fr;gap:24px}.teaching-origin p{font-size:13px;line-height:1.45;margin:0}@media(max-width:1099px){.teaching-origin>div{grid-template-columns:1fr;gap:8px}}
 .teaching-edit{padding:8px 10px;margin-top:8px;border-left:3px solid #7560ce;background:#f4f1fc;font-size:12px;line-height:1.45;color:#17212b}
+/* KaTeX fractions and superscripts draw above/below their text baseline.
+   Reserve ink space inside the horizontal scroller instead of clipping that ink. */
+.block-container:has(.st-key-teaching_workbench) [data-testid=stMarkdownContainer]:has(.katex-display){overflow:visible!important;margin-bottom:0!important}
+.block-container:has(.st-key-teaching_workbench) .katex-display{overflow-x:auto!important;overflow-y:hidden!important;padding:.65em .12em!important;margin:0!important;box-sizing:content-box}
+@media(min-width:1100px){.st-key-teaching_equations [data-testid=stVerticalBlock]{gap:2px}}
 </style>"""
 
 
