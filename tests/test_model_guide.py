@@ -1,6 +1,8 @@
 """Presentation and navigation checks; no patient analyses."""
 import json
 import unittest
+from unittest.mock import patch
+from model_guide import guide_latex, guide_mobile_steps, NAV_SCRIPT
 from pathlib import Path
 from streamlit.testing.v1 import AppTest
 from scripts.build_model_guides import build
@@ -16,6 +18,20 @@ class ModelGuideTests(unittest.TestCase):
             self.assertEqual(sum(b['type']=='math' for b in blocks),25)
             self.assertEqual(sum(b['type']=='link' for b in blocks),9)
 
+    def test_desktop_equation_is_unchanged_and_mobile_has_final_result(self):
+        blocks=build('en',web=True)
+        formulas=[b['text'] for b in blocks if b['type']=='math']
+        for i,formula in enumerate(formulas):
+            with patch('model_guide.st.container'),patch('model_guide.st.latex') as latex:
+                guide_latex(formula,i)
+                self.assertEqual(latex.call_args_list[0].args,(formula,))
+        position=next(f for f in formulas if f.startswith(r'\mathrm{Position}'))
+        steps=guide_mobile_steps(position)
+        self.assertEqual(steps[-1],r'\mathrm{Position}=89')
+        self.assertIn('guide-toc a',NAV_SCRIPT)
+        self.assertIn('preventDefault()',NAV_SCRIPT)
+        self.assertIn('scrollIntoView',NAV_SCRIPT)
+
     def test_fourth_view_deep_links_and_language_switch(self):
         for lang in ['tr','en']:
             at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=30)
@@ -25,7 +41,7 @@ class ModelGuideTests(unittest.TestCase):
             self.assertFalse(at.exception,[e.message for e in at.exception])
             self.assertEqual(at.session_state['app_view'],'guide')
             self.assertEqual(at.title[0].value,'Model rehberi' if lang=='tr' else 'Model guide')
-            self.assertEqual(len(at.latex),25)
+            self.assertGreater(len(at.latex),50)
             selector=next(n for n in at if getattr(n,'key',None)=='app_view')
             self.assertEqual(len(selector.options),4)
             other='en' if lang=='tr' else 'tr'
