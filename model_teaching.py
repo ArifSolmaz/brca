@@ -258,9 +258,25 @@ def render_model_teaching(lang):
         st.subheader(t('Girdiler','Inputs'))
         names = [t('Temel profil: 50 yaş','Baseline profile: age 50'),t('Sitedeki örnek hasta: 38 yaş','Site example patient: age 38'),t('Kart ile modelin ayrıldığı profil','Card/model disagreement example')]
         preset_key = 'teaching_preset_'+lang
-        st.session_state.setdefault(preset_key,st.session_state.get('_teaching_selected_preset',st.session_state.get('teaching_preset',1)))
+        selected=st.session_state.get('_teaching_selected_preset',1)
+        if type(selected) is not int or not 0 <= selected < len(PRESETS):selected=1
+        # A cleared/stale widget must never become a PRESETS index. A nonempty
+        # default also removes the selectbox's clear-selection control.
+        widget_preset=st.session_state.get(preset_key)
+        if widget_preset is None or type(widget_preset) is not int or not 0 <= widget_preset < len(PRESETS):
+            st.session_state.pop(preset_key,None)
+        if st.session_state.get('_teaching_input_language') != lang:
+            st.session_state.pop(preset_key,None)
+            # Widget labels change with the language. Restore their values from
+            # a non-widget snapshot before Streamlit registers the new labels.
+            for k,x in st.session_state.get('_teaching_input_snapshot',{}).items():
+                key='teaching_ki67_value' if k=='ki67' else 'teaching_'+k
+                st.session_state[key]=bool(x) if k in ('tnbc','ki67_missing','urg_dec','urg_fam') else x
+                if k in ('dx','grade'):st.session_state[key+'_'+lang]=x
+            st.session_state['_teaching_input_language']=lang
         preset_col,reset_col=st.columns([3,1],vertical_alignment='bottom')
-        preset = preset_col.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=None,format_func=lambda i:names[i],key=preset_key)
+        preset = preset_col.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=selected,format_func=lambda i:names[i],key=preset_key)
+        if preset is None:preset=selected
         st.session_state['_teaching_selected_preset']=preset
         if reset_col.button(t('Sıfırla','Reset'),key='teaching_reset',width='stretch'):
             st.session_state.pop('_teaching_loaded',None)
@@ -297,6 +313,7 @@ def render_model_teaching(lang):
         urg_dec=a.checkbox(t('Tedavi kararı bekliyor','Treatment decision awaits result'),key='teaching_urg_dec')
         urg_fam=b.checkbox(t('Ailede belgeli P/LP BRCA varyantı','Documented familial P/LP BRCA variant'),key='teaching_urg_fam')
     v=dict(age=age,age_missing=0,dx=dx,grade=grade,region=region,tnbc=int(tnbc),ki67=ki67,ki67_missing=int(miss),urg_dec=urg_dec,urg_fam=urg_fam,**family)
+    st.session_state['_teaching_input_snapshot']=dict(v)
     r=trace(v);v=r['v'];d=r['A'];lanes=t(['Normal','Öncelikli','Acil'],['Normal','Priority','Urgent'])
     baseline = trace(PRESETS[preset]['inputs'])
     change = comparison(r,st.session_state.get('_teaching_previous'))

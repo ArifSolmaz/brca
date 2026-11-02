@@ -38,6 +38,44 @@ class ModelTeachingTests(unittest.TestCase):
         else:at.session_state['lang_sel']=lang
         at.run();self.assertFalse(at.exception,[e.message for e in at.exception]);return at
 
+    def test_empty_and_invalid_profile_states_recover_in_both_languages(self):
+        for lang in ['tr','en']:
+            for value in [None,99]:
+                at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=30)
+                at.session_state['auth']=True
+                at.query_params.update({'sayfa':'model','dil':lang})
+                at.session_state['teaching_preset_'+lang]=value
+                at.session_state['_teaching_selected_preset']=None
+                at.run()
+                self.assertFalse(at.exception,[e.message for e in at.exception])
+                self.assertEqual(at.selectbox(key='teaching_preset_'+lang).value,1)
+                self.assertEqual(at.metric[0].value,'25,8%' if lang=='tr' else '25.8%')
+            at.number_input(key='teaching_age').set_value(48).run()
+            at.button(key='teaching_reset').click().run()
+            self.assertFalse(at.exception)
+            self.assertEqual(at.number_input(key='teaching_age').value,38)
+            self.assertNotIn('_teaching_change',at.session_state)
+
+    def test_language_round_trip_preserves_all_edited_inputs_and_selected_profile(self):
+        at=self.start('en')
+        at.number_input(key='teaching_age').set_value(48).run()
+        at.number_input(key='teaching_fdr_breast_lt40').set_value(2).run()
+        at.checkbox(key='teaching_tnbc').set_value(False).run()
+        before=dict(at.session_state['_teaching_input_snapshot'])
+        score=at.session_state['_teaching_previous']['p_cal']
+        for lang in ['tr','en','tr']:
+            control(at,'lang_sel').set_value(lang).run()
+            self.assertFalse(at.exception)
+            self.assertEqual(at.session_state['_teaching_input_snapshot'],before)
+            self.assertEqual(at.session_state['_teaching_previous']['p_cal'],score)
+            self.assertEqual(at.selectbox(key='teaching_preset_'+lang).value,1)
+        at.selectbox(key='teaching_preset_tr').set_value(2).run()
+        control(at,'lang_sel').set_value('en').run()
+        self.assertFalse(at.exception)
+        self.assertEqual(at.selectbox(key='teaching_preset_en').value,2)
+        at.button(key='teaching_reset').click().run()
+        self.assertEqual(at.metric[0].value,'8.6%')
+
     def test_frozen_core_and_all_synthetic_traces(self):
         for filename,sha in {'brca_core.py':'97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356','model_full_embedded.json':'79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa'}.items():
             self.assertEqual(hashlib.sha256((ROOT/filename).read_bytes()).hexdigest(),sha)
