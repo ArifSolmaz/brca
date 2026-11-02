@@ -117,6 +117,12 @@
       "Türkçe Model Rehberi · PDF",
       "English Model Guide · PDF"
     ],
-    "tests_passed": 33
+    "tests_passed": 33,
+    "live_downloads_verified": {
+      "date": "2026-11-03",
+      "tr": "8ea9145d6ddd6bf5238990ed0e965764819656221e803924752ea77112ffe838",
+      "en": "7020e41be600848de2fcc638cab93d3f7726fbc2ee29d24ef14ceba5f85a5808",
+      "byte_identical_to_published_assets": true
+    }
   }
 }
