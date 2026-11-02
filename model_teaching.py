@@ -1,6 +1,7 @@
 """Student-facing numerical explanation; never fits a model or changes calculator state."""
 import json
 import math
+from html import escape
 from pathlib import Path
 import streamlit as st
 import brca_core as core
@@ -30,6 +31,54 @@ def trace(inputs):
                 A=core.decide(v, prediction['p_cal'], 'A'), B=core.decide(v, prediction['p_cal'], 'B'))
 
 
+
+def comparison(current, previous):
+    """Explain only a synthetic input edit; this does not change any prediction."""
+    if previous is None:
+        return None
+    changes = {k: (previous['v'][k], value) for k, value in current['v'].items()
+               if value != previous['v'].get(k)}
+    if not changes:
+        return None
+    before = {term['key']: term['contribution'] for term in previous['terms']}
+    contributions = [(term['key'], term['contribution'] - before[term['key']])
+                     for term in current['terms'] if abs(term['contribution'] - before[term['key']]) > 1e-14]
+    return dict(changes=changes, delta_pp=100*(current['p_cal']-previous['p_cal']),
+                delta_z=current['z']-previous['z'], delta_points=current['A']['total']-previous['A']['total'],
+                contributions=contributions)
+
+
+def live_result_html(current, baseline, change, lang):
+    tr = lang == 'tr'
+    t = lambda a,b: a if tr else b
+    labels = dict(LABELS_TR if tr else LABELS_EN)
+    labels.update(dx=t('Tanı','Diagnosis'),grade='Grade',region=t('Bölge','Region'),
+                  urg_dec=t('Tedavi aciliyeti','Treatment urgency'),urg_fam=t('Ailede P/LP','Familial P/LP'))
+    f = lambda x,d=2: f'{x:+.{d}f}'.replace('.',',') if tr else f'{x:+.{d}f}'
+    lanes = t(['Normal','Öncelikli','Acil'],['Normal','Priority','Urgent'])
+    family = current['v']['urg_fam']
+    probability = t('Aileye özgü değerlendirme','Family-specific assessment') if family else f"{current['p_cal']*100:.1f}%".replace('.',',' if tr else '.')
+    baseline_delta = t('Kişisel yüzde bastırıldı','Personal probability hidden') if family else f(current['p_cal']*100-baseline['p_cal']*100)+t(' yüzde puan · seçili örneğe göre',' percentage points vs selected example')
+    details = t('Bir girdiyi değiştirin; etkisi burada kalır.','Change an input; its effect stays visible here.')
+    if change:
+        values = '; '.join(f"{labels.get(k,k)}: {old} → {new}" for k,(old,new) in change['changes'].items())
+        delta = t('Son değişiklik: ','Last edit: ')+values
+        delta += ' · Δz '+f(change['delta_z'],6)
+        if not family: delta += ' · '+f(change['delta_pp'])+t(' yüzde puan',' percentage points')
+        delta += ' · '+f(change['delta_points'],0)+t(' kart puanı',' card points')
+        details = delta
+    return """<style>
+#teaching-live{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(1080px,calc(100% - 32px));z-index:999;background:#fff;color:#17212b;border:2px solid #7560ce;border-radius:14px;box-shadow:0 5px 24px #17212b26;padding:13px 18px;font:14px/1.4 system-ui;box-sizing:border-box}
+#teaching-live .live-row{display:flex;gap:24px;align-items:center;flex-wrap:wrap}#teaching-live strong{font-size:24px}#teaching-live .live-label{display:block;font-size:12px;color:#52606d}#teaching-live .live-detail{margin-top:7px;max-height:3.2em;overflow:auto;border-top:1px solid #dde2e7;padding-top:6px;font-size:13px}#teaching-live .live-base{font-size:12px;color:#52606d}
+@media(max-width:640px){#teaching-live{bottom:0;left:0;transform:none;width:100%;border-radius:12px 12px 0 0;padding:9px 12px}#teaching-live .live-row{gap:8px 18px}#teaching-live strong{font-size:19px}#teaching-live .live-detail{font-size:11px}}
+@media print{#teaching-live{display:none}}
+</style>"""+f"""<aside id="teaching-live" role="status" aria-live="polite" aria-label="{t('Canlı eğitim sonucu','Live teaching result')}">
+<div class="live-row"><div><span class="live-label">{t('Canlı sonuç · kurgu profil','Live result · synthetic profile')}</span><strong>{escape(probability)}</strong><div class="live-base">{escape(baseline_delta)}</div></div>
+<div><span class="live-label">{t('Kart','Card')}</span><strong>{current['A']['total']}</strong></div>
+<div><span class="live-label">{t('A / B şeridi','A / B lane')}</span><strong>{lanes[current['A']['lane']]} / {lanes[current['B']['lane']]}</strong></div></div>
+<div class="live-detail">{escape(details)}</div></aside>"""
+
+
 def render_model_teaching(lang):
     tr = lang == 'tr'
     t = lambda a,b: a if tr else b
@@ -53,13 +102,19 @@ def render_model_teaching(lang):
     st.header(t('Kurgu hasta üzerinde adım adım hesap','Step-by-step calculation for a synthetic patient'))
     names = [t('Temel profil: 50 yaş','Baseline profile: age 50'),t('Sitedeki örnek hasta: 38 yaş','Site example patient: age 38'),t('Kart ile modelin ayrıldığı profil','Card/model disagreement example')]
     preset = st.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=1,format_func=lambda i:names[i],key='teaching_preset')
+    if st.button(t('Seçili örneği sıfırla','Reset selected example'),key='teaching_reset'):
+        st.session_state.pop('_teaching_loaded',None)
+    live_metrics = st.container()
+    st.caption(t('Sonuç çubuğu ekranın altında sabit kalır. Sayı yazdıktan sonra Enter’a basın veya alandan çıkın; ok düğmeleri de sonucu günceller. Farklar seçili kurgu örneğe ve son düzenlemeye göredir.', 'The result bar stays at the bottom of the screen. After typing a number, press Enter or leave the field; arrow buttons also update it. Differences are relative to the selected synthetic example and your last edit.'))
     if st.session_state.get('_teaching_loaded') != preset or 'teaching_age' not in st.session_state:
         v=PRESETS[preset]['inputs']
         for k,x in v.items():
             if k == 'ki67': st.session_state['teaching_ki67_value']=float(x)
             else: st.session_state['teaching_'+k]=bool(x) if k in ('tnbc','ki67_missing','urg_dec','urg_fam') else x
         st.session_state['_teaching_loaded']=preset
-    with st.expander(t('Örnek girdileri değiştirin','Change the example inputs')):
+        st.session_state.pop('_teaching_previous',None)
+        st.session_state.pop('_teaching_change',None)
+    with st.expander(t('Örnek girdileri değiştirin','Change the example inputs'),expanded=True):
         a,b,c=st.columns(3)
         age=a.number_input(t('Tanı yaşı','Age at diagnosis'),18,95,key='teaching_age')
         dx_names=dict(zip(['breast','bilateral','breast_ovary','male','ovarian'],t(['Tek taraflı meme','Bilateral meme','Meme + over','Erkek meme','Yalnız over'],['Unilateral breast','Bilateral breast','Breast and ovarian','Male breast','Ovarian only'])))
@@ -78,9 +133,25 @@ def render_model_teaching(lang):
         urg_fam=b.checkbox(t('Ailede belgeli P/LP BRCA varyantı','Documented familial P/LP BRCA variant'),key='teaching_urg_fam')
     v=dict(age=age,age_missing=0,dx=dx,grade=grade,region=region,tnbc=int(tnbc),ki67=ki67,ki67_missing=int(miss),urg_dec=urg_dec,urg_fam=urg_fam,**family)
     r=trace(v);v=r['v'];d=r['A'];lanes=t(['Normal','Öncelikli','Acil'],['Normal','Priority','Urgent'])
-    m1,m2,m3=st.columns(3)
-    m1.metric(t('Gösterilen olasılık','Displayed probability'),t('Aileye özgü değerlendirme','Family-specific assessment') if urg_fam else fmt(r['p_cal']*100,1)+'%')
-    m2.metric(t('Kart toplamı','Card score'),d['total']);m3.metric(t('A / B şeridi','A / B lane'),lanes[d['lane']]+' / '+lanes[r['B']['lane']])
+    baseline = trace(PRESETS[preset]['inputs'])
+    change = comparison(r,st.session_state.get('_teaching_previous'))
+    if change: st.session_state['_teaching_change']=change
+    st.session_state['_teaching_previous']=r
+    change = st.session_state.get('_teaching_change')
+    with live_metrics:
+        m1,m2,m3=st.columns(3)
+        m1.metric(t('Gösterilen olasılık','Displayed probability'),t('Aileye özgü değerlendirme','Family-specific assessment') if urg_fam else fmt(r['p_cal']*100,1)+'%',
+                  delta=None if urg_fam else f"{100*(r['p_cal']-baseline['p_cal']):+.2f}"+t(' yüzde puan',' percentage points'),delta_color='off')
+        m2.metric(t('Kart toplamı','Card score'),d['total'],delta=d['total']-baseline['A']['total'],delta_color='off')
+        m3.metric(t('A / B şeridi','A / B lane'),lanes[d['lane']]+' / '+lanes[r['B']['lane']])
+    st.html(live_result_html(r,baseline,change,lang))
+    if change:
+        with st.expander(t('Son düzenlemenin katkıları — ne değişti?','Last-edit contributions — what changed?'),expanded=True):
+            st.write(t('Olasılık farkı yüzde puandır; Δz doğrusal skor farkıdır. Girdi etkileri bu profil için koşullu hesap değişimidir, nedensel biyolojik etki değildir.', 'Probability differences are percentage points; Δz is a linear-score difference. These are conditional changes in this profile’s calculation, not causal biological effects.'))
+            st.table([{t('Girdi','Input'):labels.get(k,k),t('Önce','Before'):str(old),t('Sonra','After'):str(new)} for k,(old,new) in change['changes'].items()])
+            if change['contributions']:
+                st.table([{t('Model terimi','Model term'):labels.get(k,k),'Δz':fmt(delta,8)} for k,delta in change['contributions']])
+            else:st.write(t('Model skoru değişmedi; bu kutular yalnız karar şeridini etkiler.','The model score did not change; these boxes affect the decision lane only.'))
     if urg_fam:st.warning(t('Aşağıdaki olasılık yalnız iç matematik hesabıdır. Model aile varyantı bilgisini içermez; kişisel olasılık olarak yorumlanmaz.','The probability below is internal arithmetic only. The model does not include familial-variant information; do not interpret it as a personal probability.'))
     st.subheader(t('1. Girdileri kodlayın','1. Encode the inputs'))
     st.write(t(f'Yaş {age}; TNBC {v["tnbc"]}; Ki-67 {v["ki67"] if not v["ki67_missing"] else 30}; Ki-67 eksik göstergesi {v["ki67_missing"]}. Yaş biliniyor, age_missing = 0. Referanslar breast, g2 ve marmara’dır; kategori göstergeleri seçiliyse 1, değilse 0 olur.',
@@ -93,7 +164,7 @@ def render_model_teaching(lang):
     st.table(rows)
     st.caption(t(f'Kalan {len(r["terms"])-len(active)} terim sıfır katkı yapar. Ara değerler gösterimde yuvarlanır; karar tam olasılıkla verilir.',f'The other {len(r["terms"])-len(active)} terms contribute zero. Displayed intermediate values are rounded; decisions use the full probability.'))
     for i in range(0,len(active),2):
-        line=('+'.join(r'('+tex(x['x'],0)+r'\times('+tex(x['beta'])+r'))' for x in active[i:i+2]))
+        line=('+'.join(r'('+tex(x['x'],0 if float(x['x']).is_integer() else 6)+r'\times('+tex(x['beta'])+r'))' for x in active[i:i+2]))
         st.latex(('z=' if i==0 else r'\phantom{z=}+')+line)
     st.latex('z='+tex(r['z']))
     st.subheader(t('3. Ham olasılık — henüz ekran yüzdesi değil','3. Raw probability — not yet the displayed percentage'))
@@ -139,3 +210,5 @@ def render_model_teaching(lang):
         st.latex(r'\mathrm{Sensitivity}=\frac{159}{167}=95.2096\%,\quad\mathrm{NPV}=\frac{150}{158}=94.9367\%')
         st.write(t('Bu son örnek tarihsel %95 duyarlılık çizgisine aittir (0,035019185420); ana %10/%20 şeritleri veya %5 + dışlama politikası değildir.','The last example concerns the historical 95%-sensitivity threshold (0.035019185420), not the main 10%/20% lanes or the 5%-plus-exclusions policy.'))
     st.caption(t('Kaynak: sabit model paketi ve özgün eğitim betiklerinin mevcut denetimi. 54 kurgu profil ile 47 kayıtlı öz-test yalnız hesap eşleşmesini denetler; bağımsız klinik doğrulama değildir.','Source: the frozen model package and the existing audit of original training scripts. The 54 synthetic profiles and 47 stored self-tests verify arithmetic agreement only, not independent clinical validity.'))
+
+    st.html("<div style='height:160px' aria-hidden='true'></div>")

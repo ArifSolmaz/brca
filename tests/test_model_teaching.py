@@ -43,6 +43,29 @@ class ModelTeachingTests(unittest.TestCase):
         control(at,'app_view').set_value('calculator').run();self.assertFalse(at.exception)
         self.assertEqual(result(at),before)
 
+    def test_live_result_tracks_edits_and_reset_without_changing_calculator(self):
+        at=self.start();at.number_input(key='teaching_age').set_value(48).run()
+        self.assertFalse(at.exception)
+        html=next(n.value for n in at if n.type=='html' and 'id="teaching-live"' in n.value)
+        self.assertIn('position:fixed',html)
+        self.assertIn('Age at diagnosis: 38 → 48',html)
+        self.assertIn('percentage points',html)
+        self.assertIn('Δz -0.297415',html)
+        self.assertIn('-1 card points',html)
+        self.assertIn('Last-edit contributions', ' '.join(n.label for n in at.expander))
+        at.checkbox(key='teaching_urg_dec').set_value(True).run()
+        self.assertFalse(at.exception)
+        self.assertEqual(at.session_state['_teaching_change']['delta_pp'],0)
+        self.assertEqual(at.session_state['_teaching_change']['contributions'],[])
+        at.checkbox(key='teaching_urg_fam').set_value(True).run()
+        self.assertFalse(at.exception)
+        html=next(n.value for n in at if n.type=='html' and 'id="teaching-live"' in n.value)
+        self.assertIn('Family-specific assessment',html)
+        self.assertIn('Personal probability hidden',html)
+        at.button(key='teaching_reset').click().run()
+        self.assertFalse(at.exception);self.assertEqual(at.metric[0].value,'25.8%')
+        self.assertNotIn('_teaching_change',at.session_state)
+
     def test_teaching_route_keeps_password_gate(self):
         with patch.dict('os.environ',{'BRCA_APP_PASSWORD':'test-password','BRCA_NO_PASSWORD':'0'}):
             at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=30);at.query_params.update({'sayfa':'model','dil':'en'});at.run()

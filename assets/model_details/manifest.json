@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "327b38ac435bb7dcacc9218516f806ee8ffb98205201b40336edcaa98c9ae175",
-    "model_teaching.py": "ed6542f1f54496660ccbc4102aea541a74a68f1b3f8b51cb1f2b1c8b938de0c5",
+    "model_teaching.py": "c40f4147375a2308551b7468e137d787d588634e0d11e1af97afdadfc50ff9fe",
     "model_teaching_content.py": "6e42d9d547320f4a1403812f5e087af9fd22223b4d6c2f1884907eb1d83904c3",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -23,5 +23,17 @@
     "assets/model_details/BRCA_Model_Details_EN.pdf": "d6781dc12041cc9aeef0c3f0c2d1265c45b0f63bd2f847b71f23a174ca953af7",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
     "assets/model_details/BRCA_Model_Details_TR.pdf": "f07e452dc8aac8c21fe855e7b9506d76a0f90abb1dfe72f785feabb98e6910fe"
+  },
+  "live_pdf_downloads_verified": {
+    "date": "2026-11-02",
+    "browser": "Safari",
+    "tr": {
+      "pages": 18,
+      "matches_published_sha256": "f07e452dc8aac8c21fe855e7b9506d76a0f90abb1dfe72f785feabb98e6910fe"
+    },
+    "en": {
+      "pages": 14,
+      "matches_published_sha256": "d6781dc12041cc9aeef0c3f0c2d1265c45b0f63bd2f847b71f23a174ca953af7"
+    }
   }
 }
