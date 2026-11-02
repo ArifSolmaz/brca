@@ -45,7 +45,7 @@ def comparison(current, previous):
                      for term in current['terms'] if abs(term['contribution'] - before[term['key']]) > 1e-14]
     return dict(changes=changes, delta_pp=100*(current['p_cal']-previous['p_cal']),
                 delta_z=current['z']-previous['z'], delta_points=current['A']['total']-previous['A']['total'],
-                contributions=contributions)
+                contributions=contributions, previous=previous)
 
 
 
@@ -59,7 +59,7 @@ WORKBENCH_STYLE = """<style>
 .st-key-teaching_inputs input{font-size:14px;min-height:30px}
 .st-key-teaching_inputs [data-baseweb=select]{font-size:13px}
 .st-key-teaching_inputs [data-testid=stCaptionContainer] p{font-size:11px}
-.st-key-teaching_equations .katex{font-size:1.02em}
+.st-key-teaching_equations .katex{font-size:clamp(11px,.65vw,16px)}
 .st-key-teaching_equations .katex-display{margin:.35em 0}
 .st-key-teaching_terms [data-testid=stMetricValue]{font-size:22px}
 .st-key-teaching_terms [data-testid=stMetricLabel] p{font-size:11px}
@@ -75,44 +75,86 @@ WORKBENCH_STYLE = """<style>
 .teaching-arithmetic th,.teaching-arithmetic td{padding:6px 5px;border-bottom:1px solid #e2e6eb;text-align:right;vertical-align:top}
 .teaching-arithmetic th:first-child,.teaching-arithmetic td:first-child{text-align:left;width:28%}
 .teaching-arithmetic th{background:#f0f2f8;font-size:11px}.teaching-arithmetic .edited{background:#fff1c7}
-.teaching-arithmetic .product{white-space:nowrap}.teaching-arithmetic small{color:#627181}
+.teaching-arithmetic .product{white-space:normal}.formula-current{background:#fff1c7;color:#784000;padding:1px 2px;border-radius:3px}.formula-previous{color:#596579;white-space:nowrap;font-size:.78em;display:inline-block}.st-key-teaching_equations .katex{max-width:100%}.st-key-teaching_equations [data-testid=stLatex]{overflow-x:auto;overflow-y:hidden}.teaching-arithmetic small{color:#627181}
 .teaching-edit{padding:8px 10px;margin-top:8px;border-left:3px solid #7560ce;background:#f4f1fc;font-size:12px;line-height:1.45;color:#17212b}
 </style>"""
+
+
+
+def paired_tex(value, previous, lang, digits=8, rounded=False):
+    """Mark a changed displayed quantity, with its previous value beside it."""
+    if rounded:
+        value=round(value,digits)
+        previous=None if previous is None else round(previous,digits)
+    changed=previous is not None and value != previous
+    precision=digits
+    if changed and not rounded and f'{value:.{digits}f}' == f'{previous:.{digits}f}':precision=14
+    def number(x):
+        result=f'{x:.{precision}f}'
+        return result.replace('.','{,}') if lang=='tr' else result
+    current=number(value)
+    if not changed:return current
+    return r'\color{#955000}{\boxed{'+current+r'\;{\scriptstyle\color{#596579}{[\leftarrow '+number(previous)+r']}}}}'
 
 
 def contribution_html(current, change, lang):
     t=lambda a,b:a if lang=='tr' else b
     labels=LABELS_TR if lang=='tr' else LABELS_EN
+    previous=change.get('previous') if change else None
+    old_terms={term['key']:term for term in previous['terms']} if previous else {}
     fmt=lambda x,d=8:f'{x:.{d}f}'.replace('.',',') if lang=='tr' else f'{x:.{d}f}'
-    edited={key for key,_ in change['contributions']} if change else set()
-    running=0;rows=[]
+    def pair(value,old,digits=8):
+        text=fmt(value,digits)
+        if old is None or value==old:return text
+        if text==fmt(old,digits):text=fmt(value,14);digits=14
+        return '<mark class="formula-current">'+text+'</mark><small class="formula-previous"> ← '+fmt(old,digits)+'</small>'
+    running=old_running=0;rows=[]
     for term in current['terms']:
-        if not term['contribution'] and term['key'] not in edited:continue
+        old=old_terms.get(term['key'])
         running+=term['contribution']
-        x=fmt(term['x'],0 if float(term['x']).is_integer() else 3)
-        rows.append(f"<tr class=\"{'edited' if term['key'] in edited else ''}\"><td>{escape(labels.get(term['key'],term['key']))}</td><td class='product'>{x} × ({fmt(term['beta'])})</td><td>{fmt(term['contribution'])}</td><td>{fmt(running)}</td></tr>")
+        old_running+=old['contribution'] if old else 0
+        if not term['contribution'] and not (old and old['contribution']):continue
+        digits=0 if float(term['x']).is_integer() and (not old or float(old['x']).is_integer()) else 3
+        product=pair(term['x'],old['x'] if old else None,digits)+' × ('+fmt(term['beta'])+')'
+        contribution=pair(term['contribution'],old['contribution'] if old else None)
+        cumulative=pair(running,old_running if old else None)
+        edited=old is not None and term['contribution'] != old['contribution']
+        rows.append(f"<tr class=\"{'edited' if edited else ''}\"><td>{escape(labels.get(term['key'],term['key']))}</td><td class='product'>{product}</td><td>{contribution}</td><td>{cumulative}</td></tr>")
     return f"""<table class="teaching-arithmetic" aria-label="{t('Canlı katkılar ve birikimli toplam','Live contributions and running sum')}"><thead><tr><th>{t('Terim','Term')}</th><th><i>x</i> × <i>β</i></th><th>{t('Katkı','Contribution')}</th><th>{t('Birikimli','Running sum')}</th></tr></thead><tbody>{''.join(rows)}</tbody></table>"""
 
 
-def render_compact_steps(r,lang):
+
+def decision_formulas(r,previous,lang):
+    d=r['A'];parts=[]
+    now={it['key']:it['c'] for it in d['items']}
+    old={it['key']:it['c'] for it in previous['A']['items']} if previous else {}
+    for item in core.M['points']['items']:
+        k=item['key'];new=now.get(k,0);before=old.get(k,0)
+        if new or before:parts.append(paired_tex(new,before if previous else None,lang,0))
+    total=paired_tex(d['total'],previous['A']['total'] if previous else None,lang,0)
+    lane=lambda rule,k:paired_tex(r[rule][k],previous[rule][k] if previous else None,lang,0)
+    return [r'S_{\mathrm{card}}='+('+'.join(parts) or '0')+'='+total,
+            r'A=\max('+','.join(lane('A',k) for k in ('pl','ml','urg'))+')='+lane('A','lane'),
+            r'B=\max('+','.join(lane('B',k) for k in ('ml','urg'))+')='+lane('B','lane')]
+
+def render_compact_steps(r,lang,previous=None):
     t=lambda a,b:a if lang=='tr' else b
-    num=lambda x,d=8:f'{x:.{d}f}'.replace('.','{,}') if lang=='tr' else f'{x:.{d}f}'
+    num=lambda x,d=8:paired_tex(x,None,lang,d)
+    field=lambda key,d=8:paired_tex(r[key],previous[key] if previous else None,lang,d)
+    derived=lambda fn,d=8:paired_tex(fn(r),fn(previous) if previous else None,lang,d)
     a,b=core.M['platt']['a'],core.M['platt']['b'];d=r['A']
     st.markdown(t('**1 · Katkıları topla → z**','**1 · Sum contributions → z**'))
-    st.latex(r'z=\beta_0+\sum_{j=1}^{26}\beta_jx_j='+num(r['z']))
+    st.latex(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
     st.markdown(t('**2 · Ham sigmoid (henüz son yüzde değil)**','**2 · Raw sigmoid (not the final percentage)**'))
-    st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+num(r['z'])+r')}}')
-    st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+'+num(math.exp(-r['z']))+r'}='+num(r['p_raw']))
+    st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw'))
     st.markdown(t('**3 · Kayıtlı kalibrasyona yerleştir**','**3 · Substitute into stored calibration**'))
-    st.latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+num(r['z'])+r'))')
-    st.latex(r'\eta='+num(r['eta']))
+    st.latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
+    st.latex(r'\eta='+field('eta'))
     st.markdown(t('**4 · Son sigmoid → yüzde**','**4 · Final sigmoid → percentage**'))
-    st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+num(r['eta'])+r')}}')
-    st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+'+num(math.exp(-r['eta']))+r'}='+num(r['p_cal'],9))
-    st.latex(r'100p_{\mathrm{cal}}='+num(100*r['p_cal'],6)+r'\%\approx'+num(100*r['p_cal'],1)+r'\%')
+    st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9))
+    st.latex(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
     st.markdown(t('**5 · Kart ve şeritler (ayrı hesap)**','**5 · Card and lanes (separate calculation)**'))
-    st.latex(r'S_{\mathrm{card}}='+('+'.join(str(it['c']) for it in d['items']) or '0')+'='+str(d['total']))
-    st.latex(r'A=\max('+','.join(str(d[k]) for k in ('pl','ml','urg'))+')='+str(d['lane'])+r',\quad B=\max('+','.join(str(d[k]) for k in ('ml','urg'))+')='+str(r['B']['lane']))
+    for formula in decision_formulas(r,previous,lang):st.latex(formula)
 
 
 def render_model_teaching(lang):
@@ -181,9 +223,9 @@ def render_model_teaching(lang):
         terms_panel=st.container(key='teaching_terms')
     with terms_panel:
         st.subheader(t('Çarpımlar ve birikimli toplam','Products and running sum'))
-        st.caption(t('Sarı satır son değişen model terimidir. Sıfır katkılar ayrıntılı tabloda bulunur.', 'Yellow marks the last edited model term. Zero contributions are in the detailed table.'))
+        st.caption(t('Sarı değer güncel; ← önceki değer. Birikimli toplamda değişen her hücre işaretlenir.', 'Yellow values are current; ← previous. Every affected running-sum cell is marked.'))
         st.html(contribution_html(r,change,lang))
-        st.latex('z='+tex(r['z']))
+        st.latex('z='+paired_tex(r['z'],change['previous']['z'] if change and change.get('previous') else None,lang,12))
         if change:
             label_map=dict(labels,dx=t('Tanı','Diagnosis'),grade='Grade',region=t('Bölge','Region'),urg_dec=t('Tedavi aciliyeti','Treatment urgency'),urg_fam=t('Ailede P/LP','Familial P/LP'))
             changes='; '.join(f'{label_map.get(k,k)}: {old} → {new}' for k,(old,new) in change['changes'].items())
@@ -200,8 +242,10 @@ def render_model_teaching(lang):
         steps_panel=st.container(key='teaching_equations')
     with steps_panel:
         st.subheader(t('Canlı elle hesap','Live manual calculation'))
+        previous=change.get('previous') if change else None
+        st.caption(t('Kutudaki sayı güncel değerdir; yanındaki ← önceki değeri gösterir. Yalnız son düzenlemeden etkilenen değerler işaretlenir.', 'Boxed values are current; ← shows the previous value beside each one. Only quantities affected by the last edit are marked.'))
         if urg_fam:st.caption(t('Aile bilgisi modelde yoktur. Aşağıdaki yüzde yalnız iç eğitim hesabıdır.', 'Familial information is absent from the model. The percentage below is internal teaching arithmetic only.'))
-        render_compact_steps(r,lang)
+        render_compact_steps(r,lang,previous)
     with st.expander(t('Ayrıntılı açıklamalar ve tüm sembollerle çözüm','Detailed explanations and full-symbol walkthrough')):
         if change:
             with st.expander(t('Son düzenlemenin katkıları — ne değişti?','Last-edit contributions — what changed?'),expanded=True):
@@ -222,37 +266,45 @@ def render_model_teaching(lang):
         st.table(rows)
         st.caption(t(f'Kalan {len(r["terms"])-len(active)} terim sıfır katkı yapar. Ara değerler gösterimde yuvarlanır; karar tam olasılıkla verilir.',f'The other {len(r["terms"])-len(active)} terms contribute zero. Displayed intermediate values are rounded; decisions use the full probability.'))
         for i in range(0,len(active),2):
-            line=('+'.join(r'('+tex(x['x'],0 if float(x['x']).is_integer() else 6)+r'\times('+tex(x['beta'])+r'))' for x in active[i:i+2]))
+            line=('+'.join(r'('+paired_tex(x['x'],next((old['x'] for old in previous['terms'] if old['key']==x['key']),0) if previous else None,lang,0 if float(x['x']).is_integer() else 6)+r'\times('+tex(x['beta'])+r'))' for x in active[i:i+2]))
             st.latex(('z=' if i==0 else r'\phantom{z=}+')+line)
-        st.latex('z='+tex(r['z']))
+        st.latex('z='+paired_tex(r['z'],previous['z'] if previous else None,lang,12))
         st.subheader(t('3. Ham olasılık — henüz ekran yüzdesi değil','3. Raw probability — not yet the displayed percentage'))
-        st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}=\frac{1}{1+e^{-('+tex(r['z'])+r')}}')
-        st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+'+tex(math.exp(-r['z']),9)+r'}='+tex(r['p_raw']))
+        st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}=\frac{1}{1+e^{-('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r')}}')
+        st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+'+paired_tex(math.exp(-r['z']),math.exp(-previous['z']) if previous else None,lang,9)+r'}='+paired_tex(r['p_raw'],previous['p_raw'] if previous else None,lang,12))
         st.subheader(t('4. Kayıtlı kalibrasyon','4. Apply the stored calibration'))
         a=core.M['platt']['a'];b=core.M['platt']['b']
-        st.latex(r'\eta=a+bz='+tex(a)+r'+('+tex(b)+r'\times('+tex(r['z'])+r'))')
-        st.latex(r'\eta='+tex(a)+r'+('+tex(b*r['z'])+r')='+tex(r['eta']))
+        st.latex(r'\eta=a+bz='+tex(a)+r'+('+tex(b)+r'\times('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r'))')
+        st.latex(r'\eta='+tex(a)+r'+('+paired_tex(b*r['z'],b*previous['z'] if previous else None,lang,12)+r')='+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12))
         st.write(t('a sabit düzeltme, b eğim düzeltmesidir. Yeniden öğrenilmez ve kalibrasyon ikinci kez uygulanmaz.','a is the intercept correction and b the slope correction. They are not re-estimated, and calibration must not be applied twice.'))
         st.subheader(t('5. Son olasılık ve yüzde','5. Final probability and percentage'))
-        st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-\eta}}=\frac{1}{1+e^{-('+tex(r['eta'])+r')}}')
-        st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+'+tex(math.exp(-r['eta']),9)+r'}='+tex(r['p_cal']))
-        st.latex(r'100p_{\mathrm{cal}}='+tex(100*r['p_cal'],10)+r'\%\approx'+tex(100*r['p_cal'],1)+r'\%')
+        st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-\eta}}=\frac{1}{1+e^{-('+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12)+r')}}')
+        st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+'+paired_tex(math.exp(-r['eta']),math.exp(-previous['eta']) if previous else None,lang,9)+r'}='+paired_tex(r['p_cal'],previous['p_cal'] if previous else None,lang,12))
+        st.latex(r'100p_{\mathrm{cal}}='+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,10)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
         st.subheader(t('6. Kart ve karar şeritleri ayrı hesaplanır','6. Calculate the card and lanes separately'))
         st.table([{t('Ölçüt','Item'):it[lang],t('Sayım','Count'):it['x'],t('Puan katkısı','Point contribution'):it['c']} for it in d['items']] or [{t('Ölçüt','Item'):t('Puan getiren ölçüt yok','No scoring items'),t('Sayım','Count'):0,t('Puan katkısı','Point contribution'):0}])
-        st.latex(r'S_{\mathrm{card}}='+('+'.join(str(x['c']) for x in d['items']) or '0')+'='+str(d['total']))
+        st.latex(decision_formulas(r,previous,lang)[0])
         st.write(METHODS[lang][5][1])
-        st.latex(r's_{\mathrm{card}}='+str(d['pl'])+r',\quad s_{\mathrm{model}}='+str(d['ml'])+r',\quad u='+str(d['urg']))
-        st.latex(r'A=\max('+','.join(str(d[k]) for k in ['pl','ml','urg'])+')='+str(d['lane'])+r',\qquad B=\max('+','.join(str(d[k]) for k in ['ml','urg'])+')='+str(r['B']['lane']))
+        st.latex(r's_{\mathrm{card}}='+paired_tex(d['pl'],previous['A']['pl'] if previous else None,lang,0)+r',\quad s_{\mathrm{model}}='+paired_tex(d['ml'],previous['A']['ml'] if previous else None,lang,0)+r',\quad u='+paired_tex(d['urg'],previous['A']['urg'] if previous else None,lang,0))
+        st.latex(decision_formulas(r,previous,lang)[1])
+        st.latex(decision_formulas(r,previous,lang)[2])
         st.write(t('Hızlı paket tetiklenmesi — A: ','Rapid-package trigger — A: ')+str(d['rapid'])+'; B: '+str(r['B']['rapid']))
         st.subheader(t('7. Ekrandaki diğer sayılar','7. Other displayed numbers'))
-        st.latex(r'N=\operatorname{round}\!\left(\frac{1}{'+tex(r['p_cal'])+r'}\right)=\operatorname{round}('+tex(1/r['p_cal'],6)+')='+str(core.one_in_n(r['p_cal'])))
+        pair=lambda value,old,d=8:paired_tex(value,old if previous else None,lang,d)
+        old_p=previous['p_cal'] if previous else r['p_cal']
+        st.latex(r'N=\operatorname{round}\!\left(\frac{1}{'+pair(r['p_cal'],old_p,12)+r'}\right)=\operatorname{round}('+pair(1/r['p_cal'],1/old_p,6)+')='+pair(core.one_in_n(r['p_cal']),core.one_in_n(old_p),0))
         st.latex(r'\pi=\frac{167}{1295}\approx12.9\%')
-        q=core.M['score_percentiles'];i=0
-        while i<len(q)-1 and q[i+1]<=r['p_cal']:i+=1
+        q=core.M['score_percentiles']
+        def knot(probability):
+            i=0
+            while i<len(q)-1 and q[i+1]<=probability:i+=1
+            return i
+        i=knot(r['p_cal']);old_i=knot(old_p)
         if i<len(q)-1:
-            st.latex(r'\mathrm{Position}=\operatorname{round}\!\left[5\left('+str(i)+r'+\frac{'+tex(r['p_cal'],10)+'-'+tex(q[i],10)+'}{'+tex(q[i+1],10)+'-'+tex(q[i],10)+r'}\right)\right]='+str(core.percentile(r['p_cal'])))
+            old_lower=q[old_i];old_upper=q[min(old_i+1,len(q)-1)]
+            st.latex(r'\mathrm{Position}=\operatorname{round}\!\left[5\left('+pair(i,old_i,0)+r'+\frac{'+pair(r['p_cal'],old_p,10)+'-'+pair(q[i],old_lower,10)+'}{'+pair(q[i+1],old_upper,10)+'-'+pair(q[i],old_lower,10)+r'}\right)\right]='+pair(core.percentile(r['p_cal']),core.percentile(old_p),0))
         else:st.write(t('Kodun en üst kesimi: “en üst %5” gösterilir.','At the final stored knot, the code shows “top 5%”.'))
-        st.latex(r'\mathrm{Fill}=\min\!\left(100,\frac{'+tex(r['p_cal'])+r'}{0.40}\times100\right)='+tex(min(100,r['p_cal']/.4*100),4))
+        st.latex(r'\mathrm{Fill}=\min\!\left(100,\frac{'+pair(r['p_cal'],old_p,12)+r'}{0.40}\times100\right)='+pair(min(100,r['p_cal']/.4*100),min(100,old_p/.4*100),4))
         st.write(t('N yuvarlanmış anlatım, π geliştirme oranı, Position skor sırası ve Fill görsel çubuk doluluğudur. Bunlar birbirinin yerine kullanılmaz.','N is a rounded description, π the development proportion, Position a score rank, and Fill the visual bar fill. These quantities are not interchangeable.'))
         with st.expander(t('Tam katsayı tablosu ve sıfır katkılar','Full coefficient table and zero contributions')):
             st.dataframe([{t('Terim','Term'):labels.get(x['key'],x['key']),'x':x['x'],'β':x['beta'],'x × β':x['contribution']} for x in r['terms']],hide_index=True,width="stretch")

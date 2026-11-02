@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "327b38ac435bb7dcacc9218516f806ee8ffb98205201b40336edcaa98c9ae175",
-    "model_teaching.py": "1b91841fc95951e5393072a17a47136594bdf9c341759a56fb6539168fc1c982",
+    "model_teaching.py": "61f5a8086887f0bcb6b6b61e3a76db67a6492821d19839c763a578216c00e1c5",
     "model_teaching_content.py": "6e42d9d547320f4a1403812f5e087af9fd22223b4d6c2f1884907eb1d83904c3",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -52,7 +52,7 @@
       "card_before": 6,
       "card_after": 5
     },
-    "tests_passed": 27
+    "tests_passed": 28
   },
   "desktop_teaching_layout": {
     "columns": [
@@ -66,6 +66,8 @@
     "pdf_files_unchanged": true,
     "wide_screen_family_inputs": "four columns; two below 1800px",
     "live_checked": true,
-    "live_edit_checked": "Age 38 to 48: weighted contributions, z, raw sigmoid, eta, final sigmoid, card and lanes update together"
+    "live_edit_checked": "Age 38 to 48: weighted contributions, z, raw sigmoid, eta, final sigmoid, card and lanes update together",
+    "before_after_formula_values": true,
+    "comparison_reference": "Immediately preceding input edit; retained on unchanged reruns and language switches; cleared on reset or profile change."
   }
 }

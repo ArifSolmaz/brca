@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from streamlit.testing.v1 import AppTest
-from model_teaching import trace, PDF, ASSETS
+from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS
 ROOT=Path(__file__).resolve().parents[1]
 
 def control(at,key):return next(n for n in at if getattr(n,'key',None)==key)
@@ -60,7 +60,7 @@ class ModelTeachingTests(unittest.TestCase):
         self.assertIn('0.51964871',formulas)
         self.assertIn('-1.33602736',formulas)
         self.assertIn('0.208164117',formulas)
-        self.assertIn('S_{\\mathrm{card}}=2+3=5',formulas)
+        self.assertIn('leftarrow 6',formulas)
         self.assertIn('Last-edit contributions', ' '.join(n.label for n in at.expander))
         at.checkbox(key='teaching_urg_dec').set_value(True).run()
         self.assertFalse(at.exception)
@@ -78,6 +78,32 @@ class ModelTeachingTests(unittest.TestCase):
         self.assertEqual(at.metric[0].value,'8,6%')
         self.assertEqual(at.selectbox(key='teaching_preset_tr').value,2)
         self.assertEqual(at.selectbox(key='teaching_grade_tr').value,'g3')
+
+    def test_previous_values_follow_only_the_last_edit_in_both_languages(self):
+        for lang in ['en','tr']:
+            at=self.start(lang)
+            initial=trace(at.session_state['_teaching_previous']['v'])
+            at.number_input(key='teaching_age').set_value(48).run()
+            self.assertFalse(at.exception)
+            current=at.session_state['_teaching_previous']
+            formulas=' '.join(n.proto.body for n in at if n.type=='latex')
+            for key,digits in [('z',8),('p_raw',8),('eta',8),('p_cal',9)]:
+                self.assertIn(paired_tex(current[key],initial[key],lang,digits),formulas)
+            self.assertIn(paired_tex(20.8,25.8,lang,1,rounded=True),formulas)
+            self.assertIn(paired_tex(0,1,lang,0),formulas)  # Lost age card point remains visible.
+            html=contribution_html(current,at.session_state['_teaching_change'],lang)
+            self.assertGreaterEqual(html.count('formula-previous'),7)  # Input, contribution and all later cumulative sums.
+            self.assertNotIn('boxed{-1.82409575',formulas)  # Calibration coefficient is fixed.
+            at.checkbox(key='teaching_urg_dec').set_value(True).run()
+            self.assertFalse(at.exception)
+            compact=[n.proto.body for n in at if n.type=='latex'][:9]
+            self.assertNotIn('boxed',' '.join(compact[:6]))  # No false propagation through probability math.
+            self.assertIn(paired_tex(2,0,lang,0),' '.join(compact))
+            saved=at.session_state['_teaching_change']['previous']
+            at.run();self.assertFalse(at.exception)
+            self.assertEqual(at.session_state['_teaching_change']['previous'],saved)
+            at.button(key='teaching_reset').click().run()
+            self.assertNotIn('_teaching_change',at.session_state)
 
     def test_teaching_route_keeps_password_gate(self):
         with patch.dict('os.environ',{'BRCA_APP_PASSWORD':'test-password','BRCA_NO_PASSWORD':'0'}):
