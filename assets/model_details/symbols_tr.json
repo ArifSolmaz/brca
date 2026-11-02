@@ -1,0 +1,142 @@
+[
+  [
+    "β₀",
+    "Sabit terim. Bütün hastalarda z toplamının başlangıcı: −1,608283515050."
+  ],
+  [
+    "βⱼ",
+    "j numaralı girdinin ham birimdeki öğrenilmiş katsayısı. Kart puanı değildir."
+  ],
+  [
+    "xⱼ",
+    "Hastanın j numaralı girdisi: yıl, yüzde, akraba sayısı veya 0/1 göstergesi."
+  ],
+  [
+    "j; 26",
+    "j girdinin sıra numarasıdır. Toplamda sabit dışında 26 katsayı terimi vardır."
+  ],
+  [
+    "Σ",
+    "Toplam işareti: j = 1’den 26’ya kadar bütün βⱼ × xⱼ çarpımlarını topla."
+  ],
+  [
+    "z",
+    "Ham doğrusal skor. Sabit ve bütün katsayı katkılarının toplamı; yüzde değildir."
+  ],
+  [
+    "p; p_ham",
+    "p genel olarak olasılıktır, 0–1 arasındadır. p_ham, kalibrasyondan önceki sigmoid sonucudur."
+  ],
+  [
+    "η; p_son",
+    "η (eta), kalibrasyondan sonraki doğrusal skordur. p_son ekranda yüzdeye çevrilen olasılıktır."
+  ],
+  [
+    "a; b",
+    "Platt kalibrasyonunun sabiti ve eğimi. a = −1,824095746896; b = 0,939227549588."
+  ],
+  [
+    "e; exp(t)",
+    "e ≈ 2,71828 doğal üstel sayıdır. exp(t), e üzeri t demektir; t üstteki sayıdır; örneğin exp(−z) = e⁻ᶻ."
+  ],
+  [
+    "log; logit(p)",
+    "log doğal logaritmadır. logit(p) = log[p/(1−p)], olasılığı doğrusal skor ölçeğine taşır."
+  ],
+  [
+    "βⱼ*; β₀*",
+    "Yıldız kalibre edilmiş eşdeğer katsayıyı belirtir: βⱼ* = bβⱼ; β₀* = a + bβ₀. Yeniden kalibrasyon yapılmaz."
+  ],
+  [
+    "OR; odds",
+    "Odds = p/(1−p). OR, iki odds’un oranıdır; yüzde puan farkı veya nedensel etki değildir."
+  ],
+  [
+    "c_model; c_eksik; c₃₀",
+    "c_model ilgili girdinin z katkısıdır. c_eksik ve c₃₀, eksik Ki-67 ile ölçülmüş %30 Ki-67’nin z katkılarıdır."
+  ],
+  [
+    "n; min(n,2)",
+    "İlgili akraba sayısı. min(n,2) küçük olanı seçer; kart aynı satırda en çok iki kişiyi sayar."
+  ],
+  [
+    "S_kart; s_kart",
+    "S_kart veya kart toplamı puanların toplamıdır. s_kart ise bu puandan türetilen 0/1/2 sıra şerididir."
+  ],
+  [
+    "s_model",
+    "Olasılıktan türetilen şerit: p <0,10 → 0; 0,10 ≤ p <0,20 → 1; p ≥0,20 → 2."
+  ],
+  [
+    "u",
+    "Aciliyet şeridi. Tedavi kararı bekliyorsa 2; yalnız ailede P/LP kutusu açıksa 1; aksi halde 0."
+  ],
+  [
+    "A; B; max",
+    "A ve B karar kurallarıdır. max en büyük şeridi seçer. 0 normal, 1 öncelikli, 2 acildir."
+  ],
+  [
+    "min; round",
+    "min en küçük değeri seçer. round en yakın tamsayıya yuvarlar; tam yarımlarda kod çift tamsayıyı seçer."
+  ],
+  [
+    "N",
+    "“Her N kişiden biri” anlatımındaki yaklaşık kişi sayısı: round(1/p). Gerçek hasta sayımı değildir."
+  ],
+  [
+    "i; qᵢ; qᵢ₊₁",
+    "Yüzdelik hesapta i, p’nin altındaki kesimin 0’dan başlayan indeksidir; qᵢ ve qᵢ₊₁ iki komşu olasılık kesimidir."
+  ],
+  [
+    "Konum; Doluluk",
+    "Konum geliştirme skorlarına göre yüzdelik sıradır. Doluluk olasılık çubuğunun görsel yüzdesidir; ikisi p değildir."
+  ],
+  [
+    "π",
+    "Pi: geliştirme grubundaki pozitif oranı, 167/1295. Burada geometrik π ≈3,14 sabiti değildir."
+  ],
+  [
+    "w₊; w₋",
+    "Pozitif ve diğer sınıfa verilen eğitim ağırlıkları. Alt indis +/− sınıf etiketidir."
+  ],
+  [
+    "ΔN; ΔT",
+    "Δ (delta) fark demektir. Kapasite bölümünde ΔN paket sayısı farkı, ΔT hedef pozitif sayısı farkıdır. Buradaki N, “her N kişiden biri” N’sinden farklıdır."
+  ],
+  [
+    "TP; FN",
+    "TP doğru pozitif: eşik üstünde kalan taşıyıcı. FN yanlış negatif: eşik altında kalan taşıyıcı."
+  ],
+  [
+    "TN; FP",
+    "TN doğru negatif: eşik altında kalan taşımayan. FP yanlış pozitif: eşik üstünde kalan taşımayan."
+  ],
+  [
+    "NPV",
+    "Negative Predictive Value; negatif öngörü değeri. Eşik altındaki kişilerin taşımayan oranı: TN/(TN+FN)."
+  ],
+  [
+    "AUC; ROC",
+    "Area Under the Curve: ROC eğrisinin altında kalan alan. ROC, duyarlılığı yanlış pozitif oranına karşı gösterir; tek bir eşik tablosundan AUC bulunmaz."
+  ],
+  [
+    "C; L2",
+    "C düzenlileştirme gücünün tersini belirleyen eğitim ayarıdır; küçük C daha güçlü ceza demektir. L2 katsayıların karelerine dayalı cezadır."
+  ],
+  [
+    "y; 0/1",
+    "y eğitim hedefidir: Positive etiketinde 1, diğer etiketlerde 0. Girdi göstergelerinde 1 var/seçili, 0 yok/seçili değil anlamındadır."
+  ],
+  [
+    "=; ≈; ×; /",
+    "= eşit; ≈ yaklaşık; × çarpma; / veya kesir çizgisi bölme demektir. Eksi işareti negatif değeri veya çıkarma işlemini belirtir."
+  ],
+  [
+    "<; ≤; >; ≥",
+    "Sırasıyla küçük, küçük veya eşit, büyük, büyük veya eşit. Eşiklerde eşitliğin hangi tarafta olduğu önemlidir."
+  ],
+  [
+    "%; alt indis; üs",
+    "Yüzde için olasılık 100 ile çarpılır. Alt indis terimi adlandırır: ham/son çarpan değildir. Üs kuvveti gösterir; β* içindeki yıldız ise etiket olup kuvvet değildir."
+  ]
+]

@@ -11,6 +11,7 @@ import brca_core as core
 import importlib
 import capacity_explorer
 import research_overview
+import model_teaching
 # Cloud hot deployments can rerun app.py while retaining an imported presentation
 # module. Reload this stateless UI module so headings, body and downloads agree.
 importlib.reload(research_overview)
@@ -191,6 +192,11 @@ rule = str(st.query_params.get("kural", st.query_params.get("rule", "A"))).upper
 rule = rule if rule in core.RULES else "A"
 S = core.summary(rule)
 
+# A teaching deep link may select its language without altering calculator inputs.
+_teaching_dil = st.query_params.get("dil") if st.query_params.get("sayfa") == "model" else None
+if _teaching_dil in ("tr", "en") and st.session_state.get("_teaching_dil_seen") != _teaching_dil:
+    st.session_state["lang_sel"] = _teaching_dil
+    st.session_state["_teaching_dil_seen"] = _teaching_dil
 L = st.session_state.get("lang_sel") or "tr"; T = TX[L]   # the language switch widget is the only source of truth
 def num(x, d=1):
     s = f"{x:,.{d}f}"; return s.replace(",", "X").replace(".", ",").replace("X", ".") if L == "tr" else s
@@ -377,23 +383,29 @@ if not ok_all:
     st.error(T["pill_bad"].format(ok=ST_OK, n=ST_N)); st.stop()
 
 # ---------------------------------------------------------------- research presentation / calculator navigation
-st.session_state.setdefault("app_view", "research" if st.query_params.get("sayfa") == "arastirma" else "calculator")
+st.session_state.setdefault("app_view", {"arastirma": "research", "model": "model"}.get(st.query_params.get("sayfa"), "calculator"))
 view = st.segmented_control(
-    "Görünüm" if L == "tr" else "View", ["calculator", "research"],
-    format_func=lambda key: ({"calculator": "Hesaplayıcı", "research": "Araştırma özeti"} if L == "tr" else
-                            {"calculator": "Calculator", "research": "Research overview"})[key],
+    "Görünüm" if L == "tr" else "View", ["calculator", "research", "model"],
+    format_func=lambda key: ({"calculator": "Hesaplayıcı", "research": "Araştırma özeti", "model": "Model ayrıntıları"} if L == "tr" else
+                            {"calculator": "Calculator", "research": "Research overview", "model": "Model details"})[key],
     key="app_view", selection_mode="single", required=True)
 previous_view = st.session_state.get("_active_view", "calculator")
 if view != previous_view:
-    if view == "research":
+    if previous_view == "calculator":
         # Streamlit prunes hidden widgets. Keep their values across a presentation visit.
         keys = set(DEFAULTS) | {"mode", "ro_line", "ro_strict", "capacity_period", "capacity_strategy",
                                 "capacity_budget_cv", "capacity_budget_temporal"}
         st.session_state["_calculator_snapshot"] = {key: st.session_state[key] for key in keys if key in st.session_state}
-    else:
+    elif view == "calculator":
         for key, value in st.session_state.get("_calculator_snapshot", {}).items():
             st.session_state[key] = value
 st.session_state["_active_view"] = view
+if view == "model":
+    st.query_params["sayfa"] = "model"
+    st.query_params["dil"] = L
+    st.session_state["_teaching_dil_seen"] = L
+    model_teaching.render_model_teaching(L)
+    st.stop()
 if view == "research":
     if st.query_params.get("sayfa") != "arastirma":
         st.query_params["sayfa"] = "arastirma"

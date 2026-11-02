@@ -1,0 +1,51 @@
+import hashlib
+import json
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+from streamlit.testing.v1 import AppTest
+from model_teaching import trace, PDF, ASSETS
+ROOT=Path(__file__).resolve().parents[1]
+
+def control(at,key):return next(n for n in at if getattr(n,'key',None)==key)
+def result(at):return next(n.value for n in at if n.type=='html' and "id='sonuc'" in n.value)
+
+class ModelTeachingTests(unittest.TestCase):
+    def start(self,lang='en',teaching=True):
+        at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=30)
+        at.session_state['auth']=True
+        if teaching:at.query_params.update({'sayfa':'model','dil':lang})
+        else:at.session_state['lang_sel']=lang
+        at.run();self.assertFalse(at.exception,[e.message for e in at.exception]);return at
+
+    def test_frozen_core_and_all_synthetic_traces(self):
+        for filename,sha in {'brca_core.py':'97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356','model_full_embedded.json':'79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa'}.items():
+            self.assertEqual(hashlib.sha256((ROOT/filename).read_bytes()).hexdigest(),sha)
+        for c in json.loads((ASSETS/'synthetic_examples.json').read_text()):
+            r=trace(c['inputs'])
+            for k in ['z','p_cal','p_raw','eta']:self.assertAlmostEqual(r[k],c[k],places=12)
+            for rule in ['A','B']:
+                for k in ['total','lane','rapid']:self.assertEqual(r[rule][k],c[rule][k])
+
+    def test_bilingual_routes_downloads_and_language_switch(self):
+        for lang,title,percent in [('tr','Model ayrıntıları ve elle hesap','25,8%'),('en','Model details and manual calculations','25.8%')]:
+            at=self.start(lang);self.assertEqual(at.title[0].value,title);self.assertEqual(at.metric[0].value,percent)
+            self.assertEqual(at.metric[1].value,'6');self.assertTrue(PDF[lang].read_bytes().startswith(b'%PDF-'))
+            self.assertEqual(len(at.get('download_button')),2)
+        control(at,'lang_sel').set_value('tr').run();self.assertFalse(at.exception);self.assertEqual(at.query_params['dil'],['tr'])
+        self.assertEqual(at.metric[0].value,'25,8%')
+
+    def test_teaching_and_research_round_trip_preserves_calculator(self):
+        at=self.start(teaching=False);at.button(key='btn_example').click().run();before=result(at)
+        control(at,'app_view').set_value('model').run();self.assertFalse(at.exception)
+        at.selectbox(key='teaching_preset').set_value(2).run();self.assertFalse(at.exception);self.assertEqual(at.metric[0].value,'8.6%')
+        control(at,'app_view').set_value('research').run();self.assertFalse(at.exception)
+        control(at,'app_view').set_value('calculator').run();self.assertFalse(at.exception)
+        self.assertEqual(result(at),before)
+
+    def test_teaching_route_keeps_password_gate(self):
+        with patch.dict('os.environ',{'BRCA_APP_PASSWORD':'test-password','BRCA_NO_PASSWORD':'0'}):
+            at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=30);at.query_params.update({'sayfa':'model','dil':'en'});at.run()
+            self.assertFalse(at.exception);self.assertEqual(len(at.get('download_button')),0);self.assertEqual(len(at.metric),0)
+
+if __name__=='__main__':unittest.main()
