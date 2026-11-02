@@ -15,6 +15,8 @@ STYLE = '''<style>
 .st-key-model_guide_body .guide-table{overflow-x:auto;margin:.8rem 0}
 .st-key-model_guide_body table{width:100%;border-collapse:collapse}
 .st-key-model_guide_body th,.st-key-model_guide_body td{text-align:left;padding:.6rem;border-bottom:1px solid #dce1e8;vertical-align:top}
+.st-key-model_guide_body .guide-back{display:inline-block;min-height:44px;padding:.6rem 0;touch-action:manipulation}
+.st-key-model_guide_body #guide-contents{scroll-margin-top:2rem}
 .st-key-model_guide_body .guide-toc{padding:1rem 1.5rem;background:#f0edf8;border-radius:12px}
 .st-key-model_guide_body [class*=st-key-guide_math_mobile_],.st-key-model_guide_body [data-testid=stLayoutWrapper]:has(>[class*=st-key-guide_math_mobile_]){display:none!important}
 @media(max-width:700px){
@@ -30,7 +32,7 @@ STYLE = '''<style>
 NAV_SCRIPT = """<script>
 if (window.__brcaGuideNavigation) document.removeEventListener('click',window.__brcaGuideNavigation,true);
 window.__brcaGuideNavigation = function(event) {
-  const link = event.target.closest?.('.guide-toc a[href^="#guide-"]');
+  const link = event.target.closest?.('.guide-toc a[href^="#guide-"], .guide-back[href="#guide-contents"]');
   if (!link) return;
   const target = document.getElementById(link.getAttribute('href').slice(1));
   if (!target) return;
@@ -78,11 +80,19 @@ def render_model_guide(lang='tr'):
                  'From actual records to the model, manual calculations and limits of the evidence. Read the complete guide on this page.')
         chapters = [b for b in blocks if b['type'] == 'chapter']
         links = ''.join(f'<li><a href="#guide-{b["number"]}">{b["number"]} · {escape(b["text"])}</a></li>' for b in chapters if b['number'])
-        st.html('<nav class="guide-toc" aria-label="'+('İçindekiler' if tr else 'Contents')+'"><strong>'+('İçindekiler' if tr else 'Contents')+'</strong><ol style="list-style:none;padding:0">'+links+'</ol></nav>')
+        st.html('<nav id="guide-contents" class="guide-toc" aria-label="'+('İçindekiler' if tr else 'Contents')+'"><strong>'+('İçindekiler' if tr else 'Contents')+'</strong><ol style="list-style:none;padding:0">'+links+'</ol></nav>')
+        def back_to_contents(number):
+            label = 'İçindekilere dön' if tr else 'Back to contents'
+            st.html(f'<a class="guide-back" data-guide-section="{number}" href="#guide-contents">↑ {label}</a>')
+
         math_index=0
+        current_chapter=None
         for block in blocks:
             kind = block['type']
             if kind == 'chapter':
+                if current_chapter is not None:
+                    back_to_contents(current_chapter)
+                current_chapter=block['number']
                 number = block['number']
                 title = (f'{number} · ' if number else '') + block['text']
                 st.html(f'<h2 id="guide-{number}">{escape(title)}</h2>')
@@ -101,6 +111,7 @@ def render_model_guide(lang='tr'):
                 st.html('<div class="guide-table"><table><thead><tr>'+headers+'</tr></thead><tbody>'+rows+'</tbody></table></div>')
             elif kind == 'link':
                 st.markdown(f'[{block["text"]}]({block["url"]})')
+        back_to_contents(current_chapter)
         st.divider()
         left,right=st.columns(2)
         for column,language,label in [(left,'TR','Türkçe Model Rehberi · PDF'),(right,'EN','English Model Guide · PDF')]:
