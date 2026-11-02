@@ -78,6 +78,7 @@ WORKBENCH_STYLE = """<style>
 .teaching-arithmetic .product{white-space:normal}.formula-current{background:#fff1c7;color:#784000;padding:1px 2px;border-radius:3px}.formula-previous{color:#596579;white-space:nowrap;font-size:.78em;display:inline-block}.st-key-teaching_equations .katex{max-width:100%}.teaching-arithmetic small{color:#627181}
 .st-key-teaching_origin_header h1{font-size:24px!important}.st-key-teaching_origin_header [data-testid=stCaptionContainer] p{font-size:12px}@media(max-width:1799px){.st-key-teaching_origin_header [data-testid=stHorizontalBlock]{flex-direction:column}.st-key-teaching_origin_header [data-testid=stColumn]{width:100%!important;flex:1 1 100%!important}}
 .teaching-origin{padding:10px 14px;border-left:3px solid #7560ce;background:#eef2f7;border-radius:6px;color:#17212b}.teaching-origin h2{font-size:16px!important;line-height:1.3;margin:0 0 5px!important;padding:0!important}.teaching-origin>div{display:grid;grid-template-columns:1fr 1fr;gap:24px}.teaching-origin p{font-size:13px;line-height:1.45;margin:0}@media(max-width:1099px){.teaching-origin>div{grid-template-columns:1fr;gap:8px}}
+.teaching-scroll-hint{display:none}@media(max-width:1099px){.teaching-scroll-hint{display:block;margin:4px 0 8px;color:#46556b;font-size:12px;line-height:1.4}}
 .teaching-edit{padding:8px 10px;margin-top:8px;border-left:3px solid #7560ce;background:#f4f1fc;font-size:12px;line-height:1.45;color:#17212b}
 /* KaTeX fractions and superscripts draw above/below their text baseline.
    Reserve ink space inside the horizontal scroller instead of clipping that ink. */
@@ -171,6 +172,7 @@ def render_model_teaching(lang):
     fmt = lambda x,d=12: f'{x:.{d}f}'.replace('.', ',') if tr else f'{x:.{d}f}'
     tex = lambda x,d=12: f'{x:.{d}f}'.replace('.', '{,}') if tr else f'{x:.{d}f}'
     st.html(WORKBENCH_STYLE)
+    scroll_hint = '<p class="teaching-scroll-hint" role="note">↔ ' + t('Uzun formüllerin tamamını görmek için formülü sağa-sola kaydırın.', 'Swipe long formulas left or right to see every step.') + '</p>'
     with st.container(key='teaching_origin_header'):
         title_col,intro_col=st.columns([1.1,3],vertical_alignment='center')
     with title_col:
@@ -258,8 +260,10 @@ def render_model_teaching(lang):
         previous=change.get('previous') if change else None
         st.caption(t('Kutudaki sayı güncel değerdir; yanındaki ← önceki değeri gösterir. Yalnız son düzenlemeden etkilenen değerler işaretlenir.', 'Boxed values are current; ← shows the previous value beside each one. Only quantities affected by the last edit are marked.'))
         if urg_fam:st.caption(t('Aile bilgisi modelde yoktur. Aşağıdaki yüzde yalnız iç eğitim hesabıdır.', 'Familial information is absent from the model. The percentage below is internal teaching arithmetic only.'))
+        st.html(scroll_hint)
         render_compact_steps(r,lang,previous)
     with st.expander(t('Ayrıntılı açıklamalar ve tüm sembollerle çözüm','Detailed explanations and full-symbol walkthrough')):
+        st.html(scroll_hint)
         if change:
             with st.expander(t('Son düzenlemenin katkıları — ne değişti?','Last-edit contributions — what changed?'),expanded=True):
                 st.write(t('Olasılık farkı yüzde puandır; Δz doğrusal skor farkıdır. Girdi etkileri bu profil için koşullu hesap değişimidir, nedensel biyolojik etki değildir.', 'Probability differences are percentage points; Δz is a linear-score difference. These are conditional changes in this profile’s calculation, not causal biological effects.'))
@@ -332,12 +336,15 @@ def render_model_teaching(lang):
     st.caption(t('TNBC: üçlü negatif meme kanseri (ER, PR ve HER2 negatif). Ki-67: çoğalma belirteci yüzdesi. MLPA: Multiplex Ligation-dependent Probe Amplification; büyük delesyon/duplikasyonları değerlendiren yöntem. P/LP: patojenik / olası patojenik; VUS: anlamı belirsiz varyant.', 'TNBC: Triple-Negative Breast Cancer (negative ER, Estrogen Receptor; PR, Progesterone Receptor; HER2, Human Epidermal Growth Factor Receptor 2). Ki-67: proliferation-marker percentage. MLPA: Multiplex Ligation-dependent Probe Amplification for deletion/duplication assessment. P/LP: Pathogenic/Likely Pathogenic; VUS: Variant of Uncertain Significance.'))
     with st.expander(t('Sembol sözlüğü — her işaret ne anlama geliyor?','Symbol glossary — what does each sign mean?')):
         st.table([dict(zip([t('Sembol','Symbol'),t('Anlamı','Meaning')],row)) for row in (SYMBOLS_TR if tr else SYMBOLS_EN)])
+        st.html(scroll_hint)
         st.latex(r'\operatorname{logit}(p)=\log\!\left(\frac{p}{1-p}\right),\qquad\mathrm{odds}=\frac{p}{1-p}')
     st.header(t('Model nasıl eğitildi ve sınırları neler?','How was the model trained, and what are its limitations?'))
     for heading,body in METHODS[lang]:
         st.subheader(heading);st.write(body)
+    st.html(scroll_hint)
     st.latex(r'w_+=\frac{1295}{2\times167}=3.877246,\qquad w_-=\frac{1295}{2\times1128}=0.574025')
     with st.expander(t('Kapasite ve doğrulama sayılarının aritmetiği','Arithmetic behind capacity and validation totals')):
+        st.html(scroll_hint)
         st.write(t('Model ≥%20: 212,6 paket / 26,6 hedef; A: 280 paket /29,4 hedef. Bunlar kayıtlı tekrar ortalamalarıdır.','Model ≥20%: 212.6 packages /26.6 targets; A: 280 packages /29.4 targets. These are stored repeat means.'))
         st.latex(r'\Delta N=212.6-280=-67.4,\quad\Delta T=26.6-29.4=-2.8')
         st.latex(r'\mathrm{Yield}=\frac{26.6}{212.6}\times100=12.511759\%,\quad\mathrm{Packages/target}=\frac{212.6}{26.6}=7.992481')
