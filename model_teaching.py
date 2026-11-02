@@ -69,6 +69,7 @@ WORKBENCH_STYLE = """<style>
 .st-key-teaching_workbench [data-testid=stHorizontalBlock]:has(.st-key-teaching_inputs){flex-direction:column}
 .st-key-teaching_workbench [data-testid=stHorizontalBlock]:has(.st-key-teaching_inputs)>[data-testid=stColumn]{width:100%!important;flex:1 1 100%!important}
 }
+@media(max-width:1799px){.st-key-teaching_family [data-testid=stHorizontalBlock]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.st-key-teaching_family [data-testid=stColumn]{width:100%!important;min-width:0!important}}
 .st-key-teaching_workbench h3{font-size:19px!important;margin:0 0 8px!important;padding:0!important}
 .teaching-arithmetic{width:100%;border-collapse:collapse;font-size:clamp(11px,.7vw,14px);font-variant-numeric:tabular-nums;color:#17212b}
 .teaching-arithmetic th,.teaching-arithmetic td{padding:6px 5px;border-bottom:1px solid #e2e6eb;text-align:right;vertical-align:top}
@@ -163,8 +164,9 @@ def render_model_teaching(lang):
         tnbc=b.checkbox('TNBC',key='teaching_tnbc',disabled=ovarian)
         miss=c.checkbox(t('Ki-67 bilinmiyor','Ki-67 unknown'),key='teaching_ki67_missing',disabled=ovarian)
         ki67=b.number_input('Ki-67 (%)',0.0,100.0,key='teaching_ki67_value',disabled=miss or ovarian)
-        cols=st.columns(2);family={}
-        for i,k in enumerate(core.FAMILY):family[k]=cols[i%2].number_input(labels[k],0,6,key='teaching_'+k)
+        with st.container(key='teaching_family'):
+            cols=st.columns(4);family={}
+            for i,k in enumerate(core.FAMILY):family[k]=cols[i%4].number_input(labels[k],0,6,key='teaching_'+k)
         urg_dec=a.checkbox(t('Tedavi kararı bekliyor','Treatment decision awaits result'),key='teaching_urg_dec')
         urg_fam=b.checkbox(t('Ailede belgeli P/LP BRCA varyantı','Documented familial P/LP BRCA variant'),key='teaching_urg_fam')
     v=dict(age=age,age_missing=0,dx=dx,grade=grade,region=region,tnbc=int(tnbc),ki67=ki67,ki67_missing=int(miss),urg_dec=urg_dec,urg_fam=urg_fam,**family)

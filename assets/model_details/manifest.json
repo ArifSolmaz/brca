@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "327b38ac435bb7dcacc9218516f806ee8ffb98205201b40336edcaa98c9ae175",
-    "model_teaching.py": "cb763de56584eded6999928ae0109dffde8d911ede1c806e7411ca548c73334a",
+    "model_teaching.py": "85212e11819ae3024f2beaf4171cb5e89aefa82b0c9cd336dc28ca36f0448c1a",
     "model_teaching_content.py": "6e42d9d547320f4a1403812f5e087af9fd22223b4d6c2f1884907eb1d83904c3",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -63,6 +63,7 @@
     "full_browser_width": true,
     "floating_percentage_bar": false,
     "mobile": "stacked",
-    "pdf_files_unchanged": true
+    "pdf_files_unchanged": true,
+    "wide_screen_family_inputs": "four columns; two below 1800px"
   }
 }
