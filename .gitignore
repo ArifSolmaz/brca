@@ -1,2 +1,5 @@
 __pycache__/
 *.py[cod]
+
+# Temporary PDF source, compiler logs and review renders
+/tmp/pdfs/

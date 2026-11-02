@@ -11,6 +11,7 @@ from model_teaching_content import ASSETS, SYMBOLS_TR, SYMBOLS_EN, METHODS, LABE
 
 PUBLIC_URL = 'https://brca-istun.streamlit.app/'
 PDF = {lang: ASSETS / f'BRCA_Model_Details_{lang.upper()}.pdf' for lang in ('tr', 'en')}
+GUIDES = {lang: ASSETS / f'BRCA_Model_Guide_{lang.upper()}.pdf' for lang in ('tr', 'en')}
 PRESETS = json.loads((ASSETS / 'synthetic_examples.json').read_text())[:3]
 
 
@@ -250,6 +251,12 @@ def render_model_teaching(lang):
     with intro_col:
         origin=ORIGIN_INTRO[lang]
         st.html('<section class="teaching-origin" aria-label="'+escape(origin['title'])+'"><h2>'+escape(origin['title'])+'</h2><div>'+''.join('<p>'+escape(paragraph)+'</p>' for paragraph in origin['paragraphs'])+'</div></section>')
+    st.subheader(t('Model rehberleri: veriden kanıta', 'Model guides: from data to evidence'))
+    st.caption(t('Sıfırdan öğrenenler için: gerçek veri içeriği, öğrenme yöntemi, katsayılar, elle hesap, istatistik ve belirsizlikler. 3 Kasım 2026 · yeni analiz yapılmadı.',
+                 'For beginners: actual data content, training, coefficients, manual calculations, statistics and uncertainty. 3 November 2026 · no new analysis.'))
+    guide_tr,guide_en=st.columns(2)
+    for column,guide_lang,label in [(guide_tr,'tr','Türkçe Model Rehberi · PDF'),(guide_en,'en','English Model Guide · PDF')]:
+        column.download_button(label,GUIDES[guide_lang].read_bytes(),file_name=GUIDES[guide_lang].name,mime='application/pdf',key='teaching_guide_'+guide_lang,width='stretch')
     with st.container(key='teaching_workbench'):
         input_col,terms_col,steps_col=st.columns([0.95,1.15,1.05],gap='medium')
     with input_col:

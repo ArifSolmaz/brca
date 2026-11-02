@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from streamlit.testing.v1 import AppTest
-from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS, mobile_formula_steps, teaching_latex
+from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS, GUIDES, mobile_formula_steps, teaching_latex
 from model_teaching_content import ORIGIN_INTRO
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -89,7 +89,9 @@ class ModelTeachingTests(unittest.TestCase):
         for lang,title,percent in [('tr','Model ayrıntıları ve elle hesap','25,8%'),('en','Model details and manual calculations','25.8%')]:
             at=self.start(lang);self.assertEqual(at.title[0].value,title);self.assertEqual(at.metric[0].value,percent)
             self.assertEqual(at.metric[1].value,'6');self.assertTrue(PDF[lang].read_bytes().startswith(b'%PDF-'))
-            self.assertEqual(len(at.get('download_button')),2)
+            self.assertEqual(len(at.get('download_button')),4)
+            for guide in GUIDES.values():self.assertTrue(guide.read_bytes().startswith(b'%PDF-'))
+            self.assertEqual({n.label for n in at.get('download_button') if n.key.startswith('teaching_guide_')},{'Türkçe Model Rehberi · PDF','English Model Guide · PDF'})
         control(at,'lang_sel').set_value('tr').run();self.assertFalse(at.exception);self.assertEqual(at.query_params['dil'],['tr'])
         self.assertEqual(at.metric[0].value,'25,8%')
         self.assertEqual(at.selectbox(key='teaching_preset_tr').value,1)

@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "cf49a9a088ff42aa2986617c34f33ac39aa5dde33a3c7a2554be666726a0c662",
-    "model_teaching.py": "f0fd28d419b96b2a72bbb31d4500452342ace7681548ff155b7fd4b2c2889101",
+    "model_teaching.py": "9c0e2218f254e1279998b932b3e29f041aa6fa4b9d86d52be329b92a5a11a835",
     "model_teaching_content.py": "93e6a60128a85e0a23a08c937ba4c6ba6720551dd6b8dc5fe356c82a3c8f0417",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -22,7 +22,9 @@
     "assets/model_details/synthetic_examples.csv": "4d63abe482c23775e109fac3c5b5ed78eefb3f03042808d04b9f0bafa11f7716",
     "assets/model_details/BRCA_Model_Details_EN.pdf": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
-    "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e"
+    "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e",
+    "assets/model_details/BRCA_Model_Guide_TR.pdf": "8ea9145d6ddd6bf5238990ed0e965764819656221e803924752ea77112ffe838",
+    "assets/model_details/BRCA_Model_Guide_EN.pdf": "7020e41be600848de2fcc638cab93d3f7726fbc2ee29d24ef14ceba5f85a5808"
   },
   "live_pdf_downloads_verified": {
     "date": "2026-11-02",
@@ -98,5 +100,23 @@
     "language_switch_preserves_inputs": true,
     "tests_passed": 33,
     "calculator_unchanged": true
+  },
+  "comprehensive_model_guides": {
+    "prepared": "2026-11-03",
+    "languages": [
+      "tr",
+      "en"
+    ],
+    "pages_each": 16,
+    "new_analyses": 0,
+    "model_fit_calls": 0,
+    "calculator_unchanged": true,
+    "pdf_pages_visually_reviewed": 32,
+    "formula_typesetting": "XeLaTeX",
+    "download_labels": [
+      "Türkçe Model Rehberi · PDF",
+      "English Model Guide · PDF"
+    ],
+    "tests_passed": 33
   }
 }
