@@ -22,20 +22,37 @@ def esc(value):
     return text
 
 
-def build(lang):
+def build(lang, web=False):
     tr = lang == 'tr'
     def t(a, b): return a if tr else b
     parts = []
-    def p(a, b): parts.append(esc(t(a, b)).replace('\n',r'\par\smallskip ') + '\n\n')
-    def raw(value): parts.append(value + '\n')
-    def math(value): raw('\\[\n' + value + '\n\\]')
-    def heading(a, b): raw(r'\subsection*{' + esc(t(a, b)) + '}')
+    blocks = []
+    def p(a, b):
+        blocks.append({'type': 'paragraph', 'text': t(a,b)})
+        parts.append(esc(t(a, b)).replace('\n',r'\par\smallskip ') + '\n\n')
+    def raw(value):
+        parts.append(value + '\n')
+        if r'\href{' in value:
+            import re
+            match = re.search(r'\\href\{(.*?)\}\{(.*)\}', value)
+            if match:
+                blocks.append({'type':'link','url':match[1].replace(r'\&','&'),'text':match[2].replace(r'\_','_')})
+    def math(value):
+        blocks.append({'type':'math','text':value})
+        raw('\\[\n' + value + '\n\\]')
+    def heading(a, b):
+        blocks.append({'type':'heading','text':t(a,b)})
+        raw(r'\subsection*{' + esc(t(a, b)) + '}')
     def page(number, a, b):
+        blocks.append({'type':'chapter','number':number,'text':t(a,b)})
         if number: raw(r'\clearpage')
         raw(r'\section*{' + (str(number) + ' · ' if number else '') + esc(t(a, b)) + '}')
-    def note(a, b): raw(r'\begin{quote}\color{accent}\bfseries ' + esc(t(a, b)) + r'\end{quote}')
+    def note(a, b):
+        blocks.append({'type':'note','text':t(a,b)})
+        raw(r'\begin{quote}\color{accent}\bfseries ' + esc(t(a, b)) + r'\end{quote}')
     def table(headers_tr, headers_en, rows, widths=None):
         headers = headers_tr if tr else headers_en
+        blocks.append({'type':'table','headers':headers,'rows':rows})
         spec = widths or ('X' + 'r' * (len(headers) - 1))
         raw(r'\begin{tabularx}{\linewidth}{' + spec + r'}\toprule')
         raw(' & '.join(r'\textbf{' + esc(x) + '}' for x in headers) + r'\\\midrule')
@@ -396,6 +413,8 @@ z={}&-1.608283515050-1.130177733759\\
     p('Bağlantılar kullanılan toplu kayıtlara gider; bunlar hasta düzeyindeki özgün belge denetiminin yerine geçmez. Rehber yeni bir klinik sınıflandırma veya test önerisi sunmaz.',
       'Links lead to the aggregate records used here; they do not replace original patient-level document review. This guide introduces no new clinical classification or testing recommendation.')
 
+    if web:
+        return blocks
     raw(r'\end{document}')
     tex = WORK / f'BRCA_Model_Guide_{lang.upper()}.tex'
     tex.write_text(preamble + '\n'.join(parts))

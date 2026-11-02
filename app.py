@@ -13,12 +13,14 @@ import capacity_explorer
 import research_overview
 import model_teaching
 import model_teaching_content
+import model_guide
 # Cloud hot deployments can rerun app.py while retaining an imported presentation
 # module. Reload this stateless UI module so headings, body and downloads agree.
 importlib.reload(research_overview)
 importlib.reload(capacity_explorer)
 importlib.reload(model_teaching_content)
 importlib.reload(model_teaching)
+importlib.reload(model_guide)
 from capacity_explorer import render_capacity_explorer
 from research_overview import render_research_overview, calculator_evidence_note, calculator_update_requirements, calculator_audit_body
 
@@ -196,7 +198,7 @@ rule = rule if rule in core.RULES else "A"
 S = core.summary(rule)
 
 # A teaching deep link may select its language without altering calculator inputs.
-_teaching_dil = st.query_params.get("dil") if st.query_params.get("sayfa") == "model" else None
+_teaching_dil = st.query_params.get("dil") if st.query_params.get("sayfa") in ("model", "rehber") else None
 if _teaching_dil in ("tr", "en") and st.session_state.get("_teaching_dil_seen") != _teaching_dil:
     st.session_state["lang_sel"] = _teaching_dil
     st.session_state["_teaching_dil_seen"] = _teaching_dil
@@ -386,11 +388,11 @@ if not ok_all:
     st.error(T["pill_bad"].format(ok=ST_OK, n=ST_N)); st.stop()
 
 # ---------------------------------------------------------------- research presentation / calculator navigation
-st.session_state.setdefault("app_view", {"arastirma": "research", "model": "model"}.get(st.query_params.get("sayfa"), "calculator"))
+st.session_state.setdefault("app_view", {"arastirma": "research", "model": "model", "rehber": "guide"}.get(st.query_params.get("sayfa"), "calculator"))
 view = st.segmented_control(
-    "Görünüm" if L == "tr" else "View", ["calculator", "research", "model"],
-    format_func=lambda key: ({"calculator": "Hesaplayıcı", "research": "Araştırma özeti", "model": "Model ayrıntıları"} if L == "tr" else
-                            {"calculator": "Calculator", "research": "Research overview", "model": "Model details"})[key],
+    "Görünüm" if L == "tr" else "View", ["calculator", "research", "model", "guide"],
+    format_func=lambda key: ({"calculator": "Hesaplayıcı", "research": "Araştırma özeti", "model": "Model ayrıntıları", "guide": "Model rehberi"} if L == "tr" else
+                            {"calculator": "Calculator", "research": "Research overview", "model": "Model details", "guide": "Model guide"})[key],
     key="app_view", selection_mode="single", required=True)
 previous_view = st.session_state.get("_active_view", "calculator")
 if view != previous_view:
@@ -403,6 +405,12 @@ if view != previous_view:
         for key, value in st.session_state.get("_calculator_snapshot", {}).items():
             st.session_state[key] = value
 st.session_state["_active_view"] = view
+if view == "guide":
+    st.query_params["sayfa"] = "rehber"
+    st.query_params["dil"] = L
+    st.session_state["_teaching_dil_seen"] = L
+    model_guide.render_model_guide(L)
+    st.stop()
 if view == "model":
     st.query_params["sayfa"] = "model"
     st.query_params["dil"] = L

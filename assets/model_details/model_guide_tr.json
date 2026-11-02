@@ -1,0 +1,1119 @@
+[
+  {
+    "type": "chapter",
+    "number": 0,
+    "text": "Veriden kanıta: bütün hikâye"
+  },
+  {
+    "type": "paragraph",
+    "text": "Genetik, istatistik veya programlama bilmeyen; konuyu sıfırdan öğrenmek isteyen öğrenciler için hazırlanmıştır."
+  },
+  {
+    "type": "note",
+    "text": "Bu rehber mevcut çalışmayı açıklar. Yeni hasta analizi, hipotez testi, yeniden eğitim veya hesaplayıcı değişikliği yapılmadı."
+  },
+  {
+    "type": "heading",
+    "text": "Birbirinden ayıracağımız üç iş"
+  },
+  {
+    "type": "paragraph",
+    "text": "1. Arşiv: dosya, örnek, kişi ve aileleri eşleştirmek; hangi verilerin kullanılabildiğini belirlemek.\n2. Tahmin: özgün 1.295 kişide geliştirilen modelin hesabını ve değerlendirmesini açıklamak.\n3. Biyolojik araştırma: genetik özellikler ile klinik özellikler arasındaki mevcut karşılaştırmaları ve belirsizliklerini incelemek."
+  },
+  {
+    "type": "heading",
+    "text": "Okuma yolu"
+  },
+  {
+    "type": "paragraph",
+    "text": "Biyoloji → arşiv → modelin hasta grubu → kodlama ve eksikler → öğrenme → katsayılar → elle hesap → puan kartı → istatistik → laboratuvar ödünleşimleri → biyolojik bulgu → bağımsız doğrulama → yazılım ve kaynaklar."
+  },
+  {
+    "type": "paragraph",
+    "text": "Rehber tarihi 3 Kasım 2026’dır. Arşiv ve doğrulama sayıları mevcut 24 Ekim denetiminden alınmıştır. Ayrı araştırma raporunun 25 Ekim tarihi değiştirilmemiştir. Modelin kayıtlı sürümü: 2026-10-04-8cc48aa58b."
+  },
+  {
+    "type": "link",
+    "url": "https://brca-istun.streamlit.app/?sayfa=model&dil=tr",
+    "text": "Model ayrıntıları sayfasını aç"
+  },
+  {
+    "type": "chapter",
+    "number": 1,
+    "text": "Biyoloji ve genetik dili"
+  },
+  {
+    "type": "paragraph",
+    "text": "Vücudumuz hücrelerden oluşur. DNA (deoksiribonükleik asit), protein üretiminde kullanılan genetik bilgiyi taşır. Gen, bu bilginin belirli bir işlevle ilişkili bölümüdür. Proteinler hücrenin birçok işini yapan moleküllerdir."
+  },
+  {
+    "type": "paragraph",
+    "text": "BRCA1 ve BRCA2, DNA hasarını onarmaya yardımcı olan proteinlerle ilişkili genlerdir. Bir genetik değişikliğe varyant denir. Kalıtsal bir varyant aile içinde aktarılabilir. Tümörde sonradan oluşan somatik değişiklik ise bununla aynı şey değildir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Terim",
+      "Anlamı"
+    ],
+    "rows": [
+      [
+        "P / Pathogenic",
+        "Patojenik; hastalıkla ilişkili zarar verici etkisi gösterilmiş."
+      ],
+      [
+        "LP / Likely Pathogenic",
+        "Olası patojenik; zarar verici etkiye ilişkin güçlü kanıt."
+      ],
+      [
+        "VUS / Variant of Uncertain Significance",
+        "Anlamı belirsiz varyant; etkisi yeterince bilinmiyor."
+      ],
+      [
+        "B / LB",
+        "Benign / likely benign: zararsız / olası zararsız."
+      ],
+      [
+        "CNV / Copy Number Variant",
+        "Bir DNA bölümünün kopya sayısındaki değişiklik."
+      ],
+      [
+        "NGS / Next-Generation Sequencing",
+        "Çok sayıda DNA bölgesini paralel inceleyen dizileme yöntemleri."
+      ],
+      [
+        "MLPA / Multiplex Ligation-dependent Probe Amplification",
+        "Belirli bölgelerde kopya kaybı veya artışını değerlendiren yöntem."
+      ]
+    ]
+  },
+  {
+    "type": "note",
+    "text": "Her varyant zararlı değildir. Hastalıkla ilişkili bir BRCA varyantını taşımak, kesinlikle kanser olunacağı anlamına gelmez."
+  },
+  {
+    "type": "paragraph",
+    "text": "Tahmin sorumuz, kişinin gelecekte kanser olup olmayacağı değildir. Mevcut klinik bilgilerin kayıtlı BRCA test sonucunu tahmin etmeye yardımcı olup olamayacağını araştırıyoruz."
+  },
+  {
+    "type": "chapter",
+    "number": 2,
+    "text": "Gerçek arşiv: dosya, satır, kişi ve aile"
+  },
+  {
+    "type": "paragraph",
+    "text": "Başlangıçta tek bir temiz tablo yoktu. Drive’da bireysel hasta klasörleri, genetik raporlar, varyant çalışma kitapları ve 2019, 2020, 2022 gibi farklı yıllara ait klinik dosyalar bulunuyordu. Aynı hasta farklı sürümlerde veya tekrar örneklerle yer alabilir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Kayıt düzeyi",
+      "Sayı"
+    ],
+    "rows": [
+      [
+        "Hasta klasörleri",
+        "2,259"
+      ],
+      [
+        "Kabul edilmiş operasyonel genetik kişi kimlikleri",
+        "2,148"
+      ],
+      [
+        "Klinik kaynak sürümlerindeki satırlar",
+        "7,939"
+      ],
+      [
+        "Kabul edilmiş klinik bağlantısı olan genetik kişiler",
+        "1,445"
+      ],
+      [
+        "Tutarlı kayıtlı aile kimlikleri",
+        "1,989"
+      ],
+      [
+        "Temkinli analizde tutulan varyant çağrı satırları",
+        "84,492"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Bu sayılar aynı şeyi saymaz ve tek bir hasta seçim zinciri gibi birbirinden çıkarılamaz. 2.148, bütün arşivin kesin benzersiz hasta toplamı değildir; klinik kayıtları olup genetik bağlantısı henüz kabul edilmeyen bileşenler otomatik olarak ek kişi sayılamaz. Aile numarası farklı olması, belgelenmemiş akrabalığı dışlamaz."
+  },
+  {
+    "type": "paragraph",
+    "text": "84.492 satır, 84.492 benzersiz varyant değildir. Aynı varyant farklı kişilerde görülebilir. Bir varyantın tabloda olmaması da o DNA bölgesinin yeterli kalitede incelenip negatif bulunduğunu kanıtlamaz; tam incelenebilirlik maskeleri mevcut değildir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Kimlik eşleştirmesinde hasta kodu, isim, doğum tarihi, aile numarası, protokol ve özgün rapor birlikte değerlendirilir. Çelişkili bağlantıları zorla kabul etmek, yanlış bir kişiye genetik veya klinik bilgi atayabilir."
+  },
+  {
+    "type": "note",
+    "text": "Dosya sayısı ≠ satır sayısı ≠ örnek sayısı ≠ kişi sayısı ≠ bağımsız aile sayısı."
+  },
+  {
+    "type": "chapter",
+    "number": 3,
+    "text": "Modelin hasta grubu ve klinik alanlar"
+  },
+  {
+    "type": "paragraph",
+    "text": "Hesaplayıcı, genişleyen arşivin tamamıyla değil, özgün 1.295 kişilik geliştirme grubuyla kurulmuştur. Tanı yılları 1988–2020 arasındadır. Meme ile ilişkili ilk dört kategori toplam 1.088 kişi; yalnız over grubu 207 kişidir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Tanı",
+      "Kişi",
+      "Positive"
+    ],
+    "rows": [
+      [
+        "Tek taraflı meme",
+        978,
+        104
+      ],
+      [
+        "Bilateral meme",
+        75,
+        17
+      ],
+      [
+        "Meme ve over",
+        22,
+        10
+      ],
+      [
+        "Erkek meme",
+        13,
+        2
+      ],
+      [
+        "Yalnız over",
+        207,
+        34
+      ],
+      [
+        "Toplam",
+        1295,
+        167
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Hedef değişken y, kaydın BRCA_status_v3_strict etiketi tam olarak Positive ise 1, diğer etiketlerde 0’dır. Diğer 1.128 etiketin tamamını güncel, eksiksiz klinik negatiflik olarak kabul etmiyoruz."
+  },
+  {
+    "type": "math",
+    "text": "\\pi=\\frac{167}{1295}\\approx0.12896=12.9\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "Burada π, geliştirme grubunun pozitif etiket oranıdır; genel toplumun taşıyıcılık oranı veya geometrik π sabiti değildir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Alan",
+      "Açıklama"
+    ],
+    "rows": [
+      [
+        "Tanı yaşı",
+        "Tanı konduğu zamanki yaş; bugünkü yaş değil."
+      ],
+      [
+        "Aile öyküsü",
+        "Akrabalık derecesi, kanser türü, tanı yaşı ve kişi sayımı."
+      ],
+      [
+        "Grade",
+        "Mikroskobik hücre farklılığı; evre ile aynı değildir."
+      ],
+      [
+        "Evre",
+        "Kanserin anatomik yayılımı; bu hesaplayıcıda kullanılmaz."
+      ],
+      [
+        "Köken bölgesi",
+        "Kayıtlı coğrafi kategori; doğrudan genetik soy ölçümü değil."
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Birinci derece akrabalar anne, baba, kardeş ve çocukları; ikinci derece örneğin büyükanne, büyükbaba, teyze, hala, dayı ve amcayı kapsar. Her arşiv alanı model girdisi değildir: tümör boyutu ve lenf nodu durumu bu modelde kullanılmaz."
+  },
+  {
+    "type": "chapter",
+    "number": 4,
+    "text": "Kodlama, tümör belirteçleri ve eksik bilgi"
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Terim",
+      "Tam açılım ve anlam"
+    ],
+    "rows": [
+      [
+        "ER",
+        "Estrogen Receptor. Östrojen reseptörü."
+      ],
+      [
+        "PR",
+        "Progesterone Receptor. Progesteron reseptörü."
+      ],
+      [
+        "HER2",
+        "Human Epidermal Growth Factor Receptor 2. Tümör değerlendirmesinde kullanılan reseptör/protein."
+      ],
+      [
+        "TNBC",
+        "Triple-Negative Breast Cancer. ER, PR ve HER2 negatif meme kanseri."
+      ],
+      [
+        "Ki-67",
+        "Hücre çoğalmasıyla ilişkili belirteç; genellikle yüzde olarak kaydedilir."
+      ],
+      [
+        "IHC",
+        "Immunohistochemistry. Dokuda proteinleri boyamayla değerlendirme."
+      ],
+      [
+        "ISH / FISH",
+        "In Situ Hybridization / Fluorescence In Situ Hybridization. Dokuda belirli DNA/RNA hedeflerini değerlendiren yöntemler."
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Kodlama: yaş 38 gibi sayısal; akraba sayısı 1 gibi sayım; TNBC varsa 1, yoksa 0 şeklinde gösterge olur. Tanı, grade ve bölge kategorilere ayrılır. Tek taraflı meme, g2 ve Marmara referanstır; bunlar için ek kategori katsayısı yoktur."
+  },
+  {
+    "type": "paragraph",
+    "text": "Geliştirme paketinde 87 yaş eksik, 16 bölge kayıt dışıdır. Ki-67, 464 kişide kayıtlıdır. Eksik veriyi hesapta kullanılabilir hale getirmeye atama (imputation) denir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Tarihsel işlem: eksik aile sayımları 0; eksik yaş tanı grubu medyanı ve eksiklik göstergesi; eksik bölge Marmara; eksik Ki-67 değeri 30 ve ayrı eksiklik göstergesi 1. Grade 1 veya 3 dışındakiler g2 referansına gider. Canlı panel boş yaşla kişisel sonuç üretmez. Yalnız over seçimi TNBC’yi kapatır ve Ki-67’yi eksik yapar."
+  },
+  {
+    "type": "note",
+    "text": "Bilinmeyen bilgi, bilinen sıfır değildir. Ki-67 bilinmiyor ile ölçülmüş %30 aynı şey değildir. Bu işlemler geçmiş modelin kurallarıdır; yeni klinik gerçekler değildir."
+  },
+  {
+    "type": "chapter",
+    "number": 5,
+    "text": "Öğrenme: katsayılar nasıl bulundu?"
+  },
+  {
+    "type": "paragraph",
+    "text": "Yöntem lojistik regresyondur; derin sinir ağı değildir. Bilgisayar katsayılarla tahmin yapar, tahminleri kayıtlı y sonuçlarıyla karşılaştırır ve hatayı azaltacak katsayıları arar. Katsayıları bulmaya eğitim veya model kurma denir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Pozitifler azınlık olduğundan sınıf ağırlıkları kullanılmıştır. Bir pozitif kayıttaki hata, eğitimde bir diğer etiketli kayıttaki hatadan daha fazla ağırlık alır; yeni hasta yaratılmaz."
+  },
+  {
+    "type": "math",
+    "text": "w_+=\\frac{1295}{2\\times167}\\approx3.877246,\\qquad w_-=\\frac{1295}{2\\times1128}\\approx0.574025"
+  },
+  {
+    "type": "paragraph",
+    "text": "L2 düzenlileştirme, katsayıların karelerine dayanan ceza ile aşırı büyük katsayıları sınırlar. C, cezanın ters güç ayarıdır: küçük C daha güçlü ceza demektir. Aşırı uyum (overfitting), geçmiş örneklere fazla özel uyup yeni örneklerde başarısız olma sorunudur."
+  },
+  {
+    "type": "paragraph",
+    "text": "C adayları: 0,01; 0,03; 0,1; 0,3; 1. Ana betik 5 dış kat × 5 tekrar kullanır. Her dış eğitim grubunda 3 iç kat ile AUC üzerinden C seçilir. En sık seçilen değer 0,3’tür; son model bütün geliştirme verisine kurulur. max_iter = 5000 bir üst yineleme sınırı; seed = 2020 tekrarlanabilirlik ayarıdır, kalite garantisi değildir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Standartlaştırma, yaş ve Ki-67 gibi farklı ölçeklerdeki girdileri eğitim için ortak ölçeğe taşır. Katsayılar daha sonra ham birimlere dönüştürülmüştür. Canlı panelde tekrar standartlaştırma yapılmaz."
+  },
+  {
+    "type": "paragraph",
+    "text": "Ana yolda kişi başına tekrarlı kat dışı ham olasılıklar ortalanmış, logit değerleriyle Platt kalibrasyonu öğrenilmiştir. Ayrı kuyruk değerlendirme betiği ise dış eğitimde ölçekleme, iç kat dışı tahminlerle kalibrasyon ve dış testte sayım yapar. Bu yollar tek bir özdeş değerlendirme zinciri değildir."
+  },
+  {
+    "type": "chapter",
+    "number": 6,
+    "text": "Öğrenilmiş 26 katsayı ve sabit"
+  },
+  {
+    "type": "paragraph",
+    "text": "Katsayı β, bir girdinin doğrusal skor z’ye katkısını belirler. Pozitif katsayı skoru artırır; negatif katsayı azaltır. Bu tablo yüzde puanları veya nedensel etkiler tablosu değildir. Gösterim yuvarlanmıştır; uygulama tam hassasiyeti kullanır."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Girdi",
+      "Katsayı"
+    ],
+    "rows": [
+      [
+        "Sabit başlangıç",
+        "-1.608284"
+      ],
+      [
+        "Tanı yaşı",
+        "-0.029742"
+      ],
+      [
+        "1. derece meme <40",
+        "1.617774"
+      ],
+      [
+        "1. derece meme ≥40",
+        "0.675359"
+      ],
+      [
+        "2. derece meme <40",
+        "0.612541"
+      ],
+      [
+        "2. derece meme ≥40",
+        "0.566324"
+      ],
+      [
+        "3.–4. derece meme",
+        "0.386057"
+      ],
+      [
+        "1. derece over",
+        "0.865623"
+      ],
+      [
+        "2.–4. derece over",
+        "0.741728"
+      ],
+      [
+        "1. derece diğer kanser",
+        "0.212743"
+      ],
+      [
+        "Yaş eksik göstergesi",
+        "1.067055"
+      ],
+      [
+        "TNBC",
+        "0.809504"
+      ],
+      [
+        "Ki-67, yüzde birimi başına",
+        "0.025036"
+      ],
+      [
+        "Ki-67 eksik göstergesi",
+        "0.377173"
+      ],
+      [
+        "Bilateral meme",
+        "0.817837"
+      ],
+      [
+        "Meme ve over",
+        "1.184748"
+      ],
+      [
+        "Erkek meme",
+        "0.498472"
+      ],
+      [
+        "Yalnız over",
+        "0.317136"
+      ],
+      [
+        "Grade 1",
+        "0.089786"
+      ],
+      [
+        "Grade 3",
+        "0.643779"
+      ],
+      [
+        "Karadeniz",
+        "-0.092277"
+      ],
+      [
+        "Doğu Anadolu",
+        "-0.215376"
+      ],
+      [
+        "İç Anadolu",
+        "0.160451"
+      ],
+      [
+        "Balkanlar",
+        "0.405355"
+      ],
+      [
+        "Güneydoğu Anadolu",
+        "-0.384251"
+      ],
+      [
+        "Ege",
+        "0.347375"
+      ],
+      [
+        "Akdeniz",
+        "-0.631471"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Referanslar: tek taraflı meme, g2 ve Marmara. Bir hastada bütün göstergeler etkin değildir. Etnik köken gibi araştırmada kullanılan bazı düzeltme değişkenleri bu tahmin modelinde yer almaz."
+  },
+  {
+    "type": "chapter",
+    "number": 7,
+    "text": "Örnek hasta: girdiler ve katkılar"
+  },
+  {
+    "type": "note",
+    "text": "Bu bir kurgu eğitim profilidir; kimliği belirlenebilir gerçek hasta değildir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Özellik",
+      "Değer"
+    ],
+    "rows": [
+      [
+        "Tanı yaşı",
+        "38"
+      ],
+      [
+        "Tanı / grade / bölge",
+        "Tek taraflı meme / 2 / Marmara"
+      ],
+      [
+        "TNBC",
+        "1"
+      ],
+      [
+        "1. derece meme <40",
+        "1"
+      ],
+      [
+        "Diğer aile sayımları",
+        "0"
+      ],
+      [
+        "Ki-67",
+        "Bilinmiyor"
+      ],
+      [
+        "Aciliyet kutuları",
+        "Seçili değil"
+      ]
+    ]
+  },
+  {
+    "type": "math",
+    "text": "z=\\beta_0+\\sum_{j=1}^{26}\\beta_jx_j"
+  },
+  {
+    "type": "paragraph",
+    "text": "xⱼ: hastanın j numaralı girdisi. βⱼ: o girdinin katsayısı. β₀: sabit başlangıç. j: girdi sırası. Σ: bütün katkıları topla. z: doğrusal skor, yüzde değil."
+  },
+  {
+    "type": "math",
+    "text": "\\begin{aligned}\nz={}&-1.608283515050\\\\\n&+38(-0.029741519309)\\\\\n&+1(1.617774083556)\\\\\n&+1(0.809503755804)\\\\\n&+30(0.025035821777)\\\\\n&+1(0.377172660529)\n\\end{aligned}"
+  },
+  {
+    "type": "math",
+    "text": "\\begin{aligned}\nz={}&-1.608283515050-1.130177733759\\\\\n&+1.617774083556+0.809503755804\\\\\n&+0.751074653320+0.377172660529\\\\\n={}&0.817063904400\n\\end{aligned}"
+  },
+  {
+    "type": "paragraph",
+    "text": "Ki-67 bilinmediği için hem 30 ataması hem eksiklik göstergesi katkı yapar. Ölçülmüş %30 olsaydı eksiklik katkısı olmazdı. Diğer kategori ve aile göstergeleri bu örnekte sıfır katkı yapar."
+  },
+  {
+    "type": "chapter",
+    "number": 8,
+    "text": "Skordan yüzdeye: sigmoid ve kalibrasyon"
+  },
+  {
+    "type": "paragraph",
+    "text": "Sigmoid, herhangi bir doğrusal skoru 0–1 aralığına dönüştürür. e ≈ 2,71828 Euler sayısıdır; üstteki ifade üs anlamına gelir. p bir olasılık, raw ham, cal kalibre edilmiş demektir."
+  },
+  {
+    "type": "math",
+    "text": "\\sigma(t)=\\frac{1}{1+e^{-t}}"
+  },
+  {
+    "type": "math",
+    "text": "p_{\\mathrm{raw}}=\\frac{1}{1+e^{-0.817063904400}}\\approx0.693612733313"
+  },
+  {
+    "type": "paragraph",
+    "text": "Yaklaşık %69,4, ekrandaki son yüzde değildir. Kalibrasyon, yüzdelerin gözlenen oranlarla uyumunu ele alır. Sınıf ağırlıklı modelin ham yüzdesi, doğrudan son yüzde olarak kullanılmaz."
+  },
+  {
+    "type": "math",
+    "text": "\\eta=a+bz,\\quad a=-1.824095746896,\\quad b=0.939227549588"
+  },
+  {
+    "type": "math",
+    "text": "\\begin{aligned}\n\\eta&=-1.824095746896+0.939227549588(0.817063904400)\\\\\n&=-1.824095746896+0.767408928786\\\\\n&=-1.056686818109\n\\end{aligned}"
+  },
+  {
+    "type": "math",
+    "text": "p_{\\mathrm{cal}}=\\frac{1}{1+e^{-\\eta}}=\\frac{1}{1+e^{1.056686818109}}=0.257943116995"
+  },
+  {
+    "type": "math",
+    "text": "100p_{\\mathrm{cal}}=25.7943116995\\%\\approx\\boxed{25.8\\%}"
+  },
+  {
+    "type": "paragraph",
+    "text": "η (eta), düzeltilmiş doğrusal skordur; a sabit, b eğim düzeltmesidir. Kalibrasyon yalnız bir kez uygulanır. a+bz içine z yerine ham olasılığı koymak yanlış olur. Logit, sigmoidin ters dönüşümüdür: log[p/(1−p)]. Odds = p/(1−p); OR (Odds Ratio) iki odds değerinin oranıdır, yüzde puan değildir. Son kalibre edilmiş log-odds için katsayı bβ’dır."
+  },
+  {
+    "type": "heading",
+    "text": "Yalnız yaşı 38’den 48’e değiştirirsek"
+  },
+  {
+    "type": "math",
+    "text": "\\Delta z=10(-0.029741519309)=-0.297415193094"
+  },
+  {
+    "type": "math",
+    "text": "z_{\\mathrm{new}}=0.519648711306,\\qquad p_{\\mathrm{new}}\\approx0.208164117=20.8\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "Düşüş yaklaşık 4,98 yüzde puandır. Bu, on yıl yaşlanmanın koruyucu etkisi değildir; sabit modelin farklı bir girdiye verdiği koşullu hesaptır. Önceki değerleri gösteren oklar, son düzenlemeden etkilenen sayıları izlemeye yarar."
+  },
+  {
+    "type": "chapter",
+    "number": 9,
+    "text": "Ayrı puan kartı ve sıra kuralları"
+  },
+  {
+    "type": "paragraph",
+    "text": "Kart ayrı bir sınıf dengeli, L2 cezalı modelden gelir: 16 aday özellik, C = 0,3. Katsayılar 0,5 log-odds birimine bölünüp yuvarlanmış; sıfır puanlı satırlar çıkarılınca 14 satır kalmıştır. Ana modelin β katsayılarını doğrudan yuvarlamak değildir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Ölçüt",
+      "Puan"
+    ],
+    "rows": [
+      [
+        "Tanı yaşı < 40",
+        1
+      ],
+      [
+        "Üçlü negatif tümör",
+        2
+      ],
+      [
+        "Grade 3",
+        1
+      ],
+      [
+        "Ki-67 ≥ %30",
+        1
+      ],
+      [
+        "1. derece akrabada meme kanseri < 40 yaş (kişi başına, en çok 2)",
+        3
+      ],
+      [
+        "1. derece akrabada meme kanseri ≥ 40 yaş (kişi başına, en çok 2)",
+        1
+      ],
+      [
+        "2. derece akrabada meme kanseri (kişi başına, en çok 2)",
+        1
+      ],
+      [
+        "3.–4. derece akrabada meme kanseri (kişi başına, en çok 2)",
+        1
+      ],
+      [
+        "1. derece akrabada over kanseri (kişi başına, en çok 2)",
+        1
+      ],
+      [
+        "2.–4. derece akrabada over kanseri (kişi başına, en çok 2)",
+        1
+      ],
+      [
+        "Bilateral meme kanseri",
+        2
+      ],
+      [
+        "Hem meme hem over kanseri",
+        2
+      ],
+      [
+        "Over kanseri",
+        2
+      ],
+      [
+        "Erkek meme kanseri",
+        1
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Örnekte: yaş <40 için 1, TNBC için 2, birinci derece meme <40 için 3; toplam 6. Ki-67 bilinmiyor olduğundan yüksek Ki-67 kart puanı yoktur. Aile sayımı kart satırında en çok 2, modelde panel sınırı 6’dır."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Şerit",
+      "Model",
+      "Kart"
+    ],
+    "rows": [
+      [
+        "Normal",
+        "<10%",
+        "0–3"
+      ],
+      [
+        "Öncelikli",
+        "10%–<20%",
+        "4"
+      ],
+      [
+        "Acil",
+        "≥20%",
+        "≥5"
+      ]
+    ]
+  },
+  {
+    "type": "math",
+    "text": "A=\\max(s_{\\mathrm{card}},s_{\\mathrm{model}},u),\\qquad B=\\max(s_{\\mathrm{model}},u)"
+  },
+  {
+    "type": "paragraph",
+    "text": "s değerleri 0 normal, 1 öncelikli, 2 acil kodlarıdır; max en büyüğü seçer. Tedavi kararı bekliyorsa u=2; aksi halde ailede belgeli P/LP kutusu seçiliyse u=1; değilse 0. B öneridir. A’da acil şerit, B’de model ≥%20 hızlı paketi tetikler. Aile P/LP kutusu β toplamını değiştirmez; ancak bilgi modelde olmadığı için kişisel yüzde başlığı bastırılır."
+  },
+  {
+    "type": "chapter",
+    "number": 10,
+    "text": "Diğer ekran sayıları ve başarı ölçütleri"
+  },
+  {
+    "type": "heading",
+    "text": "Aynı hastanın farklı sayılarını karıştırmayın"
+  },
+  {
+    "type": "math",
+    "text": "N=\\operatorname{round}(1/p)=\\operatorname{round}(3.876824)=4"
+  },
+  {
+    "type": "paragraph",
+    "text": "“Yaklaşık dört kişiden biri” yuvarlanmış anlatımdır; dört gözlenmiş kişi değildir. Round en yakın tamsayıya yuvarlar; kodda tam yarımlar çift tamsayıya gider."
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Position}=\\operatorname{round}\\left[5\\left(17+\\frac{0.257943117-0.2133526175}{0.2763791363-0.2133526175}\\right)\\right]=89"
+  },
+  {
+    "type": "paragraph",
+    "text": "Skor sırası yaklaşık 89. yüzdeliktir: geliştirme skor dağılımındaki konum, %89 taşıyıcılık olasılığı değil. 17 alt düğümün sıfırdan başlayan sırası; kesrin paydası iki komşu düğüm arasındaki farktır."
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Fill}=\\min\\left(100,\\frac{p}{0.40}\\times100\\right)\\approx64.5\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "Fill görsel çubuk doluluğudur; min küçük olanı seçer. Bu %64,5 ikinci bir tıbbi olasılık değildir."
+  },
+  {
+    "type": "heading",
+    "text": "Kayıtlı performans değerleri"
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Ölçüt",
+      "Değer"
+    ],
+    "rows": [
+      [
+        "İç içe çapraz doğrulama AUC",
+        "0.776"
+      ],
+      [
+        "AUC güven aralığı",
+        "0.733–0.817"
+      ],
+      [
+        "Görünür / iyimserlik düzeltilmiş AUC",
+        "0.815 / 0.784"
+      ],
+      [
+        "PR-AUC",
+        "0.404"
+      ],
+      [
+        "Zamansal test AUC",
+        "0.788"
+      ],
+      [
+        "Yeniden kalibre edilmiş Brier",
+        "0.095"
+      ],
+      [
+        "Temel oran Brier",
+        "0.112"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "AUC: Area Under the Receiver Operating Characteristic Curve. Pozitif bir kaydı diğer etiketli bir kaydın üstünde sıralama yeteneğidir; 0,776 “kişilerin %77,6’sını doğru bildi” demek değildir. ROC, duyarlılığı yanlış pozitif oranına karşı çizer. PR-AUC: Precision–Recall eğrisi altındaki alan; pozitif sınıfı bulma performansını ele alır."
+  },
+  {
+    "type": "chapter",
+    "number": 11,
+    "text": "Doğrulama, eşikler ve hata tablosu"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Brier}=\\frac{1}{n}\\sum_{i=1}^{n}(p_i-y_i)^2"
+  },
+  {
+    "type": "paragraph",
+    "text": "n değerlendirilen kişi sayısı; pᵢ kişinin tahmini, yᵢ kayıtlı sonucu. Brier, olasılık hatasını ölçer; düşük daha iyidir. Kalibrasyon, örneğin %20 denilen gruplarda gözlenen oranın buna yakın olup olmadığıdır. İyi sıralama, iyi kalibrasyonu garanti etmez."
+  },
+  {
+    "type": "paragraph",
+    "text": "Kat dışı tahmin, kişi o adımda eğitim dışında tutulurken üretilir. Ancak ana betikte bazı atama ve ölçekleme dış kat ayrımından önce yapılmıştır: veri sızıntısı riski vardır. StratifiedKFold sınıf oranlarını gözetir ama aileleri gruplamaz. Akrabalar farklı katlara düşebilir. AUC aralığı 2.000 kişi bazlı bootstrap; iyimserlik düzeltmesi 200 bootstrap kullanır. Bootstrap, örnekten tekrar yerine koyarak örnekleme işlemidir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Zamansal tabloda 796 eğitim ve 477 test kişisi vardır; test dönemindeki pozitif sayısı 52’dir. Aynı merkezin daha sonraki dönemi, bağımsız dış doğrulama değildir. Farklı değerlendirme tablolarının paydaları ve işlem yolları birbirinin yerine kullanılamaz."
+  },
+  {
+    "type": "heading",
+    "text": "Tarihsel yaklaşık %3,5 eşik örneği"
+  },
+  {
+    "type": "table",
+    "headers": [
+      "",
+      "Positive",
+      "Diğer",
+      "Toplam"
+    ],
+    "rows": [
+      [
+        "Eşik üstü",
+        "TP 159",
+        "FP 978",
+        "1,137"
+      ],
+      [
+        "Eşik altı",
+        "FN 8",
+        "TN 150",
+        "158"
+      ],
+      [
+        "Toplam",
+        "167",
+        "1,128",
+        "1,295"
+      ]
+    ]
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Sensitivity}=\\frac{TP}{TP+FN}=\\frac{159}{167}=95.21\\%"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Specificity}=\\frac{TN}{TN+FP}=\\frac{150}{1128}=13.30\\%"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{NPV}=\\frac{TN}{TN+FN}=\\frac{150}{158}=94.94\\%,\\quad \\mathrm{PPV}=\\frac{159}{1137}=13.98\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "TP/FP: True/False Positive; TN/FN: True/False Negative, kayıt etiketlerine göre doğru/yanlış eşik sınıflaması. Duyarlılık pozitifleri yakalama; özgüllük diğerlerini aşağıda tutma; NPV (Negative Predictive Value) eşik altındakilerin diğer etiket oranı; PPV (Positive Predictive Value) eşik üstündekilerin pozitif oranıdır. Yüksek duyarlılık tek başına yeterli değildir. Bu örnek güncel %10/%20 sıra sınırları değildir; tek eşik tablosu AUC vermez."
+  },
+  {
+    "type": "chapter",
+    "number": 12,
+    "text": "Laboratuvar kapasitesi: iş yükü ve verim"
+  },
+  {
+    "type": "paragraph",
+    "text": "İki karar ayrıdır: kim sırada öne alınır, kime dar kapsamlı hızlı ilk test paketi uygulanır? Hızlı paket BRCA1 MLPA delesyon/duplikasyon incelemesi ve c.5266dupC hedefini kapsar. Bütün BRCA varyantlarını inceleyen tam test değildir. Hızlı test negatifliği taşıyıcılığı dışlamaz; tam test devam eder."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Strateji",
+      "Paket",
+      "Saptanabilir hedef"
+    ],
+    "rows": [
+      [
+        "Model ≥%20",
+        "212.6",
+        "26.6"
+      ],
+      [
+        "Kart veya model A tetikleyicisi",
+        "280.0",
+        "29.4"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Bunlar beş tekrarın ortalamalarıdır; ondalık sayılar parçalı hastalar değildir. Saptanabilir hedef, bu dar paketin kapsadığı hedefi taşıyan seçilmiş kişidir; bütün BRCA pozitifleriyle aynı payda değildir."
+  },
+  {
+    "type": "math",
+    "text": "\\Delta N=212.6-280=-67.4,\\qquad\\Delta T=26.6-29.4=-2.8"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Yield}=\\frac{26.6}{212.6}\\times100=12.511759\\%"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Packages/target}=\\frac{212.6}{26.6}=7.992481"
+  },
+  {
+    "type": "paragraph",
+    "text": "Δ fark demektir; burada N paket sayısı, T saptanabilir hedef sayısıdır. Daha az paket karşılığında daha az hedef saptama ödünleşimi vardır. Tekrar oranlarının ortalaması 8,013; ortalamaların oranı yaklaşık 7,992’dir. Farklı işlemlerdir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Kapasite paneli altı kayıtlı stratejinin toplu sonuçlarını okur; yeni hasta analizi yapmaz. Zamansal seçenek 477 kişi ve 52 taşıyıcıya aittir. Aciliyet kutularının ek iş yükü ölçülmemiştir. Aynı sayıda hasta seçilen karşılaştırmada kart ek üstünlük göstermemiş; elle kullanım ve açıklama değeri ayrıdır."
+  },
+  {
+    "type": "note",
+    "text": "Bekleme süresi, maliyet veya tedavi sonucundaki iyileşme ölçülmedi. Varsayımsal test azaltma paneli bir test atlama talimatı değildir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Varsayımsal azaltma politikası düşük olasılığa ek olarak kart ≥4, over, erkek meme, TNBC, ailede over, aciliyet ve sıkı seçenekte <45 yaşı dışlar. Kayıtlı üretim betiği bu pakette olmadığından toplu azaltma sonuçları burada bağımsız yeniden üretilmiş sayılmaz."
+  },
+  {
+    "type": "chapter",
+    "number": 13,
+    "text": "Biyolojik bulgu ve istatistiksel belirsizlik"
+  },
+  {
+    "type": "paragraph",
+    "text": "Tahmin, hangi bilgi birleşiminin sonucu öngördüğünü sorar. Biyolojik ilişki araştırması ise örneğin iki varyant grubunun tümör boyutlarının farklı olup olmadığını sorar. İyi tahmin, neden-sonuç ilişkisi kanıtı değildir."
+  },
+  {
+    "type": "paragraph",
+    "text": "Mevcut karşılaştırma 87 aile temsilcisidir: stop-gain grubunda 20, frameshift grubunda 67 aile. Stop-gain protein üretimine erken dur işareti getirir; frameshift DNA’nın üçlü okunma düzenini kaydırır. Yaş, yıl, gen, kayıtlı etnik köken, bölge ve genotip kaynağına göre düzeltilmiş kaydedilmiş boyut oranı aşağıdadır."
+  },
+  {
+    "type": "math",
+    "text": "R=0.649,\\qquad\\text{interval: }0.421\\text{ to }1.001"
+  },
+  {
+    "type": "paragraph",
+    "text": "Nokta tahmini yaklaşık %35 daha küçük kaydedilmiş boyuta karşılık gelir. Aralık fark olmamasını belirten 1’i içerir. Birincil ampirik p yaklaşık 0,0504; birikimli çoklu test düzeltmesi q yaklaşık 0,527’dir. Bu doğrulanmış bir fark değildir ve hesaplayıcıya eklenmemiştir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Terim",
+      "Anlam"
+    ],
+    "rows": [
+      [
+        "Etki büyüklüğü",
+        "İlişkinin büyüklüğü; burada boyut oranı."
+      ],
+      [
+        "Güven aralığı",
+        "Örnekleme belirsizliğini anlatır; bu tek aralığa ilişkin doğruluk olasılığı değildir."
+      ],
+      [
+        "p-value",
+        "Sıfır hipotezi ve model varsayımları altında en az bu kadar uç sonuç olasılığı; hipotezin yanlış olma olasılığı değil."
+      ],
+      [
+        "Karıştırıcı",
+        "Hem grup hem sonuçla ilişkili olup karşılaştırmayı bozabilen değişken."
+      ],
+      [
+        "Seçilim yanlılığı",
+        "Dahil edilen ve dışlanan kişilerin sistematik farklılığı."
+      ],
+      [
+        "Güç",
+        "Belirli bir gerçek etkiyi belirli tasarımla saptayabilme olasılığı."
+      ],
+      [
+        "FDR / False Discovery Rate",
+        "Çoklu karşılaştırmalarda yanlış keşif oranını kontrol eden yaklaşım."
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Çok karşılaştırma tesadüfi bulgu fırsatını artırır. İstatistiksel düzeltme bütün eksiklik, seçilim ve ölçüm yanlılıklarını gidermez. Bu gözlemde eksiklik/seçilim sorunları çözülmüş değildir; bağımsız doğrulama yoktur."
+  },
+  {
+    "type": "chapter",
+    "number": 14,
+    "text": "Yeni kayıtlar neden henüz doğrulama sayılmıyor?"
+  },
+  {
+    "type": "paragraph",
+    "text": "Arşivin büyümesi, modelin yeniden eğitildiği veya bağımsız doğrulandığı anlamına gelmez. Bir kişi eğitimde kullanıldıysa ya da aynı aileden geliyorsa bağımsız test için uygun olmayabilir. Kayıtlı aile ayrılığı, genomik akrabasızlık kanıtı değildir."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Mevcut denetim aşaması",
+      "Sayı"
+    ],
+    "rows": [
+      [
+        "Geliştirme dışında klinik bağlantılı kişiler",
+        "206"
+      ],
+      [
+        "Bilinen geliştirme aile örtüşmesiyle dışlanan",
+        "20"
+      ],
+      [
+        "Uygun kanser kaydı olmayan",
+        "1"
+      ],
+      [
+        "Kalan aday kişiler / aile grupları",
+        "185 / 184"
+      ],
+      [
+        "Temel girdileri tam aile temsilcileri",
+        "111"
+      ],
+      [
+        "Rapor destekli, temel girdileri tam",
+        "91"
+      ],
+      [
+        "Tarihsel VUS bağımlılığı olmadan kalan",
+        "51"
+      ],
+      [
+        "51 adayda pozitif / negatif",
+        "14 / 37"
+      ],
+      [
+        "Tanı yılı var / eksik",
+        "41 / 10"
+      ],
+      [
+        "Tam tarihli sonuç-öncesi profil / uygun doğrulama",
+        "0 / 0"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "91 rapor destekli temsilciden 40’ı tarihsel varyant sınıflandırmasına bağımlı olduğu için daha temkinli 51 kişilik incelemenin dışında tutuldu. Eksik tanı yılı bir model girdisi değildir; zaman sıralamasını doğrulamayı zorlaştırır. Yılı bulunan 41 kişide de bütün klinik girdilerin BRCA sonucundan önce kayıtlı olduğu gösterilemedi."
+  },
+  {
+    "type": "note",
+    "text": "Genetik raporlar Drive’da var. Eksik olan, tüm girdileri doğru tahmin zamanında belgeleyen tarihli klinik kayıtlar. Sıfır uygun hasta, sıfır performans demek değildir; performans hesaplanamadı."
+  },
+  {
+    "type": "paragraph",
+    "text": "Gerekenler: sonuç öncesi tarihli klinik değerlendirme ve model girdileri; izlenebilir genetik sonuç ve rapor tarihi; güvenilir kişi/aile bağlantıları; hem pozitif hem negatif sonuçlardan yeterli sayıda bağımsız kişi. Yeni katsayı, kalibrasyon veya eşik değişikliği sadece arşiv büyüklüğüyle gerekçelendirilemez."
+  },
+  {
+    "type": "chapter",
+    "number": 15,
+    "text": "Yazılım, kaynaklar ve bütün hikâye"
+  },
+  {
+    "type": "paragraph",
+    "text": "Bir girdi değişince model yeniden öğrenmez. Uygulama girdileri okur; kodlama/eksiklik kurallarını uygular; kayıtlı β’larla z, kayıtlı kalibrasyonla yüzde, ayrı kartla puan, A/B kurallarıyla sıra hesaplar. Eğitim sayfası yalnız kurgu profiller kullanır."
+  },
+  {
+    "type": "paragraph",
+    "text": "54 kurgu örnek ve 47 kayıtlı öz-test, hesap eşleşmesini kontrol eder. Otomatik testler ile canlı masaüstü/mobil kontroller, yazılımın amaçlanan hesabı yaptığını gösterebilir. Dil geçişi girdileri korumalı; sıfırlama seçili profilin başlangıcına dönmelidir. Bunlar yeni hastalarda klinik başarı kanıtı değildir."
+  },
+  {
+    "type": "paragraph",
+    "text": "SHA-256 sağlama toplamı hangi dosya sürümünün kullanıldığını doğrular; verinin doğruluğunu veya bilimsel geçerliliği kanıtlamaz. Özgün genetik raporlar ve özel kimlik/aile bağlantı listeleri yetkili ekibin Drive kayıtlarındadır; bu rehber hasta kimliği içermez."
+  },
+  {
+    "type": "heading",
+    "text": "Bütün çalışmayı bir paragrafta anlatmak"
+  },
+  {
+    "type": "paragraph",
+    "text": "Dağınık genetik ve klinik kayıtları eşleştirerek dosya, örnek, kişi ve aileyi ayırdık. Özgün 1.295 kişide kurulan lojistik modelin hesabını açıklıyoruz: ağırlıklı toplam, kalibrasyon ve yüzde. Puan kartı ile sıra kuralları ayrı katmanlardır. İç değerlendirme yararlı sıralama gösterse de veri işleme ve aile bağımsızlığı sınırlılıkları vardır. Biyolojik analizlerdeki 87 ailelik gözlem doğrulanmış keşif değildir. Geniş arşiv henüz tarihli, bağımsız bir doğrulama grubu sağlamadı. Elimizde hesabı açıklanabilen araştırma prototipi ve açık veri ihtiyaçları var; yeni hastalarda güvenilirlik için bağımsız doğrulama gerekiyor."
+  },
+  {
+    "type": "heading",
+    "text": "İzlenebilir mevcut kaynaklar"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/model_full_embedded.json",
+    "text": "Sabit katsayılar, hasta sayıları ve kayıtlı performans"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/brca_core.py",
+    "text": "Hesap, kart ve A/B kuralları"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/model_teaching_content.py",
+    "text": "Mevcut yöntem denetimi ve semboller"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/research/cohort_census.json",
+    "text": "Arşiv sayımı"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/research/size_results.json",
+    "text": "87 ailelik sonuç"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/calculator_validation_eligibility.json",
+    "text": "Doğrulama aday seçimi"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/calculator_prediction_date_audit.json",
+    "text": "51 adayda tarih denetimi"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/rapid_threshold.json",
+    "text": "Hızlı test kapasitesi"
+  },
+  {
+    "type": "paragraph",
+    "text": "Bağlantılar kullanılan toplu kayıtlara gider; bunlar hasta düzeyindeki özgün belge denetiminin yerine geçmez. Rehber yeni bir klinik sınıflandırma veya test önerisi sunmaz."
+  }
+]

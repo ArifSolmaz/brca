@@ -1,0 +1,1119 @@
+[
+  {
+    "type": "chapter",
+    "number": 0,
+    "text": "From data to evidence: the complete story"
+  },
+  {
+    "type": "paragraph",
+    "text": "For students starting without prior knowledge of genetics, statistics or programming."
+  },
+  {
+    "type": "note",
+    "text": "This guide explains the existing work. No new patient analysis, hypothesis test, model fitting or calculator change was performed."
+  },
+  {
+    "type": "heading",
+    "text": "Three distinct parts of the work"
+  },
+  {
+    "type": "paragraph",
+    "text": "1. Archive: link files, specimens, people and families, and establish which data are usable.\n2. Prediction: explain the calculations and evaluation of the model developed in the original 1,295 people.\n3. Biological research: understand existing comparisons between genetic and clinical features and their uncertainty."
+  },
+  {
+    "type": "heading",
+    "text": "Reading route"
+  },
+  {
+    "type": "paragraph",
+    "text": "Biology → archive → development patients → encoding and missing data → learning → coefficients → manual calculation → points card → statistics → laboratory trade-offs → biological finding → independent validation → software and sources."
+  },
+  {
+    "type": "paragraph",
+    "text": "Guide date: 3 November 2026. Archive and validation counts come from the existing 24 October audit. The separate research report retains its 25 October date. Stored model version: 2026-10-04-8cc48aa58b."
+  },
+  {
+    "type": "link",
+    "url": "https://brca-istun.streamlit.app/?sayfa=model&dil=en",
+    "text": "Open the model details page"
+  },
+  {
+    "type": "chapter",
+    "number": 1,
+    "text": "The language of biology and genetics"
+  },
+  {
+    "type": "paragraph",
+    "text": "Our bodies consist of cells. DNA (deoxyribonucleic acid) carries genetic information used to make proteins. A gene is a section associated with a particular function. Proteins perform many of the cell’s jobs."
+  },
+  {
+    "type": "paragraph",
+    "text": "BRCA1 and BRCA2 are genes associated with proteins that help repair damaged DNA. A genetic change is called a variant. An inherited variant can be passed through a family. A somatic change acquired in a tumour is a different concept."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Term",
+      "Meaning"
+    ],
+    "rows": [
+      [
+        "P / Pathogenic",
+        "A disease-related harmful effect is established."
+      ],
+      [
+        "LP / Likely Pathogenic",
+        "Strong evidence suggests a harmful effect."
+      ],
+      [
+        "VUS / Variant of Uncertain Significance",
+        "Its significance is not sufficiently understood."
+      ],
+      [
+        "B / LB",
+        "Benign / likely benign: harmless or likely harmless."
+      ],
+      [
+        "CNV / Copy Number Variant",
+        "A change in the copy number of a DNA segment."
+      ],
+      [
+        "NGS / Next-Generation Sequencing",
+        "Sequencing methods examining many DNA regions in parallel."
+      ],
+      [
+        "MLPA / Multiplex Ligation-dependent Probe Amplification",
+        "A method assessing copy-number losses or gains in selected regions."
+      ]
+    ]
+  },
+  {
+    "type": "note",
+    "text": "Not every variant is harmful. Carrying a disease-related BRCA variant does not mean cancer is inevitable."
+  },
+  {
+    "type": "paragraph",
+    "text": "Our prediction question is not whether someone will develop cancer in the future. It is whether existing clinical information can help predict the recorded BRCA test result."
+  },
+  {
+    "type": "chapter",
+    "number": 2,
+    "text": "The actual archive: files, rows, people and families"
+  },
+  {
+    "type": "paragraph",
+    "text": "We did not start with one clean table. Drive contained individual patient folders, genetic reports, variant workbooks and clinical files from years including 2019, 2020 and 2022. The same person can appear in different versions or with repeat specimens."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Record level",
+      "Count"
+    ],
+    "rows": [
+      [
+        "Patient folders",
+        "2,259"
+      ],
+      [
+        "Established operational genetic patient entities",
+        "2,148"
+      ],
+      [
+        "Rows across clinical source versions",
+        "7,939"
+      ],
+      [
+        "Genetic entities with accepted clinical links",
+        "1,445"
+      ],
+      [
+        "Consistently recorded family IDs",
+        "1,989"
+      ],
+      [
+        "Conservatively retained variant-call rows",
+        "84,492"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "These are different counting units, not a single flow from which all exclusions can be subtracted. The 2,148 entities are not a certified unique-patient total for the entire archive. Clinical-only components without an accepted genetic link cannot automatically be counted as additional people. Different recorded family IDs do not exclude undocumented relatedness."
+  },
+  {
+    "type": "paragraph",
+    "text": "84,492 rows do not mean 84,492 unique variants. A variant can recur in different people. Absence from a table does not establish adequate examination and a negative result for that region; complete callability masks are unavailable."
+  },
+  {
+    "type": "paragraph",
+    "text": "Identity linkage considers patient code, name, date of birth, family number, protocol ID and original reports together. Forcing a conflicting link can assign genetic or clinical information to the wrong person."
+  },
+  {
+    "type": "note",
+    "text": "Files ≠ rows ≠ specimens ≠ people ≠ independent families."
+  },
+  {
+    "type": "chapter",
+    "number": 3,
+    "text": "Development patients and clinical fields"
+  },
+  {
+    "type": "paragraph",
+    "text": "The calculator was developed using the original 1,295-person group, not the entire expanded archive. Diagnosis years range from 1988 to 2020. The first four breast-related categories total 1,088 people; 207 are ovarian-only."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Diagnosis",
+      "People",
+      "Positive"
+    ],
+    "rows": [
+      [
+        "Unilateral breast",
+        978,
+        104
+      ],
+      [
+        "Bilateral breast",
+        75,
+        17
+      ],
+      [
+        "Breast and ovarian",
+        22,
+        10
+      ],
+      [
+        "Male breast",
+        13,
+        2
+      ],
+      [
+        "Ovarian only",
+        207,
+        34
+      ],
+      [
+        "Total",
+        1295,
+        167
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "The target y is 1 when BRCA_status_v3_strict is exactly Positive, and 0 for other labels. We do not treat all 1,128 other labels as established complete, up-to-date clinical negatives."
+  },
+  {
+    "type": "math",
+    "text": "\\pi=\\frac{167}{1295}\\approx0.12896=12.9\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "Here π is the positive-label proportion in the development group, not general-population carrier frequency or the geometric constant pi."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Field",
+      "Explanation"
+    ],
+    "rows": [
+      [
+        "Age at diagnosis",
+        "Age when diagnosed, not current age."
+      ],
+      [
+        "Family history",
+        "Relationship degree, cancer type, diagnosis age and relative counts."
+      ],
+      [
+        "Grade",
+        "Microscopic abnormality; not the same as stage."
+      ],
+      [
+        "Stage",
+        "Anatomical extent; not used by this calculator."
+      ],
+      [
+        "Origin region",
+        "Recorded geographical category, not measured genetic ancestry."
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "First-degree relatives include parents, siblings and children; second-degree relatives include grandparents, aunts and uncles. Not every archive field is a model input: tumour size and lymph-node status are not used here."
+  },
+  {
+    "type": "chapter",
+    "number": 4,
+    "text": "Encoding, tumour markers and missing information"
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Term",
+      "Full name and meaning"
+    ],
+    "rows": [
+      [
+        "ER",
+        "Estrogen Receptor. "
+      ],
+      [
+        "PR",
+        "Progesterone Receptor. "
+      ],
+      [
+        "HER2",
+        "Human Epidermal Growth Factor Receptor 2. A receptor/protein assessed in tumours."
+      ],
+      [
+        "TNBC",
+        "Triple-Negative Breast Cancer. Breast cancer classified as negative for ER, PR and HER2."
+      ],
+      [
+        "Ki-67",
+        "A proliferation-related marker, usually recorded as a percentage."
+      ],
+      [
+        "IHC",
+        "Immunohistochemistry. Staining-based assessment of proteins in tissue."
+      ],
+      [
+        "ISH / FISH",
+        "In Situ Hybridization / Fluorescence In Situ Hybridization. Methods assessing selected DNA/RNA targets in tissue."
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Encoding uses numbers such as age 38, counts such as one relative, and indicators such as TNBC present = 1 or absent = 0. Diagnosis, grade and region are categorical. Unilateral breast, g2 and Marmara are reference categories with no additional category coefficient."
+  },
+  {
+    "type": "paragraph",
+    "text": "The development package records 87 missing ages, 16 unrecorded regions and 464 recorded Ki-67 measurements. Filling missing values for calculation is called imputation."
+  },
+  {
+    "type": "paragraph",
+    "text": "Historical processing: missing family counts became 0; missing age used the diagnosis-group median plus an indicator; missing region became Marmara; missing Ki-67 used 30 plus an indicator set to 1. Grades other than 1 or 3 map to g2. The live panel does not give a personal result for blank age. Ovarian-only selection clears TNBC and sets Ki-67 to missing."
+  },
+  {
+    "type": "note",
+    "text": "Unknown information is not a known zero. Unknown Ki-67 differs from measured 30%. These are existing model rules, not newly established clinical facts."
+  },
+  {
+    "type": "chapter",
+    "number": 5,
+    "text": "Learning: how were the coefficients obtained?"
+  },
+  {
+    "type": "paragraph",
+    "text": "The method is logistic regression, not a deep neural network. The computer predicts using coefficients, compares predictions with recorded outcomes y, and searches for coefficients reducing error. Finding the coefficients is called training or fitting."
+  },
+  {
+    "type": "paragraph",
+    "text": "Because positives are the smaller class, class weights give an error on a positive record more influence during fitting than an error on an other-labelled record. This does not create new patients."
+  },
+  {
+    "type": "math",
+    "text": "w_+=\\frac{1295}{2\\times167}\\approx3.877246,\\qquad w_-=\\frac{1295}{2\\times1128}\\approx0.574025"
+  },
+  {
+    "type": "paragraph",
+    "text": "L2 regularisation penalises squared coefficients to discourage excessively large coefficients. C is the inverse penalty-strength setting: smaller C gives stronger penalisation. Overfitting means adapting too specifically to development examples and performing poorly on new ones."
+  },
+  {
+    "type": "paragraph",
+    "text": "Candidate C values: 0.01, 0.03, 0.1, 0.3 and 1. The main script uses five outer folds × five repeats. Three inner folds select C by AUC within each outer training set. The modal selection is 0.3; the final model is fitted on the complete development data. max_iter = 5000 is an iteration limit; seed = 2020 is a reproducibility setting, not a quality guarantee."
+  },
+  {
+    "type": "paragraph",
+    "text": "Standardisation puts differently scaled inputs such as age and Ki-67 on a common scale for fitting. Exported coefficients were converted back to raw units, so the live panel does not standardise again."
+  },
+  {
+    "type": "paragraph",
+    "text": "In the main path, repeated out-of-fold raw probabilities are averaged per person and their logits used to learn Platt calibration. A separate queue-evaluation script learns scaling on outer training data, calibrates using inner out-of-fold predictions and counts outer-test outcomes. These are distinct evaluation pipelines."
+  },
+  {
+    "type": "chapter",
+    "number": 6,
+    "text": "The 26 learned coefficients and intercept"
+  },
+  {
+    "type": "paragraph",
+    "text": "A coefficient β determines an input’s contribution to the linear score z. Positive coefficients raise the score; negative coefficients lower it. These are not percentage-point or causal effects. Values are rounded here; the app uses full precision."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Input",
+      "Coefficient"
+    ],
+    "rows": [
+      [
+        "Intercept",
+        "-1.608284"
+      ],
+      [
+        "Age at diagnosis",
+        "-0.029742"
+      ],
+      [
+        "First-degree breast <40",
+        "1.617774"
+      ],
+      [
+        "First-degree breast ≥40",
+        "0.675359"
+      ],
+      [
+        "Second-degree breast <40",
+        "0.612541"
+      ],
+      [
+        "Second-degree breast ≥40",
+        "0.566324"
+      ],
+      [
+        "Third/fourth-degree breast",
+        "0.386057"
+      ],
+      [
+        "First-degree ovarian",
+        "0.865623"
+      ],
+      [
+        "Second–fourth-degree ovarian",
+        "0.741728"
+      ],
+      [
+        "First-degree other cancer",
+        "0.212743"
+      ],
+      [
+        "Age-missing indicator",
+        "1.067055"
+      ],
+      [
+        "TNBC",
+        "0.809504"
+      ],
+      [
+        "Ki-67, per percentage unit",
+        "0.025036"
+      ],
+      [
+        "Ki-67-missing indicator",
+        "0.377173"
+      ],
+      [
+        "Bilateral breast",
+        "0.817837"
+      ],
+      [
+        "Breast and ovarian",
+        "1.184748"
+      ],
+      [
+        "Male breast",
+        "0.498472"
+      ],
+      [
+        "Ovarian only",
+        "0.317136"
+      ],
+      [
+        "Grade 1",
+        "0.089786"
+      ],
+      [
+        "Grade 3",
+        "0.643779"
+      ],
+      [
+        "Black Sea",
+        "-0.092277"
+      ],
+      [
+        "Eastern Anatolia",
+        "-0.215376"
+      ],
+      [
+        "Central Anatolia",
+        "0.160451"
+      ],
+      [
+        "Balkans",
+        "0.405355"
+      ],
+      [
+        "Southeastern Anatolia",
+        "-0.384251"
+      ],
+      [
+        "Aegean",
+        "0.347375"
+      ],
+      [
+        "Mediterranean",
+        "-0.631471"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "References: unilateral breast, g2 and Marmara. Not every indicator is active in one patient. Some adjustment variables used in biological research, such as ethnicity, are not inputs to this prediction model."
+  },
+  {
+    "type": "chapter",
+    "number": 7,
+    "text": "Worked patient: inputs and contributions"
+  },
+  {
+    "type": "note",
+    "text": "This is a synthetic teaching profile, not an identifiable real patient."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Feature",
+      "Value"
+    ],
+    "rows": [
+      [
+        "Age at diagnosis",
+        "38"
+      ],
+      [
+        "Diagnosis / grade / region",
+        "Unilateral breast / 2 / Marmara"
+      ],
+      [
+        "TNBC",
+        "1"
+      ],
+      [
+        "First-degree breast <40",
+        "1"
+      ],
+      [
+        "Other family counts",
+        "0"
+      ],
+      [
+        "Ki-67",
+        "Unknown"
+      ],
+      [
+        "Urgency boxes",
+        "Unchecked"
+      ]
+    ]
+  },
+  {
+    "type": "math",
+    "text": "z=\\beta_0+\\sum_{j=1}^{26}\\beta_jx_j"
+  },
+  {
+    "type": "paragraph",
+    "text": "xⱼ: patient input j. βⱼ: its coefficient. β₀: intercept. j: input index. Σ: sum the contributions. z: linear score, not a percentage."
+  },
+  {
+    "type": "math",
+    "text": "\\begin{aligned}\nz={}&-1.608283515050\\\\\n&+38(-0.029741519309)\\\\\n&+1(1.617774083556)\\\\\n&+1(0.809503755804)\\\\\n&+30(0.025035821777)\\\\\n&+1(0.377172660529)\n\\end{aligned}"
+  },
+  {
+    "type": "math",
+    "text": "\\begin{aligned}\nz={}&-1.608283515050-1.130177733759\\\\\n&+1.617774083556+0.809503755804\\\\\n&+0.751074653320+0.377172660529\\\\\n={}&0.817063904400\n\\end{aligned}"
+  },
+  {
+    "type": "paragraph",
+    "text": "Unknown Ki-67 activates both the imputed 30 and the missingness indicator. Measured 30% would not activate the missingness contribution. The other category and family indicators contribute zero here."
+  },
+  {
+    "type": "chapter",
+    "number": 8,
+    "text": "From score to percentage: sigmoid and calibration"
+  },
+  {
+    "type": "paragraph",
+    "text": "The sigmoid converts a linear score to a number between 0 and 1. e ≈ 2.71828 is Euler’s number; the superscript is an exponent. p means probability, raw means uncalibrated, and cal means calibrated."
+  },
+  {
+    "type": "math",
+    "text": "\\sigma(t)=\\frac{1}{1+e^{-t}}"
+  },
+  {
+    "type": "math",
+    "text": "p_{\\mathrm{raw}}=\\frac{1}{1+e^{-0.817063904400}}\\approx0.693612733313"
+  },
+  {
+    "type": "paragraph",
+    "text": "Approximately 69.4% is not the final displayed result. Calibration concerns agreement between predicted probabilities and observed frequencies. The class-weighted model’s raw probability is not used directly as the final percentage."
+  },
+  {
+    "type": "math",
+    "text": "\\eta=a+bz,\\quad a=-1.824095746896,\\quad b=0.939227549588"
+  },
+  {
+    "type": "math",
+    "text": "\\begin{aligned}\n\\eta&=-1.824095746896+0.939227549588(0.817063904400)\\\\\n&=-1.824095746896+0.767408928786\\\\\n&=-1.056686818109\n\\end{aligned}"
+  },
+  {
+    "type": "math",
+    "text": "p_{\\mathrm{cal}}=\\frac{1}{1+e^{-\\eta}}=\\frac{1}{1+e^{1.056686818109}}=0.257943116995"
+  },
+  {
+    "type": "math",
+    "text": "100p_{\\mathrm{cal}}=25.7943116995\\%\\approx\\boxed{25.8\\%}"
+  },
+  {
+    "type": "paragraph",
+    "text": "η (eta) is the adjusted linear score; a is the intercept correction and b the slope correction. Apply calibration once. Substituting the raw probability instead of z into a+bz is incorrect. The logit is the inverse sigmoid: log[p/(1−p)]. Odds = p/(1−p); OR (Odds Ratio) is a ratio of odds, not a percentage-point difference. On the calibrated log-odds scale the coefficient is bβ."
+  },
+  {
+    "type": "heading",
+    "text": "Changing only age from 38 to 48"
+  },
+  {
+    "type": "math",
+    "text": "\\Delta z=10(-0.029741519309)=-0.297415193094"
+  },
+  {
+    "type": "math",
+    "text": "z_{\\mathrm{new}}=0.519648711306,\\qquad p_{\\mathrm{new}}\\approx0.208164117=20.8\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "The decrease is about 4.98 percentage points. This is not a protective effect of becoming ten years older; it is the frozen model’s conditional response to a different input. Previous-value arrows let students follow quantities affected by the last edit."
+  },
+  {
+    "type": "chapter",
+    "number": 9,
+    "text": "The separate points card and queue rules"
+  },
+  {
+    "type": "paragraph",
+    "text": "The card comes from a separate class-balanced L2 model with 16 candidate features and C = 0.3. Coefficients were divided into 0.5 log-odds units and rounded; removing zero-point rows left 14 items. It is not a rounding of the main model’s β coefficients."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Item",
+      "Points"
+    ],
+    "rows": [
+      [
+        "Age at diagnosis < 40",
+        1
+      ],
+      [
+        "Triple-negative tumour",
+        2
+      ],
+      [
+        "Grade 3",
+        1
+      ],
+      [
+        "Ki-67 ≥ 30%",
+        1
+      ],
+      [
+        "1st-degree relative, breast cancer < 40 (each, max 2)",
+        3
+      ],
+      [
+        "1st-degree relative, breast cancer ≥ 40 (each, max 2)",
+        1
+      ],
+      [
+        "2nd-degree relative, breast cancer (each, max 2)",
+        1
+      ],
+      [
+        "3rd–4th-degree relative, breast cancer (each, max 2)",
+        1
+      ],
+      [
+        "1st-degree relative, ovarian cancer (each, max 2)",
+        1
+      ],
+      [
+        "2nd–4th-degree relative, ovarian cancer (each, max 2)",
+        1
+      ],
+      [
+        "Bilateral breast cancer",
+        2
+      ],
+      [
+        "Both breast and ovarian cancer",
+        2
+      ],
+      [
+        "Ovarian cancer",
+        2
+      ],
+      [
+        "Male breast cancer",
+        1
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Example: age <40 gives 1, TNBC gives 2, first-degree breast <40 gives 3: total 6. Unknown Ki-67 earns no high-Ki-67 card point. Each family card row caps at two; the panel allows model counts up to six."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Lane",
+      "Model",
+      "Card"
+    ],
+    "rows": [
+      [
+        "Normal",
+        "<10%",
+        "0–3"
+      ],
+      [
+        "Priority",
+        "10%–<20%",
+        "4"
+      ],
+      [
+        "Urgent",
+        "≥20%",
+        "≥5"
+      ]
+    ]
+  },
+  {
+    "type": "math",
+    "text": "A=\\max(s_{\\mathrm{card}},s_{\\mathrm{model}},u),\\qquad B=\\max(s_{\\mathrm{model}},u)"
+  },
+  {
+    "type": "paragraph",
+    "text": "s values are lane codes: 0 normal, 1 priority, 2 urgent; max takes the highest. u=2 if a treatment decision awaits the result; otherwise u=1 for documented familial P/LP, else 0. B remains a proposal. A’s urgent lane triggers the rapid package; B uses model ≥20%. Familial P/LP does not change the β sum, but suppresses the personal probability headline because that information is absent from the model."
+  },
+  {
+    "type": "chapter",
+    "number": 10,
+    "text": "Other displayed numbers and performance measures"
+  },
+  {
+    "type": "heading",
+    "text": "Do not confuse different numbers for one patient"
+  },
+  {
+    "type": "math",
+    "text": "N=\\operatorname{round}(1/p)=\\operatorname{round}(3.876824)=4"
+  },
+  {
+    "type": "paragraph",
+    "text": "“Approximately one in four” is a rounded description, not four observed people. Round chooses the nearest integer; exact halves go to the even integer in the code."
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Position}=\\operatorname{round}\\left[5\\left(17+\\frac{0.257943117-0.2133526175}{0.2763791363-0.2133526175}\\right)\\right]=89"
+  },
+  {
+    "type": "paragraph",
+    "text": "The score is near the 89th percentile: a position in the development-score distribution, not an 89% carrier probability. 17 is the zero-based lower-knot index; the denominator is the gap between adjacent knots."
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Fill}=\\min\\left(100,\\frac{p}{0.40}\\times100\\right)\\approx64.5\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "Fill is the visual bar fill; min takes the smaller value. This 64.5% is not another medical probability."
+  },
+  {
+    "type": "heading",
+    "text": "Stored performance estimates"
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Metric",
+      "Value"
+    ],
+    "rows": [
+      [
+        "Nested cross-validation AUC",
+        "0.776"
+      ],
+      [
+        "AUC confidence interval",
+        "0.733–0.817"
+      ],
+      [
+        "Apparent / optimism-corrected AUC",
+        "0.815 / 0.784"
+      ],
+      [
+        "PR-AUC",
+        "0.404"
+      ],
+      [
+        "Temporal-test AUC",
+        "0.788"
+      ],
+      [
+        "Recalibrated Brier",
+        "0.095"
+      ],
+      [
+        "Base-rate Brier",
+        "0.112"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "AUC: Area Under the Receiver Operating Characteristic Curve. It measures ranking of a positive record above an other-labelled record; 0.776 does not mean 77.6% of individual answers are correct. ROC plots sensitivity against false-positive rate. PR-AUC is the area under the Precision–Recall curve, focusing on positive-class retrieval."
+  },
+  {
+    "type": "chapter",
+    "number": 11,
+    "text": "Validation, thresholds and the error table"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Brier}=\\frac{1}{n}\\sum_{i=1}^{n}(p_i-y_i)^2"
+  },
+  {
+    "type": "paragraph",
+    "text": "n is the number evaluated, pᵢ the prediction and yᵢ the recorded outcome. Brier measures probability error; lower is better. Calibration asks whether groups predicted at, for example, 20% have observed rates near that value. Good ranking does not guarantee good calibration."
+  },
+  {
+    "type": "paragraph",
+    "text": "An out-of-fold prediction is made while that person is excluded from the relevant fitting step. However, some imputation and scaling in the main script preceded the outer split, creating leakage concerns. StratifiedKFold balances classes but does not group families; relatives can enter different folds. The AUC interval uses 2,000 person-level bootstrap samples, and optimism correction uses 200. Bootstrap resamples observations with replacement."
+  },
+  {
+    "type": "paragraph",
+    "text": "The temporal table records 796 training and 477 test patients, with 52 positives in the test period. A later period at the same centre is not independent external validation. Denominators and processing paths from different evaluation tables are not interchangeable."
+  },
+  {
+    "type": "heading",
+    "text": "Historical approximately 3.5% threshold example"
+  },
+  {
+    "type": "table",
+    "headers": [
+      "",
+      "Positive",
+      "Other",
+      "Total"
+    ],
+    "rows": [
+      [
+        "Above threshold",
+        "TP 159",
+        "FP 978",
+        "1,137"
+      ],
+      [
+        "Below threshold",
+        "FN 8",
+        "TN 150",
+        "158"
+      ],
+      [
+        "Total",
+        "167",
+        "1,128",
+        "1,295"
+      ]
+    ]
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Sensitivity}=\\frac{TP}{TP+FN}=\\frac{159}{167}=95.21\\%"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Specificity}=\\frac{TN}{TN+FP}=\\frac{150}{1128}=13.30\\%"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{NPV}=\\frac{TN}{TN+FN}=\\frac{150}{158}=94.94\\%,\\quad \\mathrm{PPV}=\\frac{159}{1137}=13.98\\%"
+  },
+  {
+    "type": "paragraph",
+    "text": "TP/FP: True/False Positive; TN/FN: True/False Negative, relative to the recorded labels. Sensitivity captures positives; specificity keeps others below threshold; NPV (Negative Predictive Value) is the other-label proportion below threshold; PPV (Positive Predictive Value) is the positive proportion above threshold. High sensitivity alone is insufficient. This is not the current 10%/20% queue boundary; one threshold table cannot give AUC."
+  },
+  {
+    "type": "chapter",
+    "number": 12,
+    "text": "Laboratory capacity: workload and yield"
+  },
+  {
+    "type": "paragraph",
+    "text": "Two decisions are distinct: who is prioritised in the queue, and who receives the narrow rapid first-test package? The package covers BRCA1 deletions/duplications by MLPA plus c.5266dupC. It is not complete testing for all BRCA variants. A negative rapid result does not exclude a carrier; full testing continues."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Strategy",
+      "Packages",
+      "Detectable targets"
+    ],
+    "rows": [
+      [
+        "Model ≥20%",
+        "212.6",
+        "26.6"
+      ],
+      [
+        "Card-or-model A trigger",
+        "280.0",
+        "29.4"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "These are means over five repeats, not fractional patients. A detectable target is a selected carrier with a target covered by the narrow package; it is not the same denominator as all BRCA positives."
+  },
+  {
+    "type": "math",
+    "text": "\\Delta N=212.6-280=-67.4,\\qquad\\Delta T=26.6-29.4=-2.8"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Yield}=\\frac{26.6}{212.6}\\times100=12.511759\\%"
+  },
+  {
+    "type": "math",
+    "text": "\\mathrm{Packages/target}=\\frac{212.6}{26.6}=7.992481"
+  },
+  {
+    "type": "paragraph",
+    "text": "Δ means difference; here N is package count and T detectable-target count. Fewer packages trade off against fewer detectable targets. The mean of repeat-specific ratios is about 8.013; the ratio of means is about 7.992. These are different operations."
+  },
+  {
+    "type": "paragraph",
+    "text": "The capacity panel reads aggregate results for six stored strategies; it performs no new patient analysis. The temporal option concerns 477 people and 52 carriers. Extra workload from urgency overrides was not measured. In the equal-workload comparison, the card showed no added advantage; its manual and explanatory value is separate."
+  },
+  {
+    "type": "note",
+    "text": "Improvements in waiting time, cost or treatment outcomes were not measured. The hypothetical test-reduction panel is not an instruction to omit tests."
+  },
+  {
+    "type": "paragraph",
+    "text": "The hypothetical reduction policy excludes card ≥4, ovarian cancer, male breast cancer, TNBC, ovarian family history, urgency and, in the strict option, age <45. Its generating script is absent from this package, so the stored aggregate reduction results are not independently regenerated here."
+  },
+  {
+    "type": "chapter",
+    "number": 13,
+    "text": "The biological finding and statistical uncertainty"
+  },
+  {
+    "type": "paragraph",
+    "text": "Prediction asks which information combinations predict an outcome. Biological association research might ask whether tumour sizes differ between variant classes. Useful prediction does not establish causation."
+  },
+  {
+    "type": "paragraph",
+    "text": "The existing comparison uses 87 family representatives: 20 stop-gain and 67 frameshift families. Stop-gain introduces an early stop in protein production; frameshift shifts the three-letter reading frame. The recorded-size ratio below adjusts for age, year, gene, recorded ethnicity, region and genotype source."
+  },
+  {
+    "type": "math",
+    "text": "R=0.649,\\qquad\\text{interval: }0.421\\text{ to }1.001"
+  },
+  {
+    "type": "paragraph",
+    "text": "The point estimate corresponds to about 35% smaller recorded size. The interval includes 1, meaning no difference. The primary empirical p is about 0.0504; the cumulative multiple-testing-adjusted q is about 0.527. This is not a validated difference and was not added to the calculator."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Term",
+      "Meaning"
+    ],
+    "rows": [
+      [
+        "Effect size",
+        "Magnitude of the association; here a size ratio."
+      ],
+      [
+        "Confidence interval",
+        "Describes sampling uncertainty, not a probability that this one interval is correct."
+      ],
+      [
+        "p-value",
+        "Probability of a result at least this extreme under the null and assumptions; not the probability the hypothesis is false."
+      ],
+      [
+        "Confounder",
+        "A variable related to group and outcome that can distort the comparison."
+      ],
+      [
+        "Selection bias",
+        "Systematic differences between included and excluded people."
+      ],
+      [
+        "Power",
+        "Probability of detecting a specified true effect with a specified design."
+      ],
+      [
+        "FDR / False Discovery Rate",
+        "An approach controlling false discoveries across multiple comparisons."
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Many comparisons create more opportunities for chance findings. Statistical adjustment does not eliminate missingness, selection or measurement bias. These issues remain unresolved for this observation; independent validation is absent."
+  },
+  {
+    "type": "chapter",
+    "number": 14,
+    "text": "Why are the additional records not yet a validation set?"
+  },
+  {
+    "type": "paragraph",
+    "text": "An expanded archive does not mean the model has been retrained or independently validated. A person used in development, or from the same family, may not be eligible for an independent test. Recorded family separation is not genomic proof of unrelatedness."
+  },
+  {
+    "type": "table",
+    "headers": [
+      "Existing audit stage",
+      "Count"
+    ],
+    "rows": [
+      [
+        "Clinically linked people outside development",
+        "206"
+      ],
+      [
+        "Excluded for known development-family overlap",
+        "20"
+      ],
+      [
+        "Without an eligible cancer record",
+        "1"
+      ],
+      [
+        "Remaining candidate people / family groups",
+        "185 / 184"
+      ],
+      [
+        "Family representatives with complete core inputs",
+        "111"
+      ],
+      [
+        "Report-supported, core-complete representatives",
+        "91"
+      ],
+      [
+        "Remaining without historical-VUS dependency",
+        "51"
+      ],
+      [
+        "Positive / negative in the 51 candidates",
+        "14 / 37"
+      ],
+      [
+        "Diagnosis year available / missing",
+        "41 / 10"
+      ],
+      [
+        "Complete dated pre-result profile / eligible validation",
+        "0 / 0"
+      ]
+    ]
+  },
+  {
+    "type": "paragraph",
+    "text": "Forty of the 91 report-supported representatives depended on historical variant classification and were excluded from the more conservative 51-person review. Diagnosis year is not a model input, but its absence limits chronology checks. Even the 41 with a year lacked adequate dated evidence that the complete clinical profile preceded the BRCA result."
+  },
+  {
+    "type": "note",
+    "text": "Genetic reports exist in Drive. What is missing is dated clinical documentation of the full input profile at the prediction time. Zero eligible patients does not mean zero performance; performance could not be estimated."
+  },
+  {
+    "type": "paragraph",
+    "text": "Needed: dated pre-result clinical assessment covering model inputs; traceable genetic outcomes and report dates; reliable identity/family links; enough independent positive and negative outcomes. Archive size alone does not justify new coefficients, recalibration or threshold changes."
+  },
+  {
+    "type": "chapter",
+    "number": 15,
+    "text": "Software, sources and the complete story"
+  },
+  {
+    "type": "paragraph",
+    "text": "An input edit does not retrain the model. The app reads inputs, applies encoding/missingness rules, calculates z with stored coefficients, a percentage with stored calibration, a separate card score and A/B queue lanes. The teaching page uses synthetic profiles only."
+  },
+  {
+    "type": "paragraph",
+    "text": "The 54 synthetic examples and 47 stored self-tests check arithmetic agreement. Automated tests and live desktop/mobile checks can establish intended software behaviour. Language switches should retain inputs; reset should restore the selected profile. These are not evidence of clinical performance in new patients."
+  },
+  {
+    "type": "paragraph",
+    "text": "A SHA-256 checksum verifies a file version, not data correctness or scientific validity. Original genetic reports and private identity/family linkage lists remain in authorised Drive records; this guide contains no patient identifiers."
+  },
+  {
+    "type": "heading",
+    "text": "Explain the complete work in one paragraph"
+  },
+  {
+    "type": "paragraph",
+    "text": "We linked scattered genetic and clinical records, separating files, specimens, people and families. We explain the logistic model developed in the original 1,295 people: weighted sum, calibration and probability. The points card and queue rules are separate layers. Internal evaluation suggests useful ranking, but preprocessing and family-independence limitations remain. The 87-family biological observation is not a validated discovery. The expanded archive has not yet supplied a dated, independent validation set. We have an explainable research prototype and explicit data needs; reliability in new patients requires independent validation."
+  },
+  {
+    "type": "heading",
+    "text": "Traceable existing sources"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/model_full_embedded.json",
+    "text": "Frozen coefficients, development counts and stored performance"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/brca_core.py",
+    "text": "Calculation, card and A/B rules"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/model_teaching_content.py",
+    "text": "Existing methods audit and symbols"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/research/cohort_census.json",
+    "text": "Archive census"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/research/size_results.json",
+    "text": "87-family result"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/calculator_validation_eligibility.json",
+    "text": "Validation candidate selection"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/calculator_prediction_date_audit.json",
+    "text": "Prediction-date audit of 51 candidates"
+  },
+  {
+    "type": "link",
+    "url": "https://github.com/ArifSolmaz/brca/blob/main/evidence/rapid_threshold.json",
+    "text": "Rapid-test capacity"
+  },
+  {
+    "type": "paragraph",
+    "text": "Links lead to the aggregate records used here; they do not replace original patient-level document review. This guide introduces no new clinical classification or testing recommendation."
+  }
+]
