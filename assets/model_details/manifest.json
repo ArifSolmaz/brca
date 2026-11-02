@@ -29,13 +29,12 @@
     "browser": "Safari",
     "tr": {
       "pages": 18,
-      "matches_published_sha256": "f07e452dc8aac8c21fe855e7b9506d76a0f90abb1dfe72f785feabb98e6910fe"
+      "matches_published_sha256": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e"
     },
     "en": {
       "pages": 14,
-      "matches_published_sha256": "d6781dc12041cc9aeef0c3f0c2d1265c45b0f63bd2f847b71f23a174ca953af7"
-    },
-    "superseded_by": "PDFs updated with origin explanation; repeat live download verification for this revision."
+      "matches_published_sha256": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211"
+    }
   },
   "live_teaching_verification": {
     "date": "2026-11-02",
@@ -53,7 +52,7 @@
       "card_before": 6,
       "card_after": 5
     },
-    "tests_passed": 28
+    "tests_passed": 29
   },
   "desktop_teaching_layout": {
     "columns": [
@@ -80,6 +79,7 @@
     "web_position": "beside the heading on wide screens, above the manual calculation workspace on all screens",
     "pdf_position": "first page before formulas",
     "pdf_layout_verified": true,
-    "tests_passed": 29
+    "tests_passed": 29,
+    "live_verified": true
   }
 }
