@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from streamlit.testing.v1 import AppTest
-from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS
+from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS, mobile_formula_steps, teaching_latex
 from model_teaching_content import ORIGIN_INTRO
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -12,6 +12,25 @@ def control(at,key):return next(n for n in at if getattr(n,'key',None)==key)
 def result(at):return next(n.value for n in at if n.type=='html' and "id='sonuc'" in n.value)
 
 class ModelTeachingTests(unittest.TestCase):
+    def test_mobile_steps_preserve_fractions_and_separate_independent_equations(self):
+        formula=r'p=\frac{1}{1+e^{-(0.81706390)}}=\frac{1}{1+0.44172670}=0.69361273'
+        steps=mobile_formula_steps(formula)
+        self.assertEqual(steps,[r'\begin{aligned}p&=\frac{1}{1+e^{-(0.81706390)}}\\p&=\frac{1}{1+0.44172670}\\p&=0.69361273\end{aligned}'])
+        self.assertEqual(len(mobile_formula_steps(r'A=1,\qquad B=2')),2)
+        for lang in ['tr','en']:
+            marked=paired_tex(.2,.3,lang,8)
+            mobile=' '.join(mobile_formula_steps('p='+marked))
+            self.assertIn(r'\substack',mobile)
+            self.assertIn(r'\leftarrow',mobile)
+            self.assertEqual(mobile.count('{'),mobile.count('}'))
+
+    def test_responsive_renderer_preserves_original_desktop_formula(self):
+        equation=r'p=\frac{1}{1+e^{-z}}=0.25'
+        with patch('model_teaching.st.latex') as desktop, patch('model_teaching.st.markdown') as mobile, patch('model_teaching.st.container'):
+            teaching_latex(equation)
+        desktop.assert_called_once_with(equation)
+        self.assertIn(r'p&=0.25',mobile.call_args.args[0])
+
     def start(self,lang='en',teaching=True):
         at=AppTest.from_file(str(ROOT/'app.py'),default_timeout=30)
         at.session_state['auth']=True

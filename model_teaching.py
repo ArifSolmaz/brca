@@ -1,6 +1,8 @@
 """Student-facing numerical explanation; never fits a model or changes calculator state."""
 import json
 import math
+import re
+from itertools import count
 from html import escape
 from pathlib import Path
 import streamlit as st
@@ -78,7 +80,14 @@ WORKBENCH_STYLE = """<style>
 .teaching-arithmetic .product{white-space:normal}.formula-current{background:#fff1c7;color:#784000;padding:1px 2px;border-radius:3px}.formula-previous{color:#596579;white-space:nowrap;font-size:.78em;display:inline-block}.st-key-teaching_equations .katex{max-width:100%}.teaching-arithmetic small{color:#627181}
 .st-key-teaching_origin_header h1{font-size:24px!important}.st-key-teaching_origin_header [data-testid=stCaptionContainer] p{font-size:12px}@media(max-width:1799px){.st-key-teaching_origin_header [data-testid=stHorizontalBlock]{flex-direction:column}.st-key-teaching_origin_header [data-testid=stColumn]{width:100%!important;flex:1 1 100%!important}}
 .teaching-origin{padding:10px 14px;border-left:3px solid #7560ce;background:#eef2f7;border-radius:6px;color:#17212b}.teaching-origin h2{font-size:16px!important;line-height:1.3;margin:0 0 5px!important;padding:0!important}.teaching-origin>div{display:grid;grid-template-columns:1fr 1fr;gap:24px}.teaching-origin p{font-size:13px;line-height:1.45;margin:0}@media(max-width:1099px){.teaching-origin>div{grid-template-columns:1fr;gap:8px}}
-.teaching-scroll-hint{display:none}@media(max-width:1099px){.teaching-scroll-hint{display:block;margin:4px 0 8px;color:#46556b;font-size:12px;line-height:1.4}}
+[data-testid=stLayoutWrapper]:has(>[class*=st-key-teaching_formula_mobile_]),[class*=st-key-teaching_formula_mobile_]{display:none!important}
+@media(max-width:1099px){
+ [data-testid=stLayoutWrapper]:has(>[class*=st-key-teaching_formula_desktop_]),[class*=st-key-teaching_formula_desktop_]{display:none!important}
+ [data-testid=stLayoutWrapper]:has(>[class*=st-key-teaching_formula_mobile_]),[class*=st-key-teaching_formula_mobile_]{display:flex!important;gap:0!important}
+ [class*=st-key-teaching_formula_mobile_] .katex{font-size:clamp(14px,4.1vw,18px)!important}
+ [class*=st-key-teaching_formula_mobile_] .katex-display{padding:.65em .12em!important}
+}
+
 .teaching-edit{padding:8px 10px;margin-top:8px;border-left:3px solid #7560ce;background:#f4f1fc;font-size:12px;line-height:1.45;color:#17212b}
 /* KaTeX fractions and superscripts draw above/below their text baseline.
    Reserve ink space inside the horizontal scroller instead of clipping that ink. */
@@ -87,6 +96,67 @@ WORKBENCH_STYLE = """<style>
 @media(min-width:1100px){.st-key-teaching_equations [data-testid=stVerticalBlock]{gap:2px}}
 </style>"""
 
+
+
+
+_formula_ids = count()
+
+
+def _tex_parts(formula, separators):
+    """Split only between complete top-level expressions, never inside a fraction."""
+    parts=[];start=0;braces=0;parens=0;i=0
+    while i<len(formula):
+        c=formula[i]
+        if c=='{':braces+=1
+        elif c=='}':braces-=1
+        elif not braces:
+            if c in '([':parens+=1
+            elif c in ')]':parens-=1
+        if not braces and not parens and c in separators:
+            parts.append(formula[start:i]);start=i+1
+        i+=1
+    parts.append(formula[start:])
+    return parts
+
+
+def mobile_formula_steps(formula):
+    # Place the previous value below the current value inside its existing box.
+    formula=re.sub(r'(\\boxed\{)([-\d.,{}]+)\\;\{\\scriptstyle\\color\{#596579\}\{(\[\\leftarrow .*?\])\}\}',
+                   lambda m:m[1]+r'\substack{'+m[2]+r'\\{\scriptstyle\color{#596579}{'+m[3]+r'}}}',formula)
+    groups=[]
+    for equation in re.split(r',?\\q(?:quad|uad)\s*',formula):
+        chain=_tex_parts(equation,'=')
+        if len(chain)==1:
+            terms=_tex_parts(equation,'+')
+            if len(terms)>1:
+                terms=[term for term in terms if term and term != r'\phantom{z=}']
+                groups.append(r'\begin{aligned}'+r'\\'.join(('' if j==0 and not equation.startswith(r'\phantom') else '+')+term for j,term in enumerate(terms))+r'\end{aligned}')
+            else:groups.append(equation)
+            continue
+        rows=[]
+        lhs=chain[0]
+        for rhs in chain[1:]:
+            visible=re.sub(r'\\[A-Za-z]+|[{}]','',rhs)
+            terms=_tex_parts(rhs,'+') if len(visible)>30 else [rhs]
+            rows.append(lhs+'&='+terms[0])
+            for term in terms[1:]:
+                product=re.fullmatch(r'\((.*?)\\times\((.*)\)\)',term)
+                if product:
+                    term=r'\left(\begin{gathered}'+product[1]+r'\\\times('+product[2]+r')\end{gathered}\right)'
+                if term:rows.append('&+'+term)
+        groups.append(r'\begin{aligned}'+r'\\'.join(rows)+r'\end{aligned}')
+    return groups
+
+
+def teaching_latex(formula, mobile_steps=None):
+    """Keep desktop equations intact; show a sequence of short equations on mobile."""
+    ident=next(_formula_ids)
+    with st.container(key=f'teaching_formula_desktop_{ident}'):
+        st.latex(formula)
+    with st.container(key=f'teaching_formula_mobile_{ident}'):
+        for source in (mobile_steps or [formula]):
+            for step in mobile_formula_steps(source):
+                st.markdown('$$\n'+step+'\n$$')
 
 
 def paired_tex(value, previous, lang, digits=8, rounded=False):
@@ -152,17 +222,17 @@ def render_compact_steps(r,lang,previous=None):
     derived=lambda fn,d=8:paired_tex(fn(r),fn(previous) if previous else None,lang,d)
     a,b=core.M['platt']['a'],core.M['platt']['b'];d=r['A']
     st.markdown(t('**1 · Katkıları topla → z**','**1 · Sum contributions → z**'))
-    st.latex(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
+    teaching_latex(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
     st.markdown(t('**2 · Ham sigmoid (henüz son yüzde değil)**','**2 · Raw sigmoid (not the final percentage)**'))
-    st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw'))
+    teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw'))
     st.markdown(t('**3 · Kayıtlı kalibrasyona yerleştir**','**3 · Substitute into stored calibration**'))
-    st.latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
-    st.latex(r'\eta='+field('eta'))
+    teaching_latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
+    teaching_latex(r'\eta='+field('eta'))
     st.markdown(t('**4 · Son sigmoid → yüzde**','**4 · Final sigmoid → percentage**'))
-    st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9))
-    st.latex(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
+    teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9))
+    teaching_latex(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
     st.markdown(t('**5 · Kart ve şeritler (ayrı hesap)**','**5 · Card and lanes (separate calculation)**'))
-    for formula in decision_formulas(r,previous,lang):st.latex(formula)
+    for formula in decision_formulas(r,previous,lang):teaching_latex(formula)
 
 
 def render_model_teaching(lang):
@@ -172,7 +242,6 @@ def render_model_teaching(lang):
     fmt = lambda x,d=12: f'{x:.{d}f}'.replace('.', ',') if tr else f'{x:.{d}f}'
     tex = lambda x,d=12: f'{x:.{d}f}'.replace('.', '{,}') if tr else f'{x:.{d}f}'
     st.html(WORKBENCH_STYLE)
-    scroll_hint = '<p class="teaching-scroll-hint" role="note">↔ ' + t('Uzun formüllerin tamamını görmek için formülü sağa-sola kaydırın.', 'Swipe long formulas left or right to see every step.') + '</p>'
     with st.container(key='teaching_origin_header'):
         title_col,intro_col=st.columns([1.1,3],vertical_alignment='center')
     with title_col:
@@ -240,7 +309,7 @@ def render_model_teaching(lang):
         st.subheader(t('Çarpımlar ve birikimli toplam','Products and running sum'))
         st.caption(t('Sarı değer güncel; ← önceki değer. Birikimli toplamda değişen her hücre işaretlenir.', 'Yellow values are current; ← previous. Every affected running-sum cell is marked.'))
         st.html(contribution_html(r,change,lang))
-        st.latex('z='+paired_tex(r['z'],change['previous']['z'] if change and change.get('previous') else None,lang,12))
+        teaching_latex('z='+paired_tex(r['z'],change['previous']['z'] if change and change.get('previous') else None,lang,12))
         if change:
             label_map=dict(labels,dx=t('Tanı','Diagnosis'),grade='Grade',region=t('Bölge','Region'),urg_dec=t('Tedavi aciliyeti','Treatment urgency'),urg_fam=t('Ailede P/LP','Familial P/LP'))
             changes='; '.join(f'{label_map.get(k,k)}: {old} → {new}' for k,(old,new) in change['changes'].items())
@@ -260,10 +329,8 @@ def render_model_teaching(lang):
         previous=change.get('previous') if change else None
         st.caption(t('Kutudaki sayı güncel değerdir; yanındaki ← önceki değeri gösterir. Yalnız son düzenlemeden etkilenen değerler işaretlenir.', 'Boxed values are current; ← shows the previous value beside each one. Only quantities affected by the last edit are marked.'))
         if urg_fam:st.caption(t('Aile bilgisi modelde yoktur. Aşağıdaki yüzde yalnız iç eğitim hesabıdır.', 'Familial information is absent from the model. The percentage below is internal teaching arithmetic only.'))
-        st.html(scroll_hint)
         render_compact_steps(r,lang,previous)
     with st.expander(t('Ayrıntılı açıklamalar ve tüm sembollerle çözüm','Detailed explanations and full-symbol walkthrough')):
-        st.html(scroll_hint)
         if change:
             with st.expander(t('Son düzenlemenin katkıları — ne değişti?','Last-edit contributions — what changed?'),expanded=True):
                 st.write(t('Olasılık farkı yüzde puandır; Δz doğrusal skor farkıdır. Girdi etkileri bu profil için koşullu hesap değişimidir, nedensel biyolojik etki değildir.', 'Probability differences are percentage points; Δz is a linear-score difference. These are conditional changes in this profile’s calculation, not causal biological effects.'))
@@ -276,7 +343,7 @@ def render_model_teaching(lang):
         st.write(t(f'Yaş {age}; TNBC {v["tnbc"]}; Ki-67 {v["ki67"] if not v["ki67_missing"] else 30}; Ki-67 eksik göstergesi {v["ki67_missing"]}. Yaş biliniyor, age_missing = 0. Referanslar breast, g2 ve marmara’dır; kategori göstergeleri seçiliyse 1, değilse 0 olur.',
                    f'Age {age}; TNBC {v["tnbc"]}; Ki-67 {v["ki67"] if not v["ki67_missing"] else 30}; Ki-67 missing indicator {v["ki67_missing"]}. Age is known, so age_missing = 0. Reference categories are breast, g2 and marmara; category indicators are 1 when selected, otherwise 0.'))
         st.subheader(t('2. Her katkıyı çarpıp sırayla toplayın','2. Multiply each contribution and add in sequence'))
-        st.latex(r'z=\beta_0+\sum_{j=1}^{26}\beta_j x_j')
+        teaching_latex(r'z=\beta_0+\sum_{j=1}^{26}\beta_j x_j')
         active=[x for x in r['terms'] if x['contribution']];running=0;rows=[]
         for x in active:
             running+=x['contribution'];rows.append({t('Terim','Term'):labels.get(x['key'],x['key']),t('x × β','x × β'):f'{fmt(x["x"],2)} × ({fmt(x["beta"])})',t('Katkı','Contribution'):fmt(x['contribution']),t('Birikimli toplam','Running total'):fmt(running)})
@@ -284,33 +351,33 @@ def render_model_teaching(lang):
         st.caption(t(f'Kalan {len(r["terms"])-len(active)} terim sıfır katkı yapar. Ara değerler gösterimde yuvarlanır; karar tam olasılıkla verilir.',f'The other {len(r["terms"])-len(active)} terms contribute zero. Displayed intermediate values are rounded; decisions use the full probability.'))
         for i in range(0,len(active),2):
             line=('+'.join(r'('+paired_tex(x['x'],next((old['x'] for old in previous['terms'] if old['key']==x['key']),0) if previous else None,lang,0 if float(x['x']).is_integer() else 6)+r'\times('+tex(x['beta'])+r'))' for x in active[i:i+2]))
-            st.latex(('z=' if i==0 else r'\phantom{z=}+')+line)
-        st.latex('z='+paired_tex(r['z'],previous['z'] if previous else None,lang,12))
+            teaching_latex(('z=' if i==0 else r'\phantom{z=}+')+line)
+        teaching_latex('z='+paired_tex(r['z'],previous['z'] if previous else None,lang,12))
         st.subheader(t('3. Ham olasılık — henüz ekran yüzdesi değil','3. Raw probability — not yet the displayed percentage'))
-        st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}=\frac{1}{1+e^{-('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r')}}')
-        st.latex(r'p_{\mathrm{raw}}=\frac{1}{1+'+paired_tex(math.exp(-r['z']),math.exp(-previous['z']) if previous else None,lang,9)+r'}='+paired_tex(r['p_raw'],previous['p_raw'] if previous else None,lang,12))
+        teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}=\frac{1}{1+e^{-('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r')}}')
+        teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+'+paired_tex(math.exp(-r['z']),math.exp(-previous['z']) if previous else None,lang,9)+r'}='+paired_tex(r['p_raw'],previous['p_raw'] if previous else None,lang,12))
         st.subheader(t('4. Kayıtlı kalibrasyon','4. Apply the stored calibration'))
         a=core.M['platt']['a'];b=core.M['platt']['b']
-        st.latex(r'\eta=a+bz='+tex(a)+r'+('+tex(b)+r'\times('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r'))')
-        st.latex(r'\eta='+tex(a)+r'+('+paired_tex(b*r['z'],b*previous['z'] if previous else None,lang,12)+r')='+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12))
+        teaching_latex(r'\eta=a+bz='+tex(a)+r'+('+tex(b)+r'\times('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r'))')
+        teaching_latex(r'\eta='+tex(a)+r'+('+paired_tex(b*r['z'],b*previous['z'] if previous else None,lang,12)+r')='+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12))
         st.write(t('a sabit düzeltme, b eğim düzeltmesidir. Yeniden öğrenilmez ve kalibrasyon ikinci kez uygulanmaz.','a is the intercept correction and b the slope correction. They are not re-estimated, and calibration must not be applied twice.'))
         st.subheader(t('5. Son olasılık ve yüzde','5. Final probability and percentage'))
-        st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-\eta}}=\frac{1}{1+e^{-('+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12)+r')}}')
-        st.latex(r'p_{\mathrm{cal}}=\frac{1}{1+'+paired_tex(math.exp(-r['eta']),math.exp(-previous['eta']) if previous else None,lang,9)+r'}='+paired_tex(r['p_cal'],previous['p_cal'] if previous else None,lang,12))
-        st.latex(r'100p_{\mathrm{cal}}='+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,10)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
+        teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-\eta}}=\frac{1}{1+e^{-('+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12)+r')}}')
+        teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+'+paired_tex(math.exp(-r['eta']),math.exp(-previous['eta']) if previous else None,lang,9)+r'}='+paired_tex(r['p_cal'],previous['p_cal'] if previous else None,lang,12))
+        teaching_latex(r'100p_{\mathrm{cal}}='+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,10)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
         st.subheader(t('6. Kart ve karar şeritleri ayrı hesaplanır','6. Calculate the card and lanes separately'))
         st.table([{t('Ölçüt','Item'):it[lang],t('Sayım','Count'):it['x'],t('Puan katkısı','Point contribution'):it['c']} for it in d['items']] or [{t('Ölçüt','Item'):t('Puan getiren ölçüt yok','No scoring items'),t('Sayım','Count'):0,t('Puan katkısı','Point contribution'):0}])
-        st.latex(decision_formulas(r,previous,lang)[0])
+        teaching_latex(decision_formulas(r,previous,lang)[0])
         st.write(METHODS[lang][5][1])
-        st.latex(r's_{\mathrm{card}}='+paired_tex(d['pl'],previous['A']['pl'] if previous else None,lang,0)+r',\quad s_{\mathrm{model}}='+paired_tex(d['ml'],previous['A']['ml'] if previous else None,lang,0)+r',\quad u='+paired_tex(d['urg'],previous['A']['urg'] if previous else None,lang,0))
-        st.latex(decision_formulas(r,previous,lang)[1])
-        st.latex(decision_formulas(r,previous,lang)[2])
+        teaching_latex(r's_{\mathrm{card}}='+paired_tex(d['pl'],previous['A']['pl'] if previous else None,lang,0)+r',\quad s_{\mathrm{model}}='+paired_tex(d['ml'],previous['A']['ml'] if previous else None,lang,0)+r',\quad u='+paired_tex(d['urg'],previous['A']['urg'] if previous else None,lang,0))
+        teaching_latex(decision_formulas(r,previous,lang)[1])
+        teaching_latex(decision_formulas(r,previous,lang)[2])
         st.write(t('Hızlı paket tetiklenmesi — A: ','Rapid-package trigger — A: ')+str(d['rapid'])+'; B: '+str(r['B']['rapid']))
         st.subheader(t('7. Ekrandaki diğer sayılar','7. Other displayed numbers'))
         pair=lambda value,old,d=8:paired_tex(value,old if previous else None,lang,d)
         old_p=previous['p_cal'] if previous else r['p_cal']
-        st.latex(r'N=\operatorname{round}\!\left(\frac{1}{'+pair(r['p_cal'],old_p,12)+r'}\right)=\operatorname{round}('+pair(1/r['p_cal'],1/old_p,6)+')='+pair(core.one_in_n(r['p_cal']),core.one_in_n(old_p),0))
-        st.latex(r'\pi=\frac{167}{1295}\approx12.9\%')
+        teaching_latex(r'N=\operatorname{round}\!\left(\frac{1}{'+pair(r['p_cal'],old_p,12)+r'}\right)=\operatorname{round}('+pair(1/r['p_cal'],1/old_p,6)+')='+pair(core.one_in_n(r['p_cal']),core.one_in_n(old_p),0))
+        teaching_latex(r'\pi=\frac{167}{1295}\approx12.9\%')
         q=core.M['score_percentiles']
         def knot(probability):
             i=0
@@ -319,9 +386,9 @@ def render_model_teaching(lang):
         i=knot(r['p_cal']);old_i=knot(old_p)
         if i<len(q)-1:
             old_lower=q[old_i];old_upper=q[min(old_i+1,len(q)-1)]
-            st.latex(r'\mathrm{Position}=\operatorname{round}\!\left[5\left('+pair(i,old_i,0)+r'+\frac{'+pair(r['p_cal'],old_p,10)+'-'+pair(q[i],old_lower,10)+'}{'+pair(q[i+1],old_upper,10)+'-'+pair(q[i],old_lower,10)+r'}\right)\right]='+pair(core.percentile(r['p_cal']),core.percentile(old_p),0))
+            teaching_latex(r'\mathrm{Position}=\operatorname{round}\!\left[5\left('+pair(i,old_i,0)+r'+\frac{'+pair(r['p_cal'],old_p,10)+'-'+pair(q[i],old_lower,10)+'}{'+pair(q[i+1],old_upper,10)+'-'+pair(q[i],old_lower,10)+r'}\right)\right]='+pair(core.percentile(r['p_cal']),core.percentile(old_p),0), mobile_steps=[r'd='+pair(q[i+1],old_upper,10)+'-'+pair(q[i],old_lower,10),r'n='+pair(r['p_cal'],old_p,10)+'-'+pair(q[i],old_lower,10),r'f=\frac{n}{d}=\frac{'+pair(r['p_cal']-q[i],old_p-old_lower,10)+r'}{'+pair(q[i+1]-q[i],old_upper-old_lower,10)+r'}',r'\mathrm{Position}=\operatorname{round}[5('+pair(i,old_i,0)+'+f)]',r'\mathrm{Position}='+pair(core.percentile(r['p_cal']),core.percentile(old_p),0)])
         else:st.write(t('Kodun en üst kesimi: “en üst %5” gösterilir.','At the final stored knot, the code shows “top 5%”.'))
-        st.latex(r'\mathrm{Fill}=\min\!\left(100,\frac{'+pair(r['p_cal'],old_p,12)+r'}{0.40}\times100\right)='+pair(min(100,r['p_cal']/.4*100),min(100,old_p/.4*100),4))
+        teaching_latex(r'\mathrm{Fill}=\min\!\left(100,\frac{'+pair(r['p_cal'],old_p,12)+r'}{0.40}\times100\right)='+pair(min(100,r['p_cal']/.4*100),min(100,old_p/.4*100),4))
         st.write(t('N yuvarlanmış anlatım, π geliştirme oranı, Position skor sırası ve Fill görsel çubuk doluluğudur. Bunlar birbirinin yerine kullanılmaz.','N is a rounded description, π the development proportion, Position a score rank, and Fill the visual bar fill. These quantities are not interchangeable.'))
         with st.expander(t('Tam katsayı tablosu ve sıfır katkılar','Full coefficient table and zero contributions')):
             st.dataframe([{t('Terim','Term'):labels.get(x['key'],x['key']),'x':x['x'],'β':x['beta'],'x × β':x['contribution']} for x in r['terms']],hide_index=True,width="stretch")
@@ -336,19 +403,16 @@ def render_model_teaching(lang):
     st.caption(t('TNBC: üçlü negatif meme kanseri (ER, PR ve HER2 negatif). Ki-67: çoğalma belirteci yüzdesi. MLPA: Multiplex Ligation-dependent Probe Amplification; büyük delesyon/duplikasyonları değerlendiren yöntem. P/LP: patojenik / olası patojenik; VUS: anlamı belirsiz varyant.', 'TNBC: Triple-Negative Breast Cancer (negative ER, Estrogen Receptor; PR, Progesterone Receptor; HER2, Human Epidermal Growth Factor Receptor 2). Ki-67: proliferation-marker percentage. MLPA: Multiplex Ligation-dependent Probe Amplification for deletion/duplication assessment. P/LP: Pathogenic/Likely Pathogenic; VUS: Variant of Uncertain Significance.'))
     with st.expander(t('Sembol sözlüğü — her işaret ne anlama geliyor?','Symbol glossary — what does each sign mean?')):
         st.table([dict(zip([t('Sembol','Symbol'),t('Anlamı','Meaning')],row)) for row in (SYMBOLS_TR if tr else SYMBOLS_EN)])
-        st.html(scroll_hint)
-        st.latex(r'\operatorname{logit}(p)=\log\!\left(\frac{p}{1-p}\right),\qquad\mathrm{odds}=\frac{p}{1-p}')
+        teaching_latex(r'\operatorname{logit}(p)=\log\!\left(\frac{p}{1-p}\right),\qquad\mathrm{odds}=\frac{p}{1-p}')
     st.header(t('Model nasıl eğitildi ve sınırları neler?','How was the model trained, and what are its limitations?'))
     for heading,body in METHODS[lang]:
         st.subheader(heading);st.write(body)
-    st.html(scroll_hint)
-    st.latex(r'w_+=\frac{1295}{2\times167}=3.877246,\qquad w_-=\frac{1295}{2\times1128}=0.574025')
+    teaching_latex(r'w_+=\frac{1295}{2\times167}=3.877246,\qquad w_-=\frac{1295}{2\times1128}=0.574025')
     with st.expander(t('Kapasite ve doğrulama sayılarının aritmetiği','Arithmetic behind capacity and validation totals')):
-        st.html(scroll_hint)
         st.write(t('Model ≥%20: 212,6 paket / 26,6 hedef; A: 280 paket /29,4 hedef. Bunlar kayıtlı tekrar ortalamalarıdır.','Model ≥20%: 212.6 packages /26.6 targets; A: 280 packages /29.4 targets. These are stored repeat means.'))
-        st.latex(r'\Delta N=212.6-280=-67.4,\quad\Delta T=26.6-29.4=-2.8')
-        st.latex(r'\mathrm{Yield}=\frac{26.6}{212.6}\times100=12.511759\%,\quad\mathrm{Packages/target}=\frac{212.6}{26.6}=7.992481')
+        teaching_latex(r'\Delta N=212.6-280=-67.4,\quad\Delta T=26.6-29.4=-2.8')
+        teaching_latex(r'\mathrm{Yield}=\frac{26.6}{212.6}\times100=12.511759\%,\quad\mathrm{Packages/target}=\frac{212.6}{26.6}=7.992481')
         st.write(t('Oranların ortalaması 8,0129973 ile ortalamaların oranı 7,9924812 aynı işlem değildir.','The mean of ratios, 8.0129973, and ratio of means, 7.9924812, are different operations.'))
-        st.latex(r'\mathrm{Sensitivity}=\frac{159}{167}=95.2096\%,\quad\mathrm{NPV}=\frac{150}{158}=94.9367\%')
+        teaching_latex(r'\mathrm{Sensitivity}=\frac{159}{167}=95.2096\%,\quad\mathrm{NPV}=\frac{150}{158}=94.9367\%')
         st.write(t('Bu son örnek tarihsel %95 duyarlılık çizgisine aittir (0,035019185420); ana %10/%20 şeritleri veya %5 + dışlama politikası değildir.','The last example concerns the historical 95%-sensitivity threshold (0.035019185420), not the main 10%/20% lanes or the 5%-plus-exclusions policy.'))
     st.caption(t('Kaynak: sabit model paketi ve özgün eğitim betiklerinin mevcut denetimi. 54 kurgu profil ile 47 kayıtlı öz-test yalnız hesap eşleşmesini denetler; bağımsız klinik doğrulama değildir.','Source: the frozen model package and the existing audit of original training scripts. The 54 synthetic profiles and 47 stored self-tests verify arithmetic agreement only, not independent clinical validity.'))

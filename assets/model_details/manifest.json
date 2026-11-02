@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "cf49a9a088ff42aa2986617c34f33ac39aa5dde33a3c7a2554be666726a0c662",
-    "model_teaching.py": "13ed526925c338a647b2b45ed942f583f76b4bf27b6493916b7e603f754ed395",
+    "model_teaching.py": "707ec738caf89cf998723df38871836dd58194726a6a2583a25f4c463f4a2314",
     "model_teaching_content.py": "93e6a60128a85e0a23a08c937ba4c6ba6720551dd6b8dc5fe356c82a3c8f0417",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -81,5 +81,15 @@
     "pdf_layout_verified": true,
     "tests_passed": 29,
     "live_verified": true
+  },
+  "mobile_formula_layout": {
+    "steps_stacked_below_1100px": true,
+    "languages": [
+      "tr",
+      "en"
+    ],
+    "desktop_tex_unchanged": true,
+    "calculator_unchanged": true,
+    "tests_passed": 31
   }
 }
