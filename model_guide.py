@@ -18,6 +18,7 @@ STYLE = '''<style>
 .st-key-model_guide_body .guide-toc{padding:1rem 1.5rem;background:#f0edf8;border-radius:12px}
 .st-key-model_guide_body [class*=st-key-guide_math_mobile_],.st-key-model_guide_body [data-testid=stLayoutWrapper]:has(>[class*=st-key-guide_math_mobile_]){display:none!important}
 @media(max-width:700px){
+.st-key-model_guide_body .guide-toc a{display:block;touch-action:manipulation}
 .st-key-model_guide_body [class*=st-key-guide_math_desktop_],.st-key-model_guide_body [data-testid=stLayoutWrapper]:has(>[class*=st-key-guide_math_desktop_]){display:none!important}
 .st-key-model_guide_body [class*=st-key-guide_math_mobile_],.st-key-model_guide_body [data-testid=stLayoutWrapper]:has(>[class*=st-key-guide_math_mobile_]){display:flex!important}
 .st-key-model_guide_body .katex{font-size:14px}.st-key-model_guide_body td,.st-key-model_guide_body th{padding:.4rem}}
