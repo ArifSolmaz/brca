@@ -66,9 +66,9 @@ WORKBENCH_STYLE = """<style>
 .st-key-teaching_inputs [data-testid=stCaptionContainer] p{font-size:11px}
 .st-key-teaching_equations .katex,.st-key-teaching_terms .katex{font-size:20px}
 .st-key-teaching_equations .katex-display{margin:.35em 0}
-.st-key-teaching_terms [data-testid=stMetricValue]{font-size:22px}
-.st-key-teaching_terms [data-testid=stMetricLabel] p{font-size:11px}
-.st-key-teaching_terms [data-testid=stMetricDelta]{font-size:11px}
+.st-key-teaching_terms [data-testid=stMetricValue],.st-key-teaching_inputs [data-testid=stMetricValue]{font-size:22px}
+.st-key-teaching_terms [data-testid=stMetricLabel] p,.st-key-teaching_inputs [data-testid=stMetricLabel] p{font-size:11px}
+.st-key-teaching_terms [data-testid=stMetricDelta],.st-key-teaching_inputs [data-testid=stMetricDelta]{font-size:11px}
 }
 @media(max-width:1099px){
 .st-key-teaching_workbench [data-testid=stHorizontalBlock]:has(.st-key-teaching_inputs){flex-direction:column}
@@ -98,8 +98,8 @@ WORKBENCH_STYLE = """<style>
 .block-container:has(.st-key-teaching_workbench) .katex-display{overflow-x:auto!important;overflow-y:hidden!important;padding:.65em .12em!important;margin:0!important;box-sizing:content-box}
 @media(min-width:1100px){
 .st-key-teaching_equations [data-testid=stVerticalBlock]{gap:0!important}
-.st-key-teaching_equations .katex-display{padding:.25em .12em!important}
-.st-key-teaching_equations [data-testid=stMarkdownContainer] p{margin:4px 0;font-size:14px}
+.st-key-teaching_equations .katex-display{padding:.1em .12em!important}
+.st-key-teaching_equations [data-testid=stMarkdownContainer] p{margin:3px 0;font-size:14px;line-height:1.2}
 .st-key-teaching_equations [data-testid=stCaptionContainer] p{font-size:11px;line-height:1.3}
 .st-key-teaching_terms .katex-display{padding:.25em .12em!important}
 .st-key-teaching_terms [data-testid=stCaptionContainer] p{font-size:11px;line-height:1.3}
@@ -239,14 +239,17 @@ def render_compact_steps(r,lang,previous=None):
     derived=lambda fn,d=8:paired_tex(fn(r),fn(previous) if previous else None,lang,d)
     a,b=core.M['platt']['a'],core.M['platt']['b'];d=r['A']
     st.markdown(t('**1 · Bilgilerin katkılarını toplayalım → z**','**1 · Sum contributions → z**'))
-    show(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
+    total=r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z')
+    teaching_latex(total,desktop_steps=[stack_previous_tex(total)])
     st.markdown(t('**2 · Toplamı olasılığa çevirelim (sigmoid)**','**2 · Raw sigmoid (not the final percentage)**'))
     raw_equation=r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw')
     raw_desktop=[r'e^{-z}=e^{-( '+num(r['z'])+r' )}='+derived(lambda x:math.exp(-x['z'])),
                  r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}='+field('p_raw')]
     teaching_latex(raw_equation,desktop_steps=[stack_previous_tex(f) for f in raw_desktop])
     st.markdown(t('**3 · Önceden öğrenilmiş düzeltmeyi uygulayalım**','**3 · Substitute into stored calibration**'))
-    show(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
+    calibration=r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))'
+    calibration_desktop=r'\begin{aligned}\eta&='+num(a)+r'\\&+'+num(b)+r'\times('+stack_previous_tex(field('z'))+r')\end{aligned}'
+    teaching_latex(calibration,desktop_steps=[calibration_desktop])
     show(r'\eta='+field('eta'))
     st.markdown(t('**4 · Son olasılığı yüzde olarak yazalım**','**4 · Final sigmoid → percentage**'))
     final_equation=r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9)
@@ -368,6 +371,7 @@ def render_model_teaching(lang):
             if not urg_fam:details+=' · '+fmt(change['delta_pp'],2)+t(' yüzde puan',' percentage points')
             st.html('<div class="teaching-edit">'+escape(details)+'</div>')
         st.caption(t('Ara basamaklar gösterim için yuvarlanır; hesap tam katsayılarla yapılır.', 'Intermediate values are rounded for display; calculations use full coefficients.'))
+    with input_panel:
         m1,m2,m3=st.columns(3)
         m1.metric(t('Hesaplanan olasılık','Displayed probability'),t('Aileye özgü değerlendirme','Family-specific assessment') if urg_fam else fmt(r['p_cal']*100,1)+'%',
                   delta=None if urg_fam else fmt(100*(r['p_cal']-baseline['p_cal']),2)+t(' yüzde puan',' percentage points'),delta_color='off')
