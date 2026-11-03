@@ -224,17 +224,17 @@ def render_compact_steps(r,lang,previous=None):
     field=lambda key,d=8:paired_tex(r[key],previous[key] if previous else None,lang,d)
     derived=lambda fn,d=8:paired_tex(fn(r),fn(previous) if previous else None,lang,d)
     a,b=core.M['platt']['a'],core.M['platt']['b'];d=r['A']
-    st.markdown(t('**1 · Katkıları topla → z**','**1 · Sum contributions → z**'))
+    st.markdown(t('**1 · Bilgilerin katkılarını toplayalım → z**','**1 · Sum contributions → z**'))
     teaching_latex(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
-    st.markdown(t('**2 · Ham sigmoid (henüz son yüzde değil)**','**2 · Raw sigmoid (not the final percentage)**'))
+    st.markdown(t('**2 · Toplamı olasılığa çevirelim (sigmoid)**','**2 · Raw sigmoid (not the final percentage)**'))
     teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw'))
-    st.markdown(t('**3 · Kayıtlı kalibrasyona yerleştir**','**3 · Substitute into stored calibration**'))
+    st.markdown(t('**3 · Önceden öğrenilmiş düzeltmeyi uygulayalım**','**3 · Substitute into stored calibration**'))
     teaching_latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
     teaching_latex(r'\eta='+field('eta'))
-    st.markdown(t('**4 · Son sigmoid → yüzde**','**4 · Final sigmoid → percentage**'))
+    st.markdown(t('**4 · Son olasılığı yüzde olarak yazalım**','**4 · Final sigmoid → percentage**'))
     teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9))
     teaching_latex(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
-    st.markdown(t('**5 · Kart ve şeritler (ayrı hesap)**','**5 · Card and lanes (separate calculation)**'))
+    st.markdown(t('**5 · Puan kartını ve öncelik sırasını ayrıca bulalım**','**5 · Card and lanes (separate calculation)**'))
     for formula in decision_formulas(r,previous,lang):teaching_latex(formula)
 
 
@@ -306,12 +306,13 @@ def render_model_teaching(lang):
             st.session_state.setdefault('teaching_'+category+'_'+lang,st.session_state['teaching_'+category])
         a,b=st.columns(2);c=a
         age=a.number_input(t('Tanı yaşı','Age at diagnosis'),18,95,key='teaching_age')
-        dx_names=dict(zip(['breast','bilateral','breast_ovary','male','ovarian'],t(['Tek taraflı meme','Bilateral meme','Meme + over','Erkek meme','Yalnız over'],['Unilateral breast','Bilateral breast','Breast and ovarian','Male breast','Ovarian only'])))
+        dx_names=dict(zip(['breast','bilateral','breast_ovary','male','ovarian'],t(['Tek memede kanser','İki memede kanser','Meme ve yumurtalık kanseri','Erkekte meme kanseri','Yalnız yumurtalık kanseri'],['Unilateral breast','Bilateral breast','Breast and ovarian','Male breast','Ovarian only'])))
         dx=b.selectbox(t('Tanı','Diagnosis'),list(dx_names),format_func=dx_names.get,key='teaching_dx_'+lang)
         st.session_state['teaching_dx']=dx
-        grade=c.selectbox('Grade',['g1','g2','g3'],format_func=lambda g:t({'g1':'1','g2':'2 / bilinmiyor','g3':'3'},{'g1':'1','g2':'2 / unknown','g3':'3'})[g],key='teaching_grade_'+lang)
+        grade=c.selectbox(t('Tümör derecesi (grade)','Grade'),['g1','g2','g3'],format_func=lambda g:t({'g1':'1','g2':'2 / bilinmiyor','g3':'3'},{'g1':'1','g2':'2 / unknown','g3':'3'})[g],key='teaching_grade_'+lang)
         st.session_state['teaching_grade']=grade
-        region=a.selectbox(t('Köken bölgesi','Origin region'),core.M['categorical']['region'],key='teaching_region')
+        region_names={'marmara':'Marmara / bilinmiyor','balkans':'Balkanlar','black_sea':'Karadeniz','middle_anatolia':'İç Anadolu','eastern_anatolia':'Doğu Anadolu','southeastern_anatolia':'Güneydoğu Anadolu','aegean':'Ege','mediterranean':'Akdeniz'}
+        region=a.selectbox(t('Köken bölgesi','Origin region'),core.M['categorical']['region'],format_func=lambda key:region_names.get(key,key) if tr else key,key='teaching_region')
         ovarian=dx=='ovarian'
         if ovarian:
             st.session_state['teaching_tnbc']=False;st.session_state['teaching_ki67_missing']=True
@@ -402,7 +403,8 @@ def render_model_teaching(lang):
         teaching_latex(r's_{\mathrm{card}}='+paired_tex(d['pl'],previous['A']['pl'] if previous else None,lang,0)+r',\quad s_{\mathrm{model}}='+paired_tex(d['ml'],previous['A']['ml'] if previous else None,lang,0)+r',\quad u='+paired_tex(d['urg'],previous['A']['urg'] if previous else None,lang,0))
         teaching_latex(decision_formulas(r,previous,lang)[1])
         teaching_latex(decision_formulas(r,previous,lang)[2])
-        st.write(t('Hızlı paket tetiklenmesi — A: ','Rapid-package trigger — A: ')+str(d['rapid'])+'; B: '+str(r['B']['rapid']))
+        answer=lambda value:t('evet','yes') if value else t('hayır','no')
+        st.write(t('Hızlı ilk test bu örnekte uygulanır mı? A kuralı: ','Rapid first test for this example? Rule A: ')+answer(d['rapid'])+'; '+t('B kuralı: ','rule B: ')+answer(r['B']['rapid']))
         st.subheader(t('7. Ekrandaki diğer sayılar','7. Other displayed numbers'))
         pair=lambda value,old,d=8:paired_tex(value,old if previous else None,lang,d)
         old_p=previous['p_cal'] if previous else r['p_cal']

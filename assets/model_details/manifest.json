@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "488b448ed1fd8da35b11d4252934de999220f91ab6e9259e2657e2fe440aff64",
-    "model_teaching.py": "3965a1c5d770c88a4be322ec3617e13401cbf82bb545b61b80a46b50db523df4",
+    "model_teaching.py": "545b2a45ceb44b5d85ca49edbf7953f9223dc1a563cfcaba9f151ba31e26cb03",
     "model_teaching_content.py": "fb9b3af3228ae674f7d89cdb2d3eb03e9987852e1c8de5239e258acb44b45fe9",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -162,6 +162,17 @@
     "clinical_model_refits": 0,
     "main_calculator_files_changed": false,
     "numerical_gradient_verified": true,
-    "live_verified": false
+    "live_verified": false,
+    "local_browser_controls_verified": [
+      "Turkish",
+      "English",
+      "step forward",
+      "step back",
+      "play/pause",
+      "learning-rate change resets training",
+      "language switch preserves step"
+    ],
+    "live_verification_blocker": "Application password session expired on reopening; sign-in requested.",
+    "local_mobile_verified": false
   }
 }
