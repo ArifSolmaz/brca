@@ -258,6 +258,14 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .rv.ok{background:#E8F1FB; border:1px solid #9CC3EA; border-left:6px solid #1D70B8;} .rv.ok h5{color:#0B4F8A;}
 .rv.no{background:#F4F6F8; border:1px solid var(--line); border-left:6px solid #4C5966;}
 /* Small clickable information badges beside calculator inputs. */
+[class*="st-key-calcinfo_"] [data-testid="stPopover"] button{
+  width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;
+  padding:0!important;border:0!important;border-radius:50%;background:rgba(91,105,125,.09);
+  color:rgba(53,66,86,.65);font-family:Georgia,serif;font-size:14px!important;
+}
+[class*="st-key-calcinfo_"] [data-testid="stPopover"] button [data-testid="stIconMaterial"]{display:none;}
+[data-testid="stPopoverBody"]{max-width:calc(100vw - 24px)!important;overflow-wrap:anywhere;}
+
 [data-testid="stTooltipContent"]{max-width:min(340px, calc(100vw - 32px))!important;white-space:normal!important;overflow-wrap:anywhere;}
 [data-testid="stTooltipContent"] p{white-space:normal!important;}
 .st-key-formcard [data-testid="stTooltipIcon"] button,
@@ -447,6 +455,17 @@ if view == "research":
 elif "sayfa" in st.query_params:
     del st.query_params["sayfa"]
 
+def toggle_with_info(target, label, key, lang, **kwargs):
+    # Keep the help trigger outside the toggle label: clicks on nested help
+    # buttons otherwise bubble to the switch and change its value.
+    with target.container(key="calcinfo_" + key):
+        control, info = st.columns([12, 1], gap="small", vertical_alignment="center")
+        control.toggle(label, key=key, **kwargs)
+        with info.popover("i", key="info_" + key):
+            st.markdown("**" + label + "**")
+            st.write(input_help(lang, key))
+
+
 # ---------------------------------------------------------------- calculator
 st.info(calculator_evidence_note(L, M["n"]))
 with st.expander("Güncelleme denetimi: 51 temkinli / 91 arşiv adayı" if L == "tr" else "Update audit: 51 conservative / 91 archival candidates"):
@@ -472,7 +491,7 @@ if REDUCE:
         st.html(f"<p class='ro-h'>{T['ro_h']}</p><p class='ro-b'>{T['ro_b']}</p>")
         rc1, rc2 = st.columns([3, 2], vertical_alignment="bottom")
         rc1.pills(T["ro_line"], list(core.RO_LINES), selection_mode="single", format_func=fl, key="ro_line", help=input_help(L, "ro_line"))
-        rc2.toggle(T["ro_strict"], key="ro_strict", help=input_help(L, "ro_strict"))
+        toggle_with_info(rc2, T["ro_strict"], "ro_strict", L)
         with st.expander(T["ro_tab_h"]):
             RO = core.RO; rows = ""
             for strict in (True, False):
@@ -499,7 +518,7 @@ with left:
         c2.number_input(T["ki67_ov"] if ovarian else T["ki67"], min_value=0.0, max_value=100.0, step=1.0, placeholder=T["ki67_ph"], key="ki67", help=input_help(L, "ki67"), disabled=ovarian)
         st.pills(T["dx"], ["breast", "bilateral", "breast_ovary", "ovarian", "male"], selection_mode="single", format_func=lambda x: T["dx_lbl"][x], key="dx", help=input_help(L, "dx"))
         st.segmented_control(T["grade"], ["g1", "g2", "g3"], format_func=lambda x: T["grade_lbl"][x], key="grade", help=input_help(L, "grade"))
-        st.toggle(T["tnbc_ov"] if ovarian else T["tnbc"], key="tnbc", help=input_help(L, "tnbc"), disabled=ovarian)
+        toggle_with_info(st, T["tnbc_ov"] if ovarian else T["tnbc"], "tnbc", L, disabled=ovarian)
         st.selectbox(T["region"], M["categorical"]["region"], format_func=lambda x: T["reg_lbl"].get(x, x), key="region", help=input_help(L, "region"))
         st.html(f"<div class='step' style='margin-top:14px'><b>2</b>{T['step2']}</div><p class='help'>{T['fam_help']}</p>")
         f1, f2 = st.columns(2)
@@ -511,8 +530,8 @@ with left:
             for i, k in enumerate(["sdr_breast_ge40", "sdr_ovary", "tdr_breast", "fdr_other"]):
                 (g1 if i < 2 else g2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k, help=input_help(L, k))
         st.html(f"<div class='step' style='margin-top:14px'><b>3</b>{T['step3']}</div><p class='help'>{T['urg_help']}</p>")
-        st.toggle(T["urg_dec"], key="urg_dec", help=input_help(L, "urg_dec"))
-        st.toggle(T["urg_fam"], key="urg_fam", help=input_help(L, "urg_fam"))
+        toggle_with_info(st, T["urg_dec"], "urg_dec", L)
+        toggle_with_info(st, T["urg_fam"], "urg_fam", L)
 
 ss = st.session_state
 with right:
