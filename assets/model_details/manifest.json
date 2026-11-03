@@ -14,7 +14,7 @@
   "model_fit_calls": 0,
   "files": {
     "app.py": "488b448ed1fd8da35b11d4252934de999220f91ab6e9259e2657e2fe440aff64",
-    "model_teaching.py": "c0419e9da99e26e7c2c34651424781aa6466bdfe6ce9536d66d7c5bb5f1ffd19",
+    "model_teaching.py": "c44987aeabb9175bcd829ebc5c9a27020e0585bcceb45b713638fbeb9ef2125a",
     "model_teaching_content.py": "fb9b3af3228ae674f7d89cdb2d3eb03e9987852e1c8de5239e258acb44b45fe9",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
@@ -29,7 +29,7 @@
     "model_guide_additions.py": "8723806d6362e443505b3a4072336b4d453842412a45433e389336571fea43c6",
     "scripts/build_model_guides.py": "478cad588b032d855dfd8a9955e44cdc65178d4c770783cb6fac9cb1bc9a0e9e",
     "learning_demo.py": "6f0294e0e91050826a6a9ef1a5b0b86632928328adecf7db5ccffed5d6f7276d",
-    "model_visual.py": "59752ee1cb1fc2abf31c2a5981613ffa24adc0d42f736633496792356c9096f9",
+    "model_visual.py": "01b83512353db59a52da9c46daa345ed5b31e98b6de0f1ea7c95e16d3fefc719",
     "assets/model_details/learning_demo.html": "a3b824ba8a9cd9b6f7f92ec67a6048cd04eacebc44d201d10efd171859504666",
     "assets/model_details/learning_math.js": "ac80d174003e1305531832d3c36b4ecc98669be5f52a7f6a620607f9e26558e4"
   },
@@ -80,9 +80,19 @@
     "comparison_reference": "Immediately preceding input edit; retained on unchanged reruns and language switches; cleared on reset or profile change.",
     "nested_column_scrolling": false,
     "column_height": "auto; no maximum",
-    "fixed_model_visual": "separate collapsed full-width expander below workspace",
-    "long_sigmoid_chains": "stacked equalities on desktop",
-    "tests_passed": 44
+    "fixed_model_visual": "restored to top of original middle column; bars, curve and stages always visible",
+    "long_sigmoid_chains": "desktop exponential substitution and probability rows; previous values stacked; 20px formulas",
+    "tests_passed": 44,
+    "live_checked_viewports": [
+      "1920x1080",
+      "1600x1100"
+    ],
+    "all_three_panels_fit_together": true,
+    "languages_verified": [
+      "tr",
+      "en"
+    ],
+    "calculator_unchanged": true
   },
   "simple_origin_explanation": {
     "languages": [
