@@ -151,11 +151,12 @@ def mobile_formula_steps(formula):
     return groups
 
 
-def teaching_latex(formula, mobile_steps=None):
+def teaching_latex(formula, mobile_steps=None, desktop_steps=None):
     """Keep desktop equations intact; show a sequence of short equations on mobile."""
     ident=next(_formula_ids)
     with st.container(key=f'teaching_formula_desktop_{ident}'):
-        st.latex(formula)
+        for step in (desktop_steps or [formula]):
+            st.latex(step)
     with st.container(key=f'teaching_formula_mobile_{ident}'):
         for source in (mobile_steps or [formula]):
             for step in mobile_formula_steps(source):
@@ -227,12 +228,14 @@ def render_compact_steps(r,lang,previous=None):
     st.markdown(t('**1 · Bilgilerin katkılarını toplayalım → z**','**1 · Sum contributions → z**'))
     teaching_latex(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
     st.markdown(t('**2 · Toplamı olasılığa çevirelim (sigmoid)**','**2 · Raw sigmoid (not the final percentage)**'))
-    teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw'))
+    raw_equation=r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw')
+    teaching_latex(raw_equation,desktop_steps=mobile_formula_steps(raw_equation))
     st.markdown(t('**3 · Önceden öğrenilmiş düzeltmeyi uygulayalım**','**3 · Substitute into stored calibration**'))
     teaching_latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
     teaching_latex(r'\eta='+field('eta'))
     st.markdown(t('**4 · Son olasılığı yüzde olarak yazalım**','**4 · Final sigmoid → percentage**'))
-    teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9))
+    final_equation=r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9)
+    teaching_latex(final_equation,desktop_steps=mobile_formula_steps(final_equation))
     teaching_latex(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
     st.markdown(t('**5 · Puan kartını ve öncelik sırasını ayrıca bulalım**','**5 · Card and lanes (separate calculation)**'))
     for formula in decision_formulas(r,previous,lang):teaching_latex(formula)
