@@ -258,6 +258,10 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .rv.ok{background:#E8F1FB; border:1px solid #9CC3EA; border-left:6px solid #1D70B8;} .rv.ok h5{color:#0B4F8A;}
 .rv.no{background:#F4F6F8; border:1px solid var(--line); border-left:6px solid #4C5966;}
 /* Small clickable information badges beside calculator inputs. */
+[class*="st-key-calcinfo_"] [data-testid="stHorizontalBlock"]{flex-wrap:nowrap!important;gap:8px!important;}
+[class*="st-key-calcinfo_"] [data-testid="stColumn"]{min-width:0!important;}
+[class*="st-key-calcinfo_"] [data-testid="stColumn"]:first-child{flex:1 1 0!important;width:auto!important;}
+[class*="st-key-calcinfo_"] [data-testid="stColumn"]:last-child{flex:0 0 24px!important;width:24px!important;}
 [class*="st-key-calcinfo_"] [data-testid="stPopover"] button{
   width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;
   padding:0!important;border:0!important;border-radius:50%;background:rgba(91,105,125,.09);
