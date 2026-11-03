@@ -8,6 +8,7 @@ from pathlib import Path
 import streamlit as st
 import brca_core as core
 from model_teaching_content import ASSETS, SYMBOLS_TR, SYMBOLS_EN, METHODS, LABELS_TR, LABELS_EN, ORIGIN_INTRO
+from model_visual import model_visual_html
 
 PUBLIC_URL = 'https://brca-istun.streamlit.app/'
 PDF = {lang: ASSETS / f'BRCA_Model_Details_{lang.upper()}.pdf' for lang in ('tr', 'en')}
@@ -330,6 +331,8 @@ def render_model_teaching(lang):
     with terms_col:
         terms_panel=st.container(key='teaching_terms')
     with terms_panel:
+        with st.expander(t('Modeli görsel izle · sabit katsayılar, değişen katkılar', 'See the model · fixed coefficients, changing contributions'), expanded=True):
+            st.html(model_visual_html(r,change,lang))
         st.subheader(t('Çarpımlar ve birikimli toplam','Products and running sum'))
         st.caption(t('Sarı değer güncel; ← önceki değer. Birikimli toplamda değişen her hücre işaretlenir.', 'Yellow values are current; ← previous. Every affected running-sum cell is marked.'))
         st.html(contribution_html(r,change,lang))

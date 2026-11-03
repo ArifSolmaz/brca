@@ -6,12 +6,30 @@ from unittest.mock import patch
 from streamlit.testing.v1 import AppTest
 from model_teaching import trace, paired_tex, contribution_html, PDF, ASSETS, GUIDES, mobile_formula_steps, teaching_latex
 from model_teaching_content import ORIGIN_INTRO
+from model_visual import model_visual_html
 ROOT=Path(__file__).resolve().parents[1]
 
 def control(at,key):return next(n for n in at if getattr(n,'key',None)==key)
 def result(at):return next(n.value for n in at if n.type=='html' and "id='sonuc'" in n.value)
 
 class ModelTeachingTests(unittest.TestCase):
+    def test_visual_follows_frozen_prediction_and_keeps_weights_fixed(self):
+        from model_teaching import PRESETS, comparison
+        original = trace(PRESETS[0]['inputs'])
+        edited = trace(dict(original['v'], age=48))
+        self.assertEqual([t['beta'] for t in original['terms']], [t['beta'] for t in edited['terms']])
+        self.assertNotEqual(original['p_cal'], edited['p_cal'])
+        change = comparison(edited, original)
+        for lang in ['tr', 'en']:
+            html = model_visual_html(edited, change, lang)
+            sep = ',' if lang == 'tr' else '.'
+            self.assertIn(f'{edited["p_cal"]*100:.2f}'.replace('.', sep), html)
+            self.assertIn(f'{original["p_cal"]*100:.2f}'.replace('.', sep), html)
+            self.assertIn(f'{edited["z"]:.6f}'.replace('.', sep), html)
+            self.assertIn('data-term="age"', html)
+            self.assertIn('mv-oldbar', html)
+            self.assertIn('yeniden eğitmez' if lang == 'tr' else 'does not retrain', html)
+
     def test_mobile_steps_preserve_fractions_and_separate_independent_equations(self):
         formula=r'p=\frac{1}{1+e^{-(0.81706390)}}=\frac{1}{1+0.44172670}=0.69361273'
         steps=mobile_formula_steps(formula)
