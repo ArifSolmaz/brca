@@ -362,6 +362,20 @@ label p{font-size:16px !important; color:var(--ink) !important;}
 .stApp [data-testid="stIconMaterial"]{color:var(--ink) !important;}
 
 @media (max-width: 760px){
+  /* Let input labels grow vertically; keep help triggers in their own space. */
+  :is(.st-key-formcard, .st-key-robox, .st-key-calcmode) [data-testid="stWidgetLabel"],
+  :is(.st-key-formcard, .st-key-robox, .st-key-calcmode) [data-testid="stWidgetLabel"] > div,
+  :is(.st-key-formcard, .st-key-robox, .st-key-calcmode) [data-testid="stWidgetLabel"] [data-testid="stMarkdownContainer"],
+  :is(.st-key-formcard, .st-key-robox, .st-key-calcmode) [data-testid="stWidgetLabel"] p{
+    white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+    -webkit-line-clamp:unset!important;max-height:none!important;height:auto!important;
+    overflow-wrap:anywhere;min-width:0;
+  }
+  :is(.st-key-formcard, .st-key-robox) [data-testid="stCheckbox"] label{width:100%;align-items:flex-start;}
+  :is(.st-key-formcard, .st-key-robox) [data-testid="stCheckbox"] [data-testid="stWidgetLabel"]{flex:1 1 auto;}
+  :is(.st-key-formcard, .st-key-robox) [data-testid="stCheckbox"] label > div:not([data-testid]){flex-shrink:0;}
+  :is(.st-key-formcard, .st-key-robox, .st-key-calcmode) [data-testid="stTooltipIcon"]{flex-shrink:0;}
+
   .block-container{padding:0 14px 96px 14px !important;}
   .hero{padding:32px 22px 26px 22px; border-radius:16px;} .hero .hh{font-size:30px;} .sec-h.top{font-size:30px;} .hero p.lead{font-size:17px;}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr));} .stat .v{font-size:26px;}
