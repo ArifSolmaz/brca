@@ -4,6 +4,7 @@ from html import escape
 from pathlib import Path
 import streamlit as st
 from model_teaching import mobile_formula_steps
+from model_guide_additions import guide_additions
 
 ASSETS = Path(__file__).resolve().parent / 'assets/model_details'
 
@@ -60,17 +61,18 @@ def guide_mobile_steps(formula):
     return mobile_formula_steps(formula)
 
 
-def guide_latex(formula, ident):
+def guide_latex(formula, ident, mobile_steps=None):
     with st.container(key=f'guide_math_desktop_{ident}'):
         st.latex(formula)
     with st.container(key=f'guide_math_mobile_{ident}'):
-        for step in guide_mobile_steps(formula):
+        for step in (mobile_steps or guide_mobile_steps(formula)):
             st.latex(step)
 
 
 def render_model_guide(lang='tr'):
     tr = lang == 'tr'
     blocks = json.loads((ASSETS / f'model_guide_{lang}.json').read_text())
+    blocks += guide_additions(lang)
     st.html(STYLE)
     with st.container(key='model_guide_body'):
         st.title('Model rehberi' if tr else 'Model guide')
@@ -103,7 +105,7 @@ def render_model_guide(lang='tr'):
             elif kind == 'note':
                 st.info(block['text'])
             elif kind == 'math':
-                guide_latex(block['text'],math_index)
+                guide_latex(block['text'],math_index,block.get('mobile_steps'))
                 math_index+=1
             elif kind == 'table':
                 headers = ''.join('<th>'+escape(str(v))+'</th>' for v in block['headers'])
@@ -113,6 +115,8 @@ def render_model_guide(lang='tr'):
                 st.markdown(f'[{block["text"]}]({block["url"]})')
         back_to_contents(current_chapter)
         st.divider()
+        st.caption('PDF sürümleri giriş ve 1–15. bölümleri içerir. Yapay zekâ, öğrenme ve önceki yayın hakkındaki 16–18. bölümler bu web sayfasına eklenmiştir.' if tr else
+                   'The PDF editions contain the introduction and chapters 1–15. Chapters 16–18 on AI, learning and the earlier publication are additions to this web page.')
         left,right=st.columns(2)
         for column,language,label in [(left,'TR','Türkçe Model Rehberi · PDF'),(right,'EN','English Model Guide · PDF')]:
             pdf = ASSETS / f'BRCA_Model_Guide_{language}.pdf'
