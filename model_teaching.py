@@ -105,6 +105,8 @@ WORKBENCH_STYLE = """<style>
 .st-key-teaching_terms [data-testid=stCaptionContainer] p{font-size:11px;line-height:1.3}
 .st-key-teaching_terms .teaching-arithmetic th,.st-key-teaching_terms .teaching-arithmetic td{padding:4px 3px}
 }
+.teaching-card-explanation{background:#eef2f7;border-left:3px solid #7560ce;border-radius:6px;padding:10px 12px;color:#17212b;font-size:13px;line-height:1.4}
+.teaching-card-explanation p{font-size:13px!important;line-height:1.4;margin:6px 0 0}
 </style>"""
 
 
@@ -216,6 +218,33 @@ def contribution_html(current, change, lang):
         rows.append(f"<tr class=\"{'edited' if edited else ''}\"><td>{escape(labels.get(term['key'],term['key']))}</td><td class='product'>{product}</td><td>{contribution}</td><td>{cumulative}</td></tr>")
     return f"""<table class="teaching-arithmetic" aria-label="{t('Canlı katkılar ve birikimli toplam','Live contributions and running sum')}"><thead><tr><th>{t('Terim','Term')}</th><th><i>x</i> × <i>β</i></th><th>{t('Katkı','Contribution')}</th><th>{t('Birikimli','Running sum')}</th></tr></thead><tbody>{''.join(rows)}</tbody></table>"""
 
+
+
+def card_model_explanation(r,lang):
+    """Explain the existing card and queue outputs; never change their rules."""
+    tr=lang=='tr'
+    t=lambda a,b:a if tr else b
+    lanes=t(['Normal','Öncelikli','Acil'],['Normal','Priority','Urgent'])
+    d=r['A'];cuts=core.M['points'];pc=cuts['points_cuts'];mc=cuts['model_cuts']
+    short=t({'tnbc':'TNBC','grade3':'tümör derecesi 3','ki67_ge30':'Ki-67 ≥ %30',
+             'fdr_breast_ge40':'40 yaş ve sonrasında meme kanseri olan 1. derece akraba'},
+            {'tnbc':'TNBC','grade3':'tumour grade 3','ki67_ge30':'Ki-67 ≥30%',
+             'fdr_breast_ge40':'first-degree relative with breast cancer at age 40 or later'})
+    items='; '.join(short.get(i['key'],i[lang])+': '+str(i['c']) for i in d['items'])
+    card=t(f"Kart: {items}. Toplam {d['total']} puan → {lanes[d['pl']]}. Kartta {pc['rapid']} ve üzeri puan Acil sayılır.",
+           f"Card: {items}. Total {d['total']} points → {lanes[d['pl']]}. The card labels {pc['rapid']} or more points Urgent.")
+    pct=f"{100*r['p_cal']:.1f}".replace('.',',' if tr else '.')
+    model=t(f"Model: %{pct} → {lanes[d['ml']]}. %10–%20’nin altı Öncelikli, %20 ve üzeri Acil aralığıdır. Kart puanı yüzdeye çevrilmez; bu iki ayrı hesaptır.",
+            f"Model: {pct}% → {lanes[d['ml']]}. 10% to below 20% is Priority; 20% or more is Urgent. Card points are not converted into a percentage: these are separate calculations.")
+    if r['v'].get('urg_fam'):
+        model=t('Model ailedeki belgeli varyant bilgisini içermez; bu durumda kişisel yüzde yorumlanmaz. Kart ve model ayrı hesaplardır.',
+                'The model does not include the documented familial variant; a personal percentage is not interpreted here. Card and model are separate calculations.')
+    rules=t(f"A, kartı da hesaba katar: {lanes[d['lane']]}. B, model ve ek aciliyet bilgisini kullanır: {lanes[r['B']['lane']]}.",
+            f"A also considers the card: {lanes[d['lane']]}. B uses the model and additional urgency information: {lanes[r['B']['lane']]}.")
+    meaning=t('“Acil” burada tıbbi acil durum değil, araştırmadaki test sırası etiketidir. Klinik aciliyet veya tedavi kararı göstermez.',
+              '“Urgent” is a test-queue label in this research, not a medical emergency. It does not establish clinical urgency or a treatment decision.')
+    title=t('Kart ve model nasıl yorumlanmalı?','How to read the card and model')
+    return '<aside class="teaching-card-explanation"><strong>'+escape(title)+'</strong>'+''.join('<p>'+escape(x)+'</p>' for x in [card,model,rules])+ '<p><strong>'+escape(meaning)+'</strong></p></aside>'
 
 
 def decision_formulas(r,previous,lang):
@@ -377,6 +406,8 @@ def render_model_teaching(lang):
                   delta=None if urg_fam else fmt(100*(r['p_cal']-baseline['p_cal']),2)+t(' yüzde puan',' percentage points'),delta_color='off')
         m2.metric(t('Kart toplamı','Card score'),d['total'],delta=d['total']-baseline['A']['total'],delta_color='off')
         m3.metric(t('A / B öncelik düzeyi','A / B lane'),lanes[d['lane']]+' / '+lanes[r['B']['lane']])
+        if preset == 2:
+            st.html(card_model_explanation(r,lang))
     with steps_col:
         steps_panel=st.container(key='teaching_equations')
     with steps_panel:
