@@ -23,10 +23,10 @@
     "assets/model_details/BRCA_Model_Details_EN.pdf": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
     "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e",
-    "assets/model_details/BRCA_Model_Guide_TR.pdf": "9e4a5527556cd629916ad3943a74f028ae18f53e19ff61c5a716aac0b276b1b3",
-    "assets/model_details/BRCA_Model_Guide_EN.pdf": "c80907ac26868911a4af14cf2a680f29284f8f4e7b5219de383d8ce79c120ded",
-    "model_guide.py": "796fcd7d205391c849342d364662147d4bc25e9dd27e5f5ed3d24026ccb070c5",
-    "model_guide_additions.py": "4836da7b34bb4c6f7007c812945b41d3e66eacb4d73e736c3f6f0e6017e9dea9",
+    "assets/model_details/BRCA_Model_Guide_TR.pdf": "030bcbc353ecb0dc6338823503dfee622d74c1f6275822a3fcaecf468806df56",
+    "assets/model_details/BRCA_Model_Guide_EN.pdf": "c2cd9c02bc3031e0f668ec245854c0cc9114b0cb03f97485a18fa3adc23ceb25",
+    "model_guide.py": "a587cd504dc71b390c6d41fad456775cffe31ec6d9c28e3a7b7f3d690cc812c7",
+    "model_guide_additions.py": "8723806d6362e443505b3a4072336b4d453842412a45433e389336571fea43c6",
     "scripts/build_model_guides.py": "478cad588b032d855dfd8a9955e44cdc65178d4c770783cb6fac9cb1bc9a0e9e",
     "learning_demo.py": "6f0294e0e91050826a6a9ef1a5b0b86632928328adecf7db5ccffed5d6f7276d",
     "model_visual.py": "59752ee1cb1fc2abf31c2a5981613ffa24adc0d42f736633496792356c9096f9",
@@ -119,7 +119,7 @@
       "tr",
       "en"
     ],
-    "pages_each": 20,
+    "pages_each": 22,
     "new_analyses": 0,
     "model_fit_calls": 0,
     "calculator_unchanged": true,
@@ -129,8 +129,8 @@
       "Türkçe Model Rehberi · PDF",
       "English Model Guide · PDF"
     ],
-    "tests_passed": 44,
-    "chapter_count": 19,
+    "tests_passed": 45,
+    "chapter_count": 20,
     "web_pdf_same_content": true,
     "previous_live_downloads_verified": {
       "date": "2026-11-03",
@@ -151,6 +151,19 @@
       "byte_identical_to_published_assets": true,
       "tr": "9e4a5527556cd629916ad3943a74f028ae18f53e19ff61c5a716aac0b276b1b3",
       "en": "c80907ac26868911a4af14cf2a680f29284f8f4e7b5219de383d8ce79c120ded"
+    },
+    "actual_training_explanation": {
+      "chapter": 20,
+      "steps": 8,
+      "new_pdf_pages_visually_reviewed": [
+        21,
+        22
+      ],
+      "shared_web_pdf_content_verified": true,
+      "iteration_history_available": false,
+      "synthetic_demo_distinction_explicit": true,
+      "calculator_unchanged": true,
+      "new_analyses": 0
     }
   },
   "fictional_learning_lesson": {

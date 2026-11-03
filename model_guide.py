@@ -118,8 +118,8 @@ def render_model_guide(lang='tr'):
                 st.markdown(f'[{block["text"]}]({block["url"]})')
         back_to_contents(current_chapter)
         st.divider()
-        st.caption('PDF’lerde giriş ile 1–19. bölümlerin metni ve formülleri var. Öğrenme deneyini ise bu sayfada çalıştırabilir veya PDF’deki bağlantıdan açabilirsiniz.' if tr else
-                   'The PDFs contain the text and formulas of the introduction and chapters 1–19. Run the learning experiment on this page or open it through the link in the PDF.')
+        st.caption('PDF’lerde giriş ile 1–20. bölümlerin metni ve formülleri var. Öğrenme deneyini ise bu sayfada çalıştırabilir veya PDF’deki bağlantıdan açabilirsiniz.' if tr else
+                   'The PDFs contain the text and formulas of the introduction and chapters 1–20. Run the learning experiment on this page or open it through the link in the PDF.')
         left,right=st.columns(2)
         for column,language,label in [(left,'TR','Türkçe Model Rehberi · PDF'),(right,'EN','English Model Guide · PDF')]:
             pdf = ASSETS / f'BRCA_Model_Guide_{language}.pdf'

@@ -15,15 +15,34 @@ class ModelGuideTests(unittest.TestCase):
     def test_prediction_scope_and_clinical_utility_limits_are_in_both_pdfs(self):
         for lang in ['tr','en']:
             additions=guide_additions(lang)
-            self.assertEqual([b['number'] for b in additions if b['type']=='chapter'],[16,17,18,19])
+            self.assertEqual([b['number'] for b in additions if b['type']=='chapter'],[16,17,18,19,20])
             reader=PdfReader(ROOT/f'assets/model_details/BRCA_Model_Guide_{lang.upper()}.pdf')
-            self.assertEqual(len(reader.pages),20)
+            self.assertEqual(len(reader.pages),22)
             text=' '.join(' '.join(page.extract_text() for page in reader.pages).replace('-\n','').split())
             self.assertIn('BRCA_status_v3_strict',text)
             self.assertIn('1.128' if lang=='tr' else '1,128',text)
             self.assertIn('bekleme süresinin kısaldığı' if lang=='tr' else 'shorter waiting times',text)
             self.assertIn('hasta sonuçlarının iyileştiği ölçülmedi' if lang=='tr' else 'improved patient outcomes',text)
             self.assertIn('bağımsız doğrulama' if lang=='tr' else 'independent validation',text)
+
+    def test_actual_training_chapter_matches_both_pdf_languages(self):
+        import unicodedata
+        def canon(text):
+            return ''.join(c for c in unicodedata.normalize('NFKC',text).casefold() if c.isalnum())
+        for lang in ['tr','en']:
+            additions=guide_additions(lang)
+            start=next(i for i,b in enumerate(additions) if b.get('number')==20)
+            chapter=additions[start:]
+            reader=PdfReader(ROOT/f'assets/model_details/BRCA_Model_Guide_{lang.upper()}.pdf')
+            pdf=canon(' '.join(p.extract_text() for p in reader.pages[20:]))
+            for block in chapter:
+                if block['type'] in ('chapter','heading','paragraph','note'):
+                    self.assertIn(canon(block['text']),pdf)
+                elif block['type']=='table':
+                    for row in [block['headers']]+block['rows']:
+                        for cell in row:self.assertIn(canon(cell),pdf)
+            self.assertEqual(sum(b['type']=='heading' for b in chapter),9)
+            self.assertEqual(sum(b['type']=='math' for b in chapter),2)
 
     def test_web_content_matches_existing_guide_source(self):
         for lang in ['tr','en']:
