@@ -64,7 +64,7 @@ WORKBENCH_STYLE = """<style>
 .st-key-teaching_inputs input{font-size:14px;min-height:30px}
 .st-key-teaching_inputs [data-baseweb=select]{font-size:13px}
 .st-key-teaching_inputs [data-testid=stCaptionContainer] p{font-size:11px}
-.st-key-teaching_equations .katex{font-size:clamp(11px,.65vw,16px)}
+.st-key-teaching_equations .katex,.st-key-teaching_terms .katex{font-size:20px}
 .st-key-teaching_equations .katex-display{margin:.35em 0}
 .st-key-teaching_terms [data-testid=stMetricValue]{font-size:22px}
 .st-key-teaching_terms [data-testid=stMetricLabel] p{font-size:11px}
@@ -221,24 +221,25 @@ def decision_formulas(r,previous,lang):
 
 def render_compact_steps(r,lang,previous=None):
     t=lambda a,b:a if lang=='tr' else b
+    show=lambda formula:teaching_latex(formula,desktop_steps=mobile_formula_steps(formula))
     num=lambda x,d=8:paired_tex(x,None,lang,d)
     field=lambda key,d=8:paired_tex(r[key],previous[key] if previous else None,lang,d)
     derived=lambda fn,d=8:paired_tex(fn(r),fn(previous) if previous else None,lang,d)
     a,b=core.M['platt']['a'],core.M['platt']['b'];d=r['A']
     st.markdown(t('**1 · Bilgilerin katkılarını toplayalım → z**','**1 · Sum contributions → z**'))
-    teaching_latex(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
+    show(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
     st.markdown(t('**2 · Toplamı olasılığa çevirelim (sigmoid)**','**2 · Raw sigmoid (not the final percentage)**'))
     raw_equation=r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw')
-    teaching_latex(raw_equation,desktop_steps=mobile_formula_steps(raw_equation))
+    show(raw_equation)
     st.markdown(t('**3 · Önceden öğrenilmiş düzeltmeyi uygulayalım**','**3 · Substitute into stored calibration**'))
-    teaching_latex(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
-    teaching_latex(r'\eta='+field('eta'))
+    show(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
+    show(r'\eta='+field('eta'))
     st.markdown(t('**4 · Son olasılığı yüzde olarak yazalım**','**4 · Final sigmoid → percentage**'))
     final_equation=r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9)
-    teaching_latex(final_equation,desktop_steps=mobile_formula_steps(final_equation))
-    teaching_latex(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
+    show(final_equation)
+    show(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
     st.markdown(t('**5 · Puan kartını ve öncelik sırasını ayrıca bulalım**','**5 · Card and lanes (separate calculation)**'))
-    for formula in decision_formulas(r,previous,lang):teaching_latex(formula)
+    for formula in decision_formulas(r,previous,lang):show(formula)
 
 
 def render_model_teaching(lang):
@@ -341,7 +342,8 @@ def render_model_teaching(lang):
         st.subheader(t('Her bilgi hesaba ne katıyor?','Products and running sum'))
         st.caption(t('Sarı değer güncel; ← önceki değer. Birikimli toplamda değişen her hücre işaretlenir.', 'Yellow values are current; ← previous. Every affected running-sum cell is marked.'))
         st.html(contribution_html(r,change,lang))
-        teaching_latex('z='+paired_tex(r['z'],change['previous']['z'] if change and change.get('previous') else None,lang,12))
+        total_formula='z='+paired_tex(r['z'],change['previous']['z'] if change and change.get('previous') else None,lang,12)
+        teaching_latex(total_formula,desktop_steps=mobile_formula_steps(total_formula))
         if change:
             label_map=dict(labels,dx=t('Tanı','Diagnosis'),grade='Grade',region=t('Bölge','Region'),urg_dec=t('Tedavi aciliyeti','Treatment urgency'),urg_fam=t('Ailede P/LP','Familial P/LP'))
             changes='; '.join(f'{label_map.get(k,k)}: {old} → {new}' for k,(old,new) in change['changes'].items())

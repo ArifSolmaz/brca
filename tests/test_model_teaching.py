@@ -167,11 +167,10 @@ class ModelTeachingTests(unittest.TestCase):
             formulas=' '.join(n.proto.body for n in at if n.type=='latex')
             for key,digits in [('z',8),('p_raw',8),('eta',8),('p_cal',9)]:
                 expected=paired_tex(current[key],initial[key],lang,digits)
-                if key in ('p_raw','p_cal'):
-                    expected=mobile_formula_steps(expected)[0]  # Previous value is stacked below the current value.
+                expected=mobile_formula_steps(expected)[0]  # Previous value is stacked below the current value.
                 self.assertIn(expected,formulas)
-            self.assertIn(paired_tex(20.8,25.8,lang,1,rounded=True),formulas)
-            self.assertIn(paired_tex(0,1,lang,0),formulas)  # Lost age card point remains visible.
+            self.assertIn(mobile_formula_steps(paired_tex(20.8,25.8,lang,1,rounded=True))[0],formulas)
+            self.assertIn(mobile_formula_steps(paired_tex(0,1,lang,0))[0],formulas)  # Lost age card point remains visible.
             html=contribution_html(current,at.session_state['_teaching_change'],lang)
             self.assertGreaterEqual(html.count('formula-previous'),7)  # Input, contribution and all later cumulative sums.
             self.assertNotIn('boxed{-1.82409575',formulas)  # Calibration coefficient is fixed.
@@ -179,7 +178,7 @@ class ModelTeachingTests(unittest.TestCase):
             self.assertFalse(at.exception)
             compact=[n.proto.body for n in at if n.type=='latex'][:9]
             self.assertNotIn('boxed',' '.join(compact[:6]))  # No false propagation through probability math.
-            self.assertIn(paired_tex(2,0,lang,0),' '.join(compact))
+            self.assertIn(mobile_formula_steps(paired_tex(2,0,lang,0))[0],' '.join(compact))
             saved=at.session_state['_teaching_change']['previous']
             at.run();self.assertFalse(at.exception)
             self.assertEqual(at.session_state['_teaching_change']['previous'],saved)
