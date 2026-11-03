@@ -9,6 +9,7 @@ import streamlit as st
 import brca_core as core
 from model_teaching_content import ASSETS, SYMBOLS_TR, SYMBOLS_EN, METHODS, LABELS_TR, LABELS_EN, ORIGIN_INTRO
 from model_visual import model_visual_html
+from learning_demo import render_learning_demo
 
 PUBLIC_URL = 'https://brca-istun.streamlit.app/'
 PDF = {lang: ASSETS / f'BRCA_Model_Details_{lang.upper()}.pdf' for lang in ('tr', 'en')}
@@ -247,24 +248,26 @@ def render_model_teaching(lang):
     with st.container(key='teaching_origin_header'):
         title_col,intro_col=st.columns([1.1,3],vertical_alignment='center')
     with title_col:
-        st.title(t('Model ayrıntıları ve elle hesap','Model details and manual calculations'))
-        st.caption(t('Öğrenci eğitim sayfası · 2 Kasım 2026 · sabit model ', 'Student teaching page · 2 November 2026 · frozen model ')+core.M['build'])
+        st.title(t('Model nasıl öğreniyor, nasıl hesaplıyor?','Model details and manual calculations'))
+        st.caption(t('Öğrenciler için adım adım anlatım · Hesaplayıcının kayıtlı sürümü: ', 'Student teaching page · frozen model ')+core.M['build'])
     with intro_col:
         origin=ORIGIN_INTRO[lang]
         st.html('<section class="teaching-origin" aria-label="'+escape(origin['title'])+'"><h2>'+escape(origin['title'])+'</h2><div>'+''.join('<p>'+escape(paragraph)+'</p>' for paragraph in origin['paragraphs'])+'</div></section>')
-    st.subheader(t('Model rehberleri: veriden kanıta', 'Model guides: from data to evidence'))
-    st.caption(t('Sıfırdan öğrenenler için: gerçek veri içeriği, öğrenme yöntemi, katsayılar, elle hesap, istatistik ve belirsizlikler. 3 Kasım 2026 · yeni analiz yapılmadı.',
+    st.subheader(t('Çalışmanın hikâyesi ve adım adım rehber', 'Model guides: from data to evidence'))
+    st.caption(t('Elimizde hangi kayıtlar vardı? Bunlardan modele nasıl geldik? Ekrandaki sayılar nasıl hesaplanıyor? Neyi biliyoruz, neyi henüz bilmiyoruz? Rehberde hepsini bulabilirsiniz.',
                  'For beginners: actual data content, training, coefficients, manual calculations, statistics and uncertainty. 3 November 2026 · no new analysis.'))
     guide_tr,guide_en=st.columns(2)
     for column,guide_lang,label in [(guide_tr,'tr','Türkçe Model Rehberi · PDF'),(guide_en,'en','English Model Guide · PDF')]:
         column.download_button(label,GUIDES[guide_lang].read_bytes(),file_name=GUIDES[guide_lang].name,mime='application/pdf',key='teaching_guide_'+guide_lang,width='stretch')
+    with st.expander(t('Önce öğrenmeyi izleyin: kurgu verilerle adım adım eğitim', 'First, watch learning: step-by-step training with fictional data'), expanded=st.query_params.get('ogren')=='1'):
+        render_learning_demo(lang)
     with st.container(key='teaching_workbench'):
         input_col,terms_col,steps_col=st.columns([0.95,1.15,1.05],gap='medium')
     with input_col:
         input_panel=st.container(key='teaching_inputs')
     with input_panel:
-        st.subheader(t('Girdiler','Inputs'))
-        names = [t('Temel profil: 50 yaş','Baseline profile: age 50'),t('Sitedeki örnek hasta: 38 yaş','Site example patient: age 38'),t('Kart ile modelin ayrıldığı profil','Card/model disagreement example')]
+        st.subheader(t('Şimdi hesaplayıcıyı birlikte açalım','Inputs'))
+        names = [t('Başlangıç örneği: 50 yaş','Baseline profile: age 50'),t('Sitedeki örnek hasta: 38 yaş','Site example patient: age 38'),t('Puan kartı ile modelin farklı sonuç verdiği örnek','Card/model disagreement example')]
         preset_key = 'teaching_preset_'+lang
         selected=st.session_state.get('_teaching_selected_preset',1)
         if type(selected) is not int or not 0 <= selected < len(PRESETS):selected=1
@@ -283,7 +286,7 @@ def render_model_teaching(lang):
                 if k in ('dx','grade'):st.session_state[key+'_'+lang]=x
             st.session_state['_teaching_input_language']=lang
         preset_col,reset_col=st.columns([3,1],vertical_alignment='bottom')
-        preset = preset_col.selectbox(t('Eğitim profili','Teaching profile'),range(3),index=selected,format_func=lambda i:names[i],key=preset_key)
+        preset = preset_col.selectbox(t('Bir kurgu hasta seçin','Teaching profile'),range(3),index=selected,format_func=lambda i:names[i],key=preset_key)
         if preset is None:preset=selected
         st.session_state['_teaching_selected_preset']=preset
         if reset_col.button(t('Sıfırla','Reset'),key='teaching_reset',width='stretch'):
@@ -331,9 +334,9 @@ def render_model_teaching(lang):
     with terms_col:
         terms_panel=st.container(key='teaching_terms')
     with terms_panel:
-        with st.expander(t('Modeli görsel izle · sabit katsayılar, değişen katkılar', 'See the model · fixed coefficients, changing contributions'), expanded=True):
+        with st.expander(t('Hesabı gözünüzle izleyin: bilgiler değişir, katsayılar sabit kalır', 'See the model · fixed coefficients, changing contributions'), expanded=True):
             st.html(model_visual_html(r,change,lang))
-        st.subheader(t('Çarpımlar ve birikimli toplam','Products and running sum'))
+        st.subheader(t('Her bilgi hesaba ne katıyor?','Products and running sum'))
         st.caption(t('Sarı değer güncel; ← önceki değer. Birikimli toplamda değişen her hücre işaretlenir.', 'Yellow values are current; ← previous. Every affected running-sum cell is marked.'))
         st.html(contribution_html(r,change,lang))
         teaching_latex('z='+paired_tex(r['z'],change['previous']['z'] if change and change.get('previous') else None,lang,12))
@@ -345,31 +348,31 @@ def render_model_teaching(lang):
             st.html('<div class="teaching-edit">'+escape(details)+'</div>')
         st.caption(t('Ara basamaklar gösterim için yuvarlanır; hesap tam katsayılarla yapılır.', 'Intermediate values are rounded for display; calculations use full coefficients.'))
         m1,m2,m3=st.columns(3)
-        m1.metric(t('Gösterilen olasılık','Displayed probability'),t('Aileye özgü değerlendirme','Family-specific assessment') if urg_fam else fmt(r['p_cal']*100,1)+'%',
+        m1.metric(t('Hesaplanan olasılık','Displayed probability'),t('Aileye özgü değerlendirme','Family-specific assessment') if urg_fam else fmt(r['p_cal']*100,1)+'%',
                   delta=None if urg_fam else fmt(100*(r['p_cal']-baseline['p_cal']),2)+t(' yüzde puan',' percentage points'),delta_color='off')
         m2.metric(t('Kart toplamı','Card score'),d['total'],delta=d['total']-baseline['A']['total'],delta_color='off')
-        m3.metric(t('A / B şeridi','A / B lane'),lanes[d['lane']]+' / '+lanes[r['B']['lane']])
+        m3.metric(t('A / B öncelik düzeyi','A / B lane'),lanes[d['lane']]+' / '+lanes[r['B']['lane']])
     with steps_col:
         steps_panel=st.container(key='teaching_equations')
     with steps_panel:
-        st.subheader(t('Canlı elle hesap','Live manual calculation'))
+        st.subheader(t('Sonucu adım adım hesaplayalım','Live manual calculation'))
         previous=change.get('previous') if change else None
         st.caption(t('Kutudaki sayı güncel değerdir; yanındaki ← önceki değeri gösterir. Yalnız son düzenlemeden etkilenen değerler işaretlenir.', 'Boxed values are current; ← shows the previous value beside each one. Only quantities affected by the last edit are marked.'))
-        if urg_fam:st.caption(t('Aile bilgisi modelde yoktur. Aşağıdaki yüzde yalnız iç eğitim hesabıdır.', 'Familial information is absent from the model. The percentage below is internal teaching arithmetic only.'))
+        if urg_fam:st.caption(t('Model ailede bilinen bu varyantı hesaba katmaz. Aşağıdaki yüzdeyi yalnız işlemleri öğrenmek için gösteriyoruz; kişisel olasılık olarak kullanmayın.', 'Familial information is absent from the model. The percentage below is internal teaching arithmetic only.'))
         render_compact_steps(r,lang,previous)
-    with st.expander(t('Ayrıntılı açıklamalar ve tüm sembollerle çözüm','Detailed explanations and full-symbol walkthrough')):
+    with st.expander(t('Hesabın ayrıntıları: semboller ve sayılar ne anlama geliyor?','Detailed explanations and full-symbol walkthrough')):
         if change:
-            with st.expander(t('Son düzenlemenin katkıları — ne değişti?','Last-edit contributions — what changed?'),expanded=True):
-                st.write(t('Olasılık farkı yüzde puandır; Δz doğrusal skor farkıdır. Girdi etkileri bu profil için koşullu hesap değişimidir, nedensel biyolojik etki değildir.', 'Probability differences are percentage points; Δz is a linear-score difference. These are conditional changes in this profile’s calculation, not causal biological effects.'))
+            with st.expander(t('Son değiştirdiğiniz bilgi hesabı nasıl etkiledi?','Last-edit contributions — what changed?'),expanded=True):
+                st.write(t('Örneğin %20’den %25’e çıkmak, 5 yüzde puanlık artıştır. Δz ise yüzdeye çevirmeden önceki toplamın ne kadar değiştiğini gösterir. Burada bir hesabı değiştiriyoruz; bir özelliğin biyolojik etkisini ölçmüyoruz.', 'Probability differences are percentage points; Δz is a linear-score difference. These are conditional changes in this profile’s calculation, not causal biological effects.'))
                 st.table([{t('Girdi','Input'):labels.get(k,k),t('Önce','Before'):str(old),t('Sonra','After'):str(new)} for k,(old,new) in change['changes'].items()])
                 if change['contributions']:
                     st.table([{t('Model terimi','Model term'):labels.get(k,k),'Δz':fmt(delta,8)} for k,delta in change['contributions']])
-                else:st.write(t('Model skoru değişmedi; bu kutular yalnız karar şeridini etkiler.','The model score did not change; these boxes affect the decision lane only.'))
+                else:st.write(t('Bu kutular olasılık hesabını değiştirmez; yalnız testte öncelik sırasını etkiler.','The model score did not change; these boxes affect the decision lane only.'))
         if urg_fam:st.warning(t('Aşağıdaki olasılık yalnız iç matematik hesabıdır. Model aile varyantı bilgisini içermez; kişisel olasılık olarak yorumlanmaz.','The probability below is internal arithmetic only. The model does not include familial-variant information; do not interpret it as a personal probability.'))
-        st.subheader(t('1. Girdileri kodlayın','1. Encode the inputs'))
+        st.subheader(t('1. Hasta bilgilerini sayılara çevirelim','1. Encode the inputs'))
         st.write(t(f'Yaş {age}; TNBC {v["tnbc"]}; Ki-67 {v["ki67"] if not v["ki67_missing"] else 30}; Ki-67 eksik göstergesi {v["ki67_missing"]}. Yaş biliniyor, age_missing = 0. Referanslar breast, g2 ve marmara’dır; kategori göstergeleri seçiliyse 1, değilse 0 olur.',
                    f'Age {age}; TNBC {v["tnbc"]}; Ki-67 {v["ki67"] if not v["ki67_missing"] else 30}; Ki-67 missing indicator {v["ki67_missing"]}. Age is known, so age_missing = 0. Reference categories are breast, g2 and marmara; category indicators are 1 when selected, otherwise 0.'))
-        st.subheader(t('2. Her katkıyı çarpıp sırayla toplayın','2. Multiply each contribution and add in sequence'))
+        st.subheader(t('2. Her bilginin katkısını hesaplayıp toplayalım','2. Multiply each contribution and add in sequence'))
         teaching_latex(r'z=\beta_0+\sum_{j=1}^{26}\beta_j x_j')
         active=[x for x in r['terms'] if x['contribution']];running=0;rows=[]
         for x in active:
@@ -380,10 +383,10 @@ def render_model_teaching(lang):
             line=('+'.join(r'('+paired_tex(x['x'],next((old['x'] for old in previous['terms'] if old['key']==x['key']),0) if previous else None,lang,0 if float(x['x']).is_integer() else 6)+r'\times('+tex(x['beta'])+r'))' for x in active[i:i+2]))
             teaching_latex(('z=' if i==0 else r'\phantom{z=}+')+line)
         teaching_latex('z='+paired_tex(r['z'],previous['z'] if previous else None,lang,12))
-        st.subheader(t('3. Ham olasılık — henüz ekran yüzdesi değil','3. Raw probability — not yet the displayed percentage'))
+        st.subheader(t('3. Toplamı önce ham olasılığa çevirelim','3. Raw probability — not yet the displayed percentage'))
         teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}=\frac{1}{1+e^{-('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r')}}')
         teaching_latex(r'p_{\mathrm{raw}}=\frac{1}{1+'+paired_tex(math.exp(-r['z']),math.exp(-previous['z']) if previous else None,lang,9)+r'}='+paired_tex(r['p_raw'],previous['p_raw'] if previous else None,lang,12))
-        st.subheader(t('4. Kayıtlı kalibrasyon','4. Apply the stored calibration'))
+        st.subheader(t('4. Önceden öğrenilmiş olasılık düzeltmesini uygulayalım','4. Apply the stored calibration'))
         a=core.M['platt']['a'];b=core.M['platt']['b']
         teaching_latex(r'\eta=a+bz='+tex(a)+r'+('+tex(b)+r'\times('+paired_tex(r['z'],previous['z'] if previous else None,lang,12)+r'))')
         teaching_latex(r'\eta='+tex(a)+r'+('+paired_tex(b*r['z'],b*previous['z'] if previous else None,lang,12)+r')='+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12))
@@ -392,7 +395,7 @@ def render_model_teaching(lang):
         teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+e^{-\eta}}=\frac{1}{1+e^{-('+paired_tex(r['eta'],previous['eta'] if previous else None,lang,12)+r')}}')
         teaching_latex(r'p_{\mathrm{cal}}=\frac{1}{1+'+paired_tex(math.exp(-r['eta']),math.exp(-previous['eta']) if previous else None,lang,9)+r'}='+paired_tex(r['p_cal'],previous['p_cal'] if previous else None,lang,12))
         teaching_latex(r'100p_{\mathrm{cal}}='+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,10)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
-        st.subheader(t('6. Kart ve karar şeritleri ayrı hesaplanır','6. Calculate the card and lanes separately'))
+        st.subheader(t('6. Puan kartını ve öncelik sırasını ayrıca hesaplayalım','6. Calculate the card and lanes separately'))
         st.table([{t('Ölçüt','Item'):it[lang],t('Sayım','Count'):it['x'],t('Puan katkısı','Point contribution'):it['c']} for it in d['items']] or [{t('Ölçüt','Item'):t('Puan getiren ölçüt yok','No scoring items'),t('Sayım','Count'):0,t('Puan katkısı','Point contribution'):0}])
         teaching_latex(decision_formulas(r,previous,lang)[0])
         st.write(METHODS[lang][5][1])
@@ -428,10 +431,10 @@ def render_model_teaching(lang):
     st.info(t('Üç ayrı katman: lojistik model olasılığı, ayrı puan kartı ve A/B sıra kuralları. Kart puanı yüzdeye çevrilmez. Sağlıklı kişilerde gelecekte kanser olma riski hesaplanmaz.',
               'Three separate layers: logistic-model probability, a separately fitted points card, and A/B queue rules. Points are not converted into a percentage. This does not estimate future cancer risk in healthy people.'))
     st.caption(t('TNBC: üçlü negatif meme kanseri (ER, PR ve HER2 negatif). Ki-67: çoğalma belirteci yüzdesi. MLPA: Multiplex Ligation-dependent Probe Amplification; büyük delesyon/duplikasyonları değerlendiren yöntem. P/LP: patojenik / olası patojenik; VUS: anlamı belirsiz varyant.', 'TNBC: Triple-Negative Breast Cancer (negative ER, Estrogen Receptor; PR, Progesterone Receptor; HER2, Human Epidermal Growth Factor Receptor 2). Ki-67: proliferation-marker percentage. MLPA: Multiplex Ligation-dependent Probe Amplification for deletion/duplication assessment. P/LP: Pathogenic/Likely Pathogenic; VUS: Variant of Uncertain Significance.'))
-    with st.expander(t('Sembol sözlüğü — her işaret ne anlama geliyor?','Symbol glossary — what does each sign mean?')):
+    with st.expander(t('Formüllerin sözlüğü: her işaret ne demek?','Symbol glossary — what does each sign mean?')):
         st.table([dict(zip([t('Sembol','Symbol'),t('Anlamı','Meaning')],row)) for row in (SYMBOLS_TR if tr else SYMBOLS_EN)])
         teaching_latex(r'\operatorname{logit}(p)=\log\!\left(\frac{p}{1-p}\right),\qquad\mathrm{odds}=\frac{p}{1-p}')
-    st.header(t('Model nasıl eğitildi ve sınırları neler?','How was the model trained, and what are its limitations?'))
+    st.header(t('Bu model nasıl kuruldu, nerelerde dikkatli olmalıyız?','How was the model trained, and what are its limitations?'))
     for heading,body in METHODS[lang]:
         st.subheader(heading);st.write(body)
     teaching_latex(r'w_+=\frac{1295}{2\times167}=3.877246,\qquad w_-=\frac{1295}{2\times1128}=0.574025')

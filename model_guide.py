@@ -5,6 +5,7 @@ from pathlib import Path
 import streamlit as st
 from model_teaching import mobile_formula_steps
 from model_guide_additions import guide_additions
+from learning_demo import render_learning_demo
 
 ASSETS = Path(__file__).resolve().parent / 'assets/model_details'
 
@@ -78,7 +79,7 @@ def render_model_guide(lang='tr'):
         st.title('Model rehberi' if tr else 'Model guide')
         st.caption('3 Kasım 2026 · Mevcut çalışmanın anlatımı · Yeni analiz yapılmadı' if tr else
                    '3 November 2026 · Explanation of the existing work · No new analysis')
-        st.write('Gerçek kayıtlardan modele, elle hesaplamalara ve kanıtın sınırlarına. Rehberin tamamını bu sayfada okuyabilirsiniz.' if tr else
+        st.write('Bu çalışma bir formülle başlamadı. Önce hasta dosyalarının ne anlattığını, hangi kayıtların aynı kişiye ait olduğunu ve hangi sorulara güvenle cevap verebileceğimizi anlamamız gerekiyordu. Burada o yolculuğu; veriyi, modeli, hesabı ve hâlâ eksik olanları adım adım anlatıyoruz.' if tr else
                  'From actual records to the model, manual calculations and limits of the evidence. Read the complete guide on this page.')
         chapters = [b for b in blocks if b['type'] == 'chapter']
         links = ''.join(f'<li><a href="#guide-{b["number"]}">{b["number"]} · {escape(b["text"])}</a></li>' for b in chapters if b['number'])
@@ -93,6 +94,8 @@ def render_model_guide(lang='tr'):
             kind = block['type']
             if kind == 'chapter':
                 if current_chapter is not None:
+                    if current_chapter == 17:
+                        render_learning_demo(lang)
                     back_to_contents(current_chapter)
                 current_chapter=block['number']
                 number = block['number']
@@ -115,8 +118,8 @@ def render_model_guide(lang='tr'):
                 st.markdown(f'[{block["text"]}]({block["url"]})')
         back_to_contents(current_chapter)
         st.divider()
-        st.caption('PDF’ler giriş ve 1–18. bölümleri içerir; web rehberiyle aynı eğitim içeriğini taşır.' if tr else
-                   'The PDFs include the introduction and chapters 1–18, with the same educational content as the web guide.')
+        st.caption('PDF’lerde giriş ile 1–18. bölümlerin metni ve formülleri var. Öğrenme deneyini ise bu sayfada çalıştırabilir veya PDF’deki bağlantıdan açabilirsiniz.' if tr else
+                   'The PDFs contain the text and formulas of the introduction and chapters 1–18. Run the learning experiment on this page or open it through the link in the PDF.')
         left,right=st.columns(2)
         for column,language,label in [(left,'TR','Türkçe Model Rehberi · PDF'),(right,'EN','English Model Guide · PDF')]:
             pdf = ASSETS / f'BRCA_Model_Guide_{language}.pdf'

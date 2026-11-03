@@ -39,8 +39,8 @@ def build_evidence_bundle():
 def calculator_evidence_note(lang="tr", calculator_n=1295):
     if lang == "tr":
         n = f"{calculator_n:,}".replace(",", ".")
-        return (f"Arşiv genişledi; hesaplayıcının modeli henüz yeni kayıtlarla doğrulanmadı. Hesaplayıcı hâlâ özgün {n} hastadan oluşan "
-                "geliştirme grubuna dayanıyor; yeni kayıtlarla yeniden eğitilmedi veya yeniden doğrulanmadı. "
+        return (f"Daha fazla kayda ulaştık; ama hesaplayıcının yeni hastalarda da güvenilir olduğunu henüz göstermedik. Hesaplayıcı hâlâ ilk {n} hastadan oluşan "
+                "hasta grubundan öğrendiklerini kullanıyor. Yeni kayıtlarla yeniden eğitilmedi veya sınanmadı. "
                 "87 ailedeki henüz doğrulanmamış tümör boyutu bulgusu, olasılık ve test önceliği hesabına dahil değil.")
     return (f"The archive has expanded; the calculator’s evidence has not yet been updated. The calculator still uses "
             f"the original {calculator_n:,}-patient development cohort; it has not been retrained or revalidated with the recovered records. "
@@ -178,10 +178,10 @@ def overview_article(lang="tr", calculator_n=1295):
     def table(headers, rows):
         return "<div class='ro-table-wrap'><table><thead><tr>" + "".join(f"<th scope='col'>{e(v)}</th>" for v in headers) + "</tr></thead><tbody>" + "".join("<tr>" + "".join(f"<td>{e(v)}</td>" for v in row) + "</tr>" for row in rows) + "</tbody></table></div>"
     cards = [
-        (c["operational_genetic_patient_entities"], t("Genetik hasta kimliği", "Genetic patient identities"), t("Kayıtlı kimlikler; tüm arşivin kesin benzersiz kişi sayısı değil.", "Established identities; not a certified archive-wide unique-patient count.")),
-        (c["strict_clinical_linked_genetic_people"], t("Klinik kaydı eşleşen", "With accepted clinical links"), t("Son eşleştirmede 32 hasta eklendi.", "32 patients gained accepted clinical links.")),
-        (c["confirmed_BRCA_female_breast_family_representatives"], t("BRCA aile temsilcisi", "BRCA family representatives"), t("152 kadın meme kanseri hastasından; aile bağlantıları korunarak.", "From 152 female breast-cancer patients, preserving possible relatedness.")),
-        (p["n"], t("Boyut karşılaştırmasında", "In the size comparison"), t("İki varyant sınıfı, boyut, yaş ve yıl bilgisi tam olan aileler.", "Families complete for variant class, size, age and diagnosis year.")),
+        (c["operational_genetic_patient_entities"], t("Genetik kayıtlarda izlenen kişiler", "Genetic patient identities"), t("Ayrı kişi olarak izlediğimiz kimlikler. Bütün arşivin kesin kişi toplamı olarak okunmamalı.", "Established identities; not a certified archive-wide unique-patient count.")),
+        (c["strict_clinical_linked_genetic_people"], t("Klinik bilgisiyle eşleştirilenler", "With accepted clinical links"), t("Son eşleştirmede 32 hasta eklendi.", "32 patients gained accepted clinical links.")),
+        (c["confirmed_BRCA_female_breast_family_representatives"], t("Karşılaştırmada temsil edilen aileler", "BRCA family representatives"), t("152 kadın meme kanseri hastasından; aile bağlantıları korunarak.", "From 152 female breast-cancer patients, preserving possible relatedness.")),
+        (p["n"], t("Tümör boyutu karşılaştırılan aileler", "In the size comparison"), t("İki varyant sınıfı, boyut, yaş ve yıl bilgisi tam olan aileler.", "Families complete for variant class, size, age and diagnosis year.")),
     ]
     card_html = "".join(f"<div class='ro-card'><div class='ro-number'>{number(n)}</div><div class='ro-label'>{e(label)}</div><p>{e(note)}</p></div>" for n, label, note in cards)
     interval = f"{number(p['lo'], 4)}–{number(p['hi'], 4)}"
@@ -236,7 +236,7 @@ def overview_article(lang="tr", calculator_n=1295):
     return f"""<article class='research-overview' id='arastirma' aria-labelledby='research-title'>
 <p class='ro-muted'>{e(t('Araştırma özeti · 24 Ekim 2026', 'Research overview · 24 October 2026'))}</p>
 <h1 id='research-title'>{e(t('Elimizde ne var, neye ihtiyacımız var?', 'What do we have, and what do we need?'))}</h1>
-<p class='ro-lead'>{e(t('Proje ekibi için güncel hasta grubu, öncelikli biyolojik aday ve onu doğrulamak için gereken veri.', 'The current cohort, the one prioritized biological candidate, and the data needed to validate it.'))}</p>
+<p class='ro-lead'>{e(t('Önümüzde tek, düzenli bir tablo yoktu. Aynı kişiye ait genetik raporları ve farklı yıllardaki klinik dosyaları buluşturmak, tekrar kayıtları ayırmak ve aile bağlantılarını kontrol etmek gerekiyordu. Bu sayfa o emeğin sonunda elimizde ne olduğunu, ne gördüğümüzü ve hangi soruların hâlâ açık kaldığını anlatıyor.', 'The current cohort, the one prioritized biological candidate, and the data needed to validate it.'))}</p>
 <span class='ro-badge'>{e(t('Biyolojik sonuç henüz doğrulanmış değil', 'The biological result remains unvalidated'))}</span>
 <div class='ro-grid'>{card_html}</div>
 <p class='ro-muted'>{e(t('Özgün raporlarla 32 hastanın klinik bağlantısı ve 5 eksik aile kimliği tamamlandı. Kayıtlı 1.988 olası aile grubu, genetik olarak ilişkisiz aile sayısı olarak yorumlanmamalı.', 'Original reports recovered clinical links for 32 patients and five missing family IDs. The 1,988 recorded possible-family groups are not proven genomically unrelated families.'))}</p>
@@ -249,13 +249,13 @@ def overview_article(lang="tr", calculator_n=1295):
 </section>
 <details><summary>{e(t('Önceki sonuç ve sabit model', 'Previous result and frozen methods'))}</summary>{previous_table}<p>{e(method)}</p><p class='ro-muted'>{e(t('Kaynakta kayıtlı boyut karşılaştırmasıdır; nedensel etki veya kanser riski tahmini değildir. Bu görünüm mevcut sonuçları gösterir, yeni analiz çalıştırmaz.', 'This compares recorded sizes; it is not a causal effect or cancer-risk estimate. This view displays existing results and runs no new analysis.'))}</p></details>
 <h2>{e(t('Bugün veriyle ne yapabiliriz?', 'What can the data support today?'))}</h2>
-<p>{e(t('Kaynakları izlenebilir kalıtsal kanser başvuru grubunu, genetik bulguları ve kayıtlı tümör özelliklerini tanımlayabiliriz. Nadir genetik değiştiriciler, sağkalım ve tedavi yanıtı için karşılaştırılabilir genetik negatifler, yeterli taşıyıcı sayısı ve doğrulanmış takip verileri hâlâ eksik.', 'We can describe a source-traceable hereditary-cancer referral cohort, its genetic findings and recorded tumor features. Rare-modifier, survival and treatment-response questions still lack comparable genetic negatives, sufficient carrier groups or verified longitudinal endpoints.'))}</p>
+<p>{e(t('Bugün, başvuran hastaları, genetik raporlarını ve kayıtlı tümör özelliklerini kaynaklarına dönerek anlatabiliyoruz. Ancak her soruyu bu arşivle cevaplayamayız. Nadir genetik değişikliklerin etkisini, yaşam süresini veya tedaviye yanıtı araştırmak için karşılaştırılabilir negatif sonuçlar, yeterli sayıda taşıyıcı ve güvenilir takip kayıtları gerekiyor. Bu eksikler hâlâ var.', 'We can describe a source-traceable hereditary-cancer referral cohort, its genetic findings and recorded tumor features. Rare-modifier, survival and treatment-response questions still lack comparable genetic negatives, sufficient carrier groups or verified longitudinal endpoints.'))}</p>
 <h2>{e(t('Doğrulama için tam olarak hangi veri gerekiyor?', 'Exactly which data are needed for validation?'))}</h2>
 <p>{e(t('Öncelik, aynı tek soruyu bağımsız hasta verisiyle sınamak. Aşağıdaki alanlar olmadan yeni kayıt sayısı tek başına sonucu doğrulamaz.', 'The priority is to test this one frozen question in independent patient data. More records alone cannot validate it without the following information.'))}</p>
 <div class='ro-needs'>{need_html}</div>
 <h2>{e(t('Arşivde hâlâ açık kalanlar', 'What remains unresolved in the archive'))}</h2>
 {table([t('Sayı','Count'),t('Veri açığı','Data gap')],gaps_rows)}
-<p class='ro-muted'>{e(t('Tüm 2.259 hasta klasörünün metadata sayımı yapıldı; her ekin yeni okunması tamamlanmış değil. Okunabilir kabul edilmiş rapor bulunmaması, Drive’da hiç rapor olmadığı anlamına gelmez. Eksik veya çelişkili bilgi yok sayılmadı.', 'Metadata for all 2,259 patient folders was counted; not every attachment has been freshly read. No accepted readable report in the cache does not establish that Drive contains no report. Missing/conflicting information remains unknown.'))}</p>
+<p class='ro-muted'>{e(t('2.259 hasta klasörünün dosya listeleri sayıldı; bu, içlerindeki her ekin yeniden okunup kontrol edildiği anlamına gelmiyor. İncelemede kullanılabilir rapor bulunamamış olması da Drive’da hiç rapor yok demek değil. Eksik ve çelişkili bilgileri tamamlanmış gibi göstermiyoruz.', 'Metadata for all 2,259 patient folders was counted; not every attachment has been freshly read. No accepted readable report in the cache does not establish that Drive contains no report. Missing/conflicting information remains unknown.'))}</p>
 <p>{e(t('Daha geniş taşıyıcı karşılaştırmaları için tam laboratuvar negatifleri ve panel/çağrılabilirlik bilgisi; sağkalım veya yanıt için olay tanımı, başlangıç, tedavi ve olaysız takip bitişi de gerekir.', 'Broader carrier comparisons also need complete laboratory-negative findings and panel/callability information; survival or response studies need event definitions, entry, treatment chronology and event-free censoring.'))}</p>
 <section id='kanit-rehberi'><h2>{e(t('Bu rakamlar nereden geliyor?', 'Where do these numbers come from?'))}</h2>
 {evidence_map}

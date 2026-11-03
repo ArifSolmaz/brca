@@ -104,7 +104,7 @@ class ModelTeachingTests(unittest.TestCase):
                 for k in ['total','lane','rapid']:self.assertEqual(r[rule][k],c[rule][k])
 
     def test_bilingual_routes_downloads_and_language_switch(self):
-        for lang,title,percent in [('tr','Model ayrıntıları ve elle hesap','25,8%'),('en','Model details and manual calculations','25.8%')]:
+        for lang,title,percent in [('tr','Model nasıl öğreniyor, nasıl hesaplıyor?','25,8%'),('en','Model details and manual calculations','25.8%')]:
             at=self.start(lang);self.assertEqual(at.title[0].value,title);self.assertEqual(at.metric[0].value,percent)
             self.assertEqual(at.metric[1].value,'6');self.assertTrue(PDF[lang].read_bytes().startswith(b'%PDF-'))
             self.assertEqual(len(at.get('download_button')),4)

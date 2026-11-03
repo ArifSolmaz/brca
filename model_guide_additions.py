@@ -1,4 +1,4 @@
-"""Web-only teaching additions; no patient analysis or model fitting."""
+"""Shared teaching additions; no patient analysis or clinical-model fitting."""
 
 def guide_additions(lang):
     tr = lang == 'tr'
@@ -15,7 +15,7 @@ def guide_additions(lang):
     def table(a,b,rows):blocks.append(dict(type='table',headers=t(a,b),rows=rows))
     def link(text,url):blocks.append(dict(type='link',text=text,url=url))
 
-    chapter(16,'Bu hesaplayıcı yapay zekânın neresinde?','Where does our calculator fit within AI?')
+    chapter(16,'Yapay zekâ diyoruz; bizim modelimiz bunun neresinde?','Where does our calculator fit within AI?')
     p('Yapay zekâ (AI, Artificial Intelligence), bilgisayarlara öğrenme ve problem çözme gibi görevler yaptıran geniş alandır. Makine öğrenmesi (ML, Machine Learning), kuralları yalnız elle yazmak yerine veriden örüntü öğrenen yöntemleri kapsar. Derin öğrenme (DL, Deep Learning) ise çok katmanlı yapay sinir ağlarını kullanan makine öğrenmesi yöntemleridir.',
       'Artificial intelligence (AI) is the broad field of making computers perform tasks such as learning and problem solving. Machine learning (ML) includes methods that learn patterns from data rather than relying only on hand-written rules. Deep learning (DL) uses artificial neural networks with many layers and is one part of machine learning.')
     note('Yapay zekâ → makine öğrenmesi → denetimli öğrenme → bizim lojistik regresyon modelimiz. Derin öğrenme, makine öğrenmesinin başka bir yöntem grubudur; hesaplayıcımız derin sinir ağı kullanmaz.',
@@ -33,7 +33,7 @@ def guide_additions(lang):
       'Complexity does not guarantee accuracy. Logistic regression assigns a coefficient to each input; a decision tree branches through questions; K-nearest neighbours (KNN) looks at similar training examples; a support vector machine (SVM) learns a separating boundary; neural networks learn transformations through layers. These descriptions are not the results of an algorithm competition. Establishing which works better for our data would require a fair comparison using the same patients and family-separated evaluation. No new comparison was performed here.')
     link(t('DeepVariant: özgün varyant çağırma çalışması','DeepVariant: original variant-calling study'),'https://www.nature.com/articles/nbt.4235')
 
-    chapter(17,'Bilgisayar katsayıları nasıl öğrenir?','How does the computer learn the coefficients?')
+    chapter(17,'Bilgisayar hatalarından nasıl öğreniyor?','How does the computer learn the coefficients?')
     note('Aşağıdaki sayılar yalnız kurgu bir ders örneğidir. Gerçek hasta, gerçek eğitim adımı veya yeni performans sonucu değildir. Hesaplayıcının kayıtlı katsayıları değiştirilmedi.',
          'The numbers below are a fictional classroom example only. They are not a real patient, an actual training iteration or a new performance estimate. The calculator’s stored coefficients were not changed.')
     p('Öğrenme döngüsü: katsayılarla tahmin üret → kayıtlı etiketle karşılaştır → kaybı hesapla → katsayıları birlikte güncelle → tekrar et. En sonda yalnız eğitim hatası değil, eğitim dışında tutulan örneklerdeki sonuç da önemlidir. 5. bölüm, geçmiş çalışmada bu işin hangi ayarlar ve sınırlılıklarla yapıldığını anlatır.',
@@ -56,10 +56,13 @@ def guide_additions(lang):
     heading('Eğitim ile kullanım farklı işlerdir','Training and use are different activities')
     p('Eğitimde etiketlerden katsayılar öğrenilir; daha sonra kalibrasyon ve karar kuralları değerlendirilir. Canlı kullanımda kayıtlı katsayılar sabittir: girdiyi değiştirdiğinizde yalnız mevcut formüller yeniden hesaplanır. Girdileriniz yeni eğitim örneği olarak kaydedilmez. Bir öğrencinin kurgu profilindeki yüzdeyi değiştirmesi, modelin başarısını veya biyolojik bir etkiyi ölçmez.',
       'During training, labels help determine coefficients; calibration and decision rules are then evaluated. During live use, the stored coefficients are fixed: editing an input only recomputes the existing formulas. Your entries are not stored as new training examples. Changing a fictional profile’s percentage does not measure model performance or a biological effect.')
+    p('Web sayfasındaki sekiz kurgu örnekle öğrenmeyi adım adım izleyebilirsiniz. Geri dönüp katsayıları, hataları ve yeni tahminleri karşılaştırın. Bu küçük ders deneyi gerçek modelin eğitim kaydı değildir.',
+      'The web lesson lets you follow learning step by step with eight fictional examples. Go back to compare weights, errors and new predictions. This small classroom experiment is not a record of the actual model’s training.')
+    link(t('Kurgu verilerle öğrenmeyi izleyin','Watch learning with fictional data'),'https://brca-istun.streamlit.app/?sayfa=model&dil='+lang+'&ogren=1')
     link(t('Log loss: yöntem açıklaması','Log loss: method explanation'),'https://developers.google.com/machine-learning/crash-course/logistic-regression/loss-regularization')
     link(t('Lojistik regresyon ve düzenlileştirme: yöntem belgesi','Logistic regression and regularisation: method documentation'),'https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html')
 
-    chapter(18,'Önceki yayın ile bugünkü hesaplayıcı','The earlier publication and today’s calculator')
+    chapter(18,'Önceki makale ile bu hesaplayıcı aynı çalışma mı?','The earlier publication and today’s calculator')
     p('Adibi ve Yazıcı’nın 2023 tarihli “Artificial Intelligence and Machine Learning Applications in Precision Medicine and Genomic Diagnostics” başlıklı kitap bölümü, alandaki uygulamaları tanıtan bir derlemedir. Bugünkü hesaplayıcının bağımsız doğrulama raporu değildir. Bölümün 72. sayfasındaki BRCA örneği, Yazıcı ve arkadaşlarının 2020 çalışmasına atıf yapar. Algoritma ve performans ayrıntıları için aşağıdaki özgün makaleyi esas alıyoruz.',
       'The 2023 book chapter by Adibi and Yazıcı, “Artificial Intelligence and Machine Learning Applications in Precision Medicine and Genomic Diagnostics”, reviews applications in the field. It is not an independent validation report for today’s calculator. Its BRCA example on printed page 72 cites Yazıcı and colleagues’ 2020 study. For algorithm and performance details, we use the original paper linked below.')
     table(['Özellik','2020 yayını','Bugünkü hesaplayıcı'],['Aspect','2020 publication','Today’s calculator'],[
@@ -78,6 +81,6 @@ def guide_additions(lang):
     link(t('2020 özgün makale: PubMed kaydı ve tam metin bağlantısı','2020 original paper: PubMed record and full-text link'),'https://pubmed.ncbi.nlm.nih.gov/33488844/')
     link(t('2020 özgün makale: DOI','2020 original paper: DOI'),'https://doi.org/10.1155/2020/8594090')
     link(t('2023 derleme bölümü: İstanbul Üniversitesi yayınevi kaynağı','2023 review chapter: Istanbul University publisher source'),'https://cdn.istanbul.edu.tr/file/JTA6CLJ8T5/EC25505B5D6143DC9EFBED00E3B2F6A5')
-    p('Bu ek bölümler eğitim içindir. Yeni hasta analizi, algoritma karşılaştırması, model eğitimi veya hesaplayıcı değişikliği yapılmadı.',
-      'These additions are educational. No new patient analysis, algorithm comparison, model training or calculator change was performed.')
+    p('Bu ek bölümler eğitim içindir. Gerçek hasta verileriyle yeni analiz veya algoritma karşılaştırması yapılmadı; klinik model yeniden eğitilmedi, hesaplayıcının hesabı değiştirilmedi.',
+      'These additions are educational. No new patient analysis or algorithm comparison was performed; the clinical model was not retrained and the calculator’s arithmetic was not changed.')
     return blocks

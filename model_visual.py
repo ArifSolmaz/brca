@@ -84,9 +84,9 @@ def model_visual_html(current, change, lang):
     .mv-stages{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mv-stage{background:#eef2f7;padding:8px;border-radius:6px;min-width:0}
     .mv-stage span,.mv-stage b{display:block}.mv-stage small{display:inline-block}.model-visual .mv-curve{width:100%;height:auto;display:block}
     </style><div class="model-visual">''' + f'''
-    <p><b>{t('Girdiyi değiştir → katkılar değişsin → sonuç değişsin.', 'Change an input → contributions change → the result changes.')}</b>
+    <p><b>{t('Bir hasta bilgisini değiştirin; hesaba katkısını ve sonucu birlikte izleyin.', 'Change an input → contributions change → the result changes.')}</b>
     {t('β katsayıları ve kalibrasyon sabittir; bu ekran modeli yeniden eğitmez.', 'The β coefficients and calibration stay fixed; this page does not retrain the model.')}</p>
-    <p>{t('Sola: skoru azaltan katkı. Sağa: skoru artıran katkı. Kesikli çizgi: önceki katkı; sarı: değişen sayı. Bunlar bu örneğin hesap etkileridir, nedensel etkiler değildir.', 'Left: a contribution reducing the score. Right: a contribution increasing it. Dashed outline: previous contribution; yellow: a changed number. These are calculation effects in this example, not causal effects.')}</p>
+    <p>{t('Sola uzanan çubuk toplamı azaltır, sağa uzanan artırır. Kesikli çizgi önceki katkıyı, sarı renk değişen sayıyı gösterir. Burada hesabın nasıl değiştiğine bakıyoruz; biyolojik bir neden-sonuç ilişkisi ölçmüyoruz.', 'Left: a contribution reducing the score. Right: a contribution increasing it. Dashed outline: previous contribution; yellow: a changed number. These are calculation effects in this example, not causal effects.')}</p>
     {''.join(rows)}
     <p>{t('Sıfır katkılı diğer terimler gösterilmiyor. Çubuklar yüzdeyi değil, z skoruna katkıyı gösterir.', 'Other zero-contribution terms are omitted. Bars show contributions to z, not percentages.')}</p>
     <div class="mv-stages">{''.join(stages)}</div>

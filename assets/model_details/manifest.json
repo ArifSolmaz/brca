@@ -13,9 +13,9 @@
   "new_patient_analyses": 0,
   "model_fit_calls": 0,
   "files": {
-    "app.py": "cf49a9a088ff42aa2986617c34f33ac39aa5dde33a3c7a2554be666726a0c662",
-    "model_teaching.py": "9c0e2218f254e1279998b932b3e29f041aa6fa4b9d86d52be329b92a5a11a835",
-    "model_teaching_content.py": "93e6a60128a85e0a23a08c937ba4c6ba6720551dd6b8dc5fe356c82a3c8f0417",
+    "app.py": "488b448ed1fd8da35b11d4252934de999220f91ab6e9259e2657e2fe440aff64",
+    "model_teaching.py": "3965a1c5d770c88a4be322ec3617e13401cbf82bb545b61b80a46b50db523df4",
+    "model_teaching_content.py": "fb9b3af3228ae674f7d89cdb2d3eb03e9987852e1c8de5239e258acb44b45fe9",
     "brca_core.py": "97406bcaae6528db1fbd64b867ba6492f7f2f92fc8d594f1306b75774eaa9356",
     "model_full_embedded.json": "79374a66c7530d58a547a0a4a8ba252fb151489b376463a3ff5bd9cb201914aa",
     "assets/model_details/symbols_tr.json": "b78dfa801ee6fb37779a256810a21c69b9dde7a92fce1924b4deaa82b84099f2",
@@ -23,11 +23,14 @@
     "assets/model_details/BRCA_Model_Details_EN.pdf": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
     "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e",
-    "assets/model_details/BRCA_Model_Guide_TR.pdf": "2b7680b4d498179c89e4293ccc69e914ee62377dc1bf45e08a114e233ddde7d4",
-    "assets/model_details/BRCA_Model_Guide_EN.pdf": "4d3b9737c4a786e9ec312104d0cad95e9cb8ab242fa3c16e526a4f8b3056e6c0",
-    "model_guide.py": "614a2e0095e2ea429a1c08dc32ba10f988c32bd48514d478331fb03de116c535",
-    "model_guide_additions.py": "0df49101600ad92eb311aa6e17b879793722b8e36eb5dea1eb70ad20ddf3d94d",
-    "scripts/build_model_guides.py": "4cdb6bd8d4d047073d54681f857a7de17e1fb7c13557374e985f5ca36a320720"
+    "assets/model_details/BRCA_Model_Guide_TR.pdf": "630c036071f4017dd4c00f08f64b31f5147e98889fbbe8d58357102358bc85ed",
+    "assets/model_details/BRCA_Model_Guide_EN.pdf": "609334e0c6b8d1ae1014bd9e18d0fb56d5e57f8d9e4c01767f4f78817961d43d",
+    "model_guide.py": "872ea51528b19ce3be9cf1011af45f8d503d4a7dbe6d67f98c0c421d3443d443",
+    "model_guide_additions.py": "937dbdd7eae963adf902ca6cd232819fecbb6310520eadb18c5494fb6ada82bb",
+    "scripts/build_model_guides.py": "bc601124e0c954444437ea049941873c7025d91d9966b387741049e5ac9b58a2",
+    "learning_demo.py": "10174e13a13a737c6f8ba8837e2dfa91ff3a531e1963279f9b168e3c40418eff",
+    "model_visual.py": "59752ee1cb1fc2abf31c2a5981613ffa24adc0d42f736633496792356c9096f9",
+    "assets/model_details/learning_demo.html": "94d41732ef0f9ddbf9412f2baeef4f0541b99bf01f9feb0a95bfeff54acbe781"
   },
   "live_pdf_downloads_verified": {
     "date": "2026-11-02",
@@ -120,21 +123,45 @@
       "Türkçe Model Rehberi · PDF",
       "English Model Guide · PDF"
     ],
-    "tests_passed": 37,
+    "tests_passed": 41,
     "chapter_count": 18,
     "web_pdf_same_content": true,
     "previous_live_downloads_verified": {
-      "date": "2026-11-03",
-      "tr": "8ea9145d6ddd6bf5238990ed0e965764819656221e803924752ea77112ffe838",
-      "en": "7020e41be600848de2fcc638cab93d3f7726fbc2ee29d24ef14ceba5f85a5808",
-      "byte_identical_to_published_assets": true
-    },
-    "live_downloads_verified": {
       "date": "2026-11-03",
       "viewport": "390x844",
       "byte_identical_to_published_assets": true,
       "tr": "2b7680b4d498179c89e4293ccc69e914ee62377dc1bf45e08a114e233ddde7d4",
       "en": "4d3b9737c4a786e9ec312104d0cad95e9cb8ab242fa3c16e526a4f8b3056e6c0"
-    }
+    },
+    "plain_language_revision": "2026-11-03",
+    "interactive_learning": "Web only; PDF includes explanation and direct lesson link"
+  },
+  "fictional_learning_lesson": {
+    "date": "2026-11-03",
+    "languages": [
+      "tr",
+      "en"
+    ],
+    "examples": 8,
+    "features": 2,
+    "steps": 60,
+    "learning_rates": [
+      0.1,
+      0.5,
+      1
+    ],
+    "penalties": [
+      0,
+      0.1,
+      0.5
+    ],
+    "objective": "mean log loss + lambda/2 * (beta1^2 + beta2^2)",
+    "update": "simultaneous full-batch gradient descent",
+    "clinical_model_imported": false,
+    "patient_records_read": 0,
+    "clinical_model_refits": 0,
+    "main_calculator_files_changed": false,
+    "numerical_gradient_verified": true,
+    "live_verified": false
   }
 }

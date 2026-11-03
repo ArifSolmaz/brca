@@ -65,7 +65,7 @@ def build(lang, web=False):
         raw(r'\bottomrule\end{tabularx}\par\medskip')
 
     title = t('BRCA MODEL REHBERİ', 'BRCA MODEL GUIDE')
-    subtitle = t('Gerçek kayıtlardan modele, hesaplamalara ve kanıtın sınırlarına',
+    subtitle = t('Hasta dosyalarından modele: ne yaptık, nasıl hesaplıyoruz, neyi henüz bilmiyoruz?',
                  'From actual records to the model, calculations and limits of the evidence')
     preamble = r'''\documentclass[10pt,a4paper]{article}
 \usepackage[margin=21mm,headheight=15pt,headsep=9mm,footskip=10mm]{geometry}
@@ -95,24 +95,24 @@ def build(lang, web=False):
         'FOOTER', esc(t('Mevcut sonuçların anlatımı · Yeni analiz yok · Hasta kimliği içermez',
                         'Existing results explained · No new analysis · No patient identifiers')))
 
-    page(0, 'Veriden kanıta: bütün hikâye', 'From data to evidence: the complete story')
+    page(0, 'Bu çalışma nereden çıktı?', 'From data to evidence: the complete story')
     raw(r'{\Huge\bfseries\color{accent}' + esc(title) + r'}\par\bigskip')
     raw(r'{\Large ' + esc(subtitle) + r'}\par\bigskip')
     p('Genetik, istatistik veya programlama bilmeyen; konuyu sıfırdan öğrenmek isteyen öğrenciler için hazırlanmıştır.',
       'For students starting without prior knowledge of genetics, statistics or programming.')
     note('Bu rehber mevcut çalışmayı açıklar. Yeni hasta analizi, hipotez testi, yeniden eğitim veya hesaplayıcı değişikliği yapılmadı.',
          'This guide explains the existing work. No new patient analysis, hypothesis test, model fitting or calculator change was performed.')
-    heading('Birbirinden ayıracağımız üç iş', 'Three distinct parts of the work')
-    p('1. Arşiv: dosya, örnek, kişi ve aileleri eşleştirmek; hangi verilerin kullanılabildiğini belirlemek.\n2. Tahmin: özgün 1.295 kişide geliştirilen modelin hesabını ve değerlendirmesini açıklamak.\n3. Biyolojik araştırma: genetik özellikler ile klinik özellikler arasındaki mevcut karşılaştırmaları ve belirsizliklerini incelemek.',
+    heading('Önce kayıtları anlamak, sonra doğru soruyu sormak', 'Three distinct parts of the work')
+    p('1. Kayıtları birleştirmek: Hangi dosya kime ait? Aynı kişi birkaç kez mi kaydedilmiş? Kimler aynı aileden?\n2. Sonucu tahmin etmek: 1.295 hastadan öğrenen model, yeni girilen bilgilerle nasıl bir hesap yapıyor?\n3. Biyolojik bir ilişki aramak: Genetik değişikliklerle tümör özellikleri arasında gördüğümüz fark gerçek olabilir mi, yoksa tesadüf ya da eksik kayıtlarla mı açıklanıyor?',
       '1. Archive: link files, specimens, people and families, and establish which data are usable.\n2. Prediction: explain the calculations and evaluation of the model developed in the original 1,295 people.\n3. Biological research: understand existing comparisons between genetic and clinical features and their uncertainty.')
-    heading('Okuma yolu', 'Reading route')
-    p('Biyoloji → arşiv → modelin hasta grubu → kodlama ve eksikler → öğrenme → katsayılar → elle hesap → puan kartı → istatistik → laboratuvar ödünleşimleri → biyolojik bulgu → bağımsız doğrulama → yazılım ve kaynaklar.',
+    heading('Rehberde nasıl ilerleyelim?', 'Reading route')
+    p('Önce genetiğin temelini ve elimizdeki dosyaları tanıyacağız. Ardından bilgisayarın bu bilgilerden nasıl öğrendiğini ve bir hasta için hesabın nasıl yapıldığını göreceğiz. Sonunda sayıların ne kadar güvenilir olduğunu, laboratuvarda ne anlama geldiğini ve hâlâ hangi verilere ihtiyaç duyduğumuzu konuşacağız.',
       'Biology → archive → development patients → encoding and missing data → learning → coefficients → manual calculation → points card → statistics → laboratory trade-offs → biological finding → independent validation → software and sources.')
     p('Rehber tarihi 3 Kasım 2026’dır. Arşiv ve doğrulama sayıları mevcut 24 Ekim denetiminden alınmıştır. Ayrı araştırma raporunun 25 Ekim tarihi değiştirilmemiştir. Modelin kayıtlı sürümü: '+MODEL['build']+'.',
       'Guide date: 3 November 2026. Archive and validation counts come from the existing 24 October audit. The separate research report retains its 25 October date. Stored model version: '+MODEL['build']+'.')
     raw(r'\href{https://brca-istun.streamlit.app/?sayfa=model\&dil='+lang+r'}{'+esc(t('Model ayrıntıları sayfasını aç', 'Open the model details page'))+'}')
 
-    page(1, 'Biyoloji ve genetik dili', 'The language of biology and genetics')
+    page(1, 'Genetik bilmeden başlayalım', 'The language of biology and genetics')
     p('Vücudumuz hücrelerden oluşur. DNA (deoksiribonükleik asit), protein üretiminde kullanılan genetik bilgiyi taşır. Gen, bu bilginin belirli bir işlevle ilişkili bölümüdür. Proteinler hücrenin birçok işini yapan moleküllerdir.',
       'Our bodies consist of cells. DNA (deoxyribonucleic acid) carries genetic information used to make proteins. A gene is a section associated with a particular function. Proteins perform many of the cell’s jobs.')
     p('BRCA1 ve BRCA2, DNA hasarını onarmaya yardımcı olan proteinlerle ilişkili genlerdir. Bir genetik değişikliğe varyant denir. Kalıtsal bir varyant aile içinde aktarılabilir. Tümörde sonradan oluşan somatik değişiklik ise bununla aynı şey değildir.',
@@ -131,27 +131,27 @@ def build(lang, web=False):
     p('Tahmin sorumuz, kişinin gelecekte kanser olup olmayacağı değildir. Mevcut klinik bilgilerin kayıtlı BRCA test sonucunu tahmin etmeye yardımcı olup olamayacağını araştırıyoruz.',
       'Our prediction question is not whether someone will develop cancer in the future. It is whether existing clinical information can help predict the recorded BRCA test result.')
 
-    page(2, 'Gerçek arşiv: dosya, satır, kişi ve aile', 'The actual archive: files, rows, people and families')
-    p('Başlangıçta tek bir temiz tablo yoktu. Drive’da bireysel hasta klasörleri, genetik raporlar, varyant çalışma kitapları ve 2019, 2020, 2022 gibi farklı yıllara ait klinik dosyalar bulunuyordu. Aynı hasta farklı sürümlerde veya tekrar örneklerle yer alabilir.',
+    page(2, 'Elimizde ne vardı, kayıtları nasıl bir araya getirdik?', 'The actual archive: files, rows, people and families')
+    p('Çalışmanın başında önümüzde hazır, tek bir hasta tablosu yoktu. Drive’da hasta klasörleri, genetik raporlar, genetik değişiklik listeleri ve 2019, 2020, 2022 gibi farklı yıllardan klinik dosyalar vardı. Aynı kişi birkaç dosyada, hatta farklı örnek numaralarıyla bulunabiliyordu. Bu yüzden ilk iş sayıları toplamak değil, kayıtların kime ait olduğunu anlamaktı.',
       'We did not start with one clean table. Drive contained individual patient folders, genetic reports, variant workbooks and clinical files from years including 2019, 2020 and 2022. The same person can appear in different versions or with repeat specimens.')
     table(['Kayıt düzeyi', 'Sayı'], ['Record level', 'Count'], [
         (t('Hasta klasörleri','Patient folders'),'2,259'),
-        (t('Kabul edilmiş operasyonel genetik kişi kimlikleri','Established operational genetic patient entities'),'2,148'),
+        (t('Genetik kayıtlarda ayrı kişi olarak izlenen kimlikler','Established operational genetic patient entities'),'2,148'),
         (t('Klinik kaynak sürümlerindeki satırlar','Rows across clinical source versions'),'7,939'),
-        (t('Kabul edilmiş klinik bağlantısı olan genetik kişiler','Genetic entities with accepted clinical links'),'1,445'),
-        (t('Tutarlı kayıtlı aile kimlikleri','Consistently recorded family IDs'),'1,989'),
-        (t('Temkinli analizde tutulan varyant çağrı satırları','Conservatively retained variant-call rows'),'84,492'),
+        (t('Genetik ve klinik kayıtları güvenilir biçimde eşleştirilen kişiler','Genetic entities with accepted clinical links'),'1,445'),
+        (t('Kayıtlarda tutarlı biçimde izlenen aile numaraları','Consistently recorded family IDs'),'1,989'),
+        (t('Kontrollerden sonra değerlendirmeye alınan genetik bulgu satırları','Conservatively retained variant-call rows'),'84,492'),
     ])
     p('Bu sayılar aynı şeyi saymaz ve tek bir hasta seçim zinciri gibi birbirinden çıkarılamaz. 2.148, bütün arşivin kesin benzersiz hasta toplamı değildir; klinik kayıtları olup genetik bağlantısı henüz kabul edilmeyen bileşenler otomatik olarak ek kişi sayılamaz. Aile numarası farklı olması, belgelenmemiş akrabalığı dışlamaz.',
       'These are different counting units, not a single flow from which all exclusions can be subtracted. The 2,148 entities are not a certified unique-patient total for the entire archive. Clinical-only components without an accepted genetic link cannot automatically be counted as additional people. Different recorded family IDs do not exclude undocumented relatedness.')
     p('84.492 satır, 84.492 benzersiz varyant değildir. Aynı varyant farklı kişilerde görülebilir. Bir varyantın tabloda olmaması da o DNA bölgesinin yeterli kalitede incelenip negatif bulunduğunu kanıtlamaz; tam incelenebilirlik maskeleri mevcut değildir.',
       '84,492 rows do not mean 84,492 unique variants. A variant can recur in different people. Absence from a table does not establish adequate examination and a negative result for that region; complete callability masks are unavailable.')
-    p('Kimlik eşleştirmesinde hasta kodu, isim, doğum tarihi, aile numarası, protokol ve özgün rapor birlikte değerlendirilir. Çelişkili bağlantıları zorla kabul etmek, yanlış bir kişiye genetik veya klinik bilgi atayabilir.',
+    p('İki dosyada benzer bir kod görmek yetmez. Hasta kodunu; isim, doğum tarihi, aile numarası, protokol numarası ve asıl raporla birlikte kontrol etmek gerekir. Bu ayrıntı önemlidir: yanlış eşleşme, bir kişinin tümör bilgisini başka birinin genetik sonucuyla karşılaştırmamıza yol açabilir.',
       'Identity linkage considers patient code, name, date of birth, family number, protocol ID and original reports together. Forcing a conflicting link can assign genetic or clinical information to the wrong person.')
     note('Dosya sayısı ≠ satır sayısı ≠ örnek sayısı ≠ kişi sayısı ≠ bağımsız aile sayısı.',
          'Files ≠ rows ≠ specimens ≠ people ≠ independent families.')
 
-    page(3, 'Modelin hasta grubu ve klinik alanlar', 'Development patients and clinical fields')
+    page(3, 'Model hangi hastalardan öğrendi?', 'Development patients and clinical fields')
     p('Hesaplayıcı, genişleyen arşivin tamamıyla değil, özgün 1.295 kişilik geliştirme grubuyla kurulmuştur. Tanı yılları 1988–2020 arasındadır. Meme ile ilişkili ilk dört kategori toplam 1.088 kişi; yalnız over grubu 207 kişidir.',
       'The calculator was developed using the original 1,295-person group, not the entire expanded archive. Diagnosis years range from 1988 to 2020. The first four breast-related categories total 1,088 people; 207 are ovarian-only.')
     table(['Tanı','Kişi','Positive'],['Diagnosis','People','Positive'],[
@@ -173,7 +173,7 @@ def build(lang, web=False):
     p('Birinci derece akrabalar anne, baba, kardeş ve çocukları; ikinci derece örneğin büyükanne, büyükbaba, teyze, hala, dayı ve amcayı kapsar. Her arşiv alanı model girdisi değildir: tümör boyutu ve lenf nodu durumu bu modelde kullanılmaz.',
       'First-degree relatives include parents, siblings and children; second-degree relatives include grandparents, aunts and uncles. Not every archive field is a model input: tumour size and lymph-node status are not used here.')
 
-    page(4, 'Kodlama, tümör belirteçleri ve eksik bilgi', 'Encoding, tumour markers and missing information')
+    page(4, 'Hasta bilgileri bilgisayarın anlayacağı sayılara nasıl çevrildi?', 'Encoding, tumour markers and missing information')
     table(['Terim','Tam açılım ve anlam'],['Term','Full name and meaning'],[
         ('ER','Estrogen Receptor. '+t('Östrojen reseptörü.','')),
         ('PR','Progesterone Receptor. '+t('Progesteron reseptörü.','')),
@@ -192,13 +192,13 @@ def build(lang, web=False):
     note('Bilinmeyen bilgi, bilinen sıfır değildir. Ki-67 bilinmiyor ile ölçülmüş %30 aynı şey değildir. Bu işlemler geçmiş modelin kurallarıdır; yeni klinik gerçekler değildir.',
          'Unknown information is not a known zero. Unknown Ki-67 differs from measured 30%. These are existing model rules, not newly established clinical facts.')
 
-    page(5, 'Öğrenme: katsayılar nasıl bulundu?', 'Learning: how were the coefficients obtained?')
-    p('Yöntem lojistik regresyondur; derin sinir ağı değildir. Bilgisayar katsayılarla tahmin yapar, tahminleri kayıtlı y sonuçlarıyla karşılaştırır ve hatayı azaltacak katsayıları arar. Katsayıları bulmaya eğitim veya model kurma denir.',
+    page(5, 'Bilgisayar neye ne kadar önem vereceğini nasıl öğrendi?', 'Learning: how were the coefficients obtained?')
+    p('Bilgisayara yalnız hasta bilgilerini değil, kayıtlardaki test sonuçlarını da verdik. Bilgisayar bir tahmin yaptı, bunu bildiğimiz sonuçla karşılaştırdı ve hatayı azaltmak için bilgilere verdiği ağırlıkları değiştirdi. Bu ağırlıklara katsayı, onları bulma işine eğitim denir. Kullandığımız yöntem lojistik regresyondur. Yani karmaşık bir sinir ağı değil, katkıları toplayan ve toplamı olasılığa çeviren bir modeldir.',
       'The method is logistic regression, not a deep neural network. The computer predicts using coefficients, compares predictions with recorded outcomes y, and searches for coefficients reducing error. Finding the coefficients is called training or fitting.')
     p('Pozitifler azınlık olduğundan sınıf ağırlıkları kullanılmıştır. Bir pozitif kayıttaki hata, eğitimde bir diğer etiketli kayıttaki hatadan daha fazla ağırlık alır; yeni hasta yaratılmaz.',
       'Because positives are the smaller class, class weights give an error on a positive record more influence during fitting than an error on an other-labelled record. This does not create new patients.')
     math(r'w_+=\frac{1295}{2\times167}\approx3.877246,\qquad w_-=\frac{1295}{2\times1128}\approx0.574025')
-    p('L2 düzenlileştirme, katsayıların karelerine dayanan ceza ile aşırı büyük katsayıları sınırlar. C, cezanın ters güç ayarıdır: küçük C daha güçlü ceza demektir. Aşırı uyum (overfitting), geçmiş örneklere fazla özel uyup yeni örneklerde başarısız olma sorunudur.',
+    p('Bir model geçmiş hastaları çok iyi ayırıp yeni hastalarda başarısız olabilir. Buna aşırı uyum, yani overfitting denir. Bunu sınırlamak için çok büyüyen katsayılara ek bir bedel koyulur: L2 cezası. Bu çalışmadaki C ayarı küçüldükçe ceza güçlenir. Amaç geçmiş kayıtları ezberlemektense yeni hastalarda da işe yarayabilecek bir ilişki öğrenmektir.',
       'L2 regularisation penalises squared coefficients to discourage excessively large coefficients. C is the inverse penalty-strength setting: smaller C gives stronger penalisation. Overfitting means adapting too specifically to development examples and performing poorly on new ones.')
     p('C adayları: 0,01; 0,03; 0,1; 0,3; 1. Ana betik 5 dış kat × 5 tekrar kullanır. Her dış eğitim grubunda 3 iç kat ile AUC üzerinden C seçilir. En sık seçilen değer 0,3’tür; son model bütün geliştirme verisine kurulur. max_iter = 5000 bir üst yineleme sınırı; seed = 2020 tekrarlanabilirlik ayarıdır, kalite garantisi değildir.',
       'Candidate C values: 0.01, 0.03, 0.1, 0.3 and 1. The main script uses five outer folds × five repeats. Three inner folds select C by AUC within each outer training set. The modal selection is 0.3; the final model is fitted on the complete development data. max_iter = 5000 is an iteration limit; seed = 2020 is a reproducibility setting, not a quality guarantee.')
@@ -207,8 +207,8 @@ def build(lang, web=False):
     p('Ana yolda kişi başına tekrarlı kat dışı ham olasılıklar ortalanmış, logit değerleriyle Platt kalibrasyonu öğrenilmiştir. Ayrı kuyruk değerlendirme betiği ise dış eğitimde ölçekleme, iç kat dışı tahminlerle kalibrasyon ve dış testte sayım yapar. Bu yollar tek bir özdeş değerlendirme zinciri değildir.',
       'In the main path, repeated out-of-fold raw probabilities are averaged per person and their logits used to learn Platt calibration. A separate queue-evaluation script learns scaling on outer training data, calibrates using inner out-of-fold predictions and counts outer-test outcomes. These are distinct evaluation pipelines.')
 
-    page(6, 'Öğrenilmiş 26 katsayı ve sabit', 'The 26 learned coefficients and intercept')
-    p('Katsayı β, bir girdinin doğrusal skor z’ye katkısını belirler. Pozitif katsayı skoru artırır; negatif katsayı azaltır. Bu tablo yüzde puanları veya nedensel etkiler tablosu değildir. Gösterim yuvarlanmıştır; uygulama tam hassasiyeti kullanır.',
+    page(6, 'Hesabın ağırlıkları: katsayılar ne anlatıyor?', 'The 26 learned coefficients and intercept')
+    p('Her hasta bilgisi, öğrenilmiş bir ağırlıkla çarpılır. Örneğin yaşın katkısı, yaş ile yaş katsayısının çarpımıdır. Bütün katkılar toplanınca z dediğimiz ara sayı oluşur. Katsayı pozitifse bu toplam artar, negatifse azalır. Bu sayılar doğrudan yüzde değildir; bir özelliğin hastalığa neden olduğunu da göstermez. Tabloda okumayı kolaylaştırmak için yuvarlanırlar, hesapta tam değerleri kullanılır.',
       'A coefficient β determines an input’s contribution to the linear score z. Positive coefficients raise the score; negative coefficients lower it. These are not percentage-point or causal effects. Values are rounded here; the app uses full precision.')
     labels = [
         ('age','Tanı yaşı','Age at diagnosis'),('fdr_breast_lt40','1. derece meme <40','First-degree breast <40'),
@@ -230,7 +230,7 @@ def build(lang, web=False):
     p('Referanslar: tek taraflı meme, g2 ve Marmara. Bir hastada bütün göstergeler etkin değildir. Etnik köken gibi araştırmada kullanılan bazı düzeltme değişkenleri bu tahmin modelinde yer almaz.',
       'References: unilateral breast, g2 and Marmara. Not every indicator is active in one patient. Some adjustment variables used in biological research, such as ethnicity, are not inputs to this prediction model.')
 
-    page(7, 'Örnek hasta: girdiler ve katkılar', 'Worked patient: inputs and contributions')
+    page(7, 'Bir örnek üzerinden birlikte hesaplayalım', 'Worked patient: inputs and contributions')
     note('Bu bir kurgu eğitim profilidir; kimliği belirlenebilir gerçek hasta değildir.', 'This is a synthetic teaching profile, not an identifiable real patient.')
     table(['Özellik','Değer'],['Feature','Value'],[
         (t('Tanı yaşı','Age at diagnosis'),'38'),(t('Tanı / grade / bölge','Diagnosis / grade / region'),t('Tek taraflı meme / 2 / Marmara','Unilateral breast / 2 / Marmara')),
@@ -256,7 +256,7 @@ z={}&-1.608283515050-1.130177733759\\
     p('Ki-67 bilinmediği için hem 30 ataması hem eksiklik göstergesi katkı yapar. Ölçülmüş %30 olsaydı eksiklik katkısı olmazdı. Diğer kategori ve aile göstergeleri bu örnekte sıfır katkı yapar.',
       'Unknown Ki-67 activates both the imputed 30 and the missingness indicator. Measured 30% would not activate the missingness contribution. The other category and family indicators contribute zero here.')
 
-    page(8, 'Skordan yüzdeye: sigmoid ve kalibrasyon', 'From score to percentage: sigmoid and calibration')
+    page(8, 'Topladığımız sayı nasıl yüzdeye dönüşüyor?', 'From score to percentage: sigmoid and calibration')
     p('Sigmoid, herhangi bir doğrusal skoru 0–1 aralığına dönüştürür. e ≈ 2,71828 Euler sayısıdır; üstteki ifade üs anlamına gelir. p bir olasılık, raw ham, cal kalibre edilmiş demektir.',
       'The sigmoid converts a linear score to a number between 0 and 1. e ≈ 2.71828 is Euler’s number; the superscript is an exponent. p means probability, raw means uncalibrated, and cal means calibrated.')
     math(r'\sigma(t)=\frac{1}{1+e^{-t}}')
@@ -279,7 +279,7 @@ z={}&-1.608283515050-1.130177733759\\
     p('Düşüş yaklaşık 4,98 yüzde puandır. Bu, on yıl yaşlanmanın koruyucu etkisi değildir; sabit modelin farklı bir girdiye verdiği koşullu hesaptır. Önceki değerleri gösteren oklar, son düzenlemeden etkilenen sayıları izlemeye yarar.',
       'The decrease is about 4.98 percentage points. This is not a protective effect of becoming ten years older; it is the frozen model’s conditional response to a different input. Previous-value arrows let students follow quantities affected by the last edit.')
 
-    page(9, 'Ayrı puan kartı ve sıra kuralları', 'The separate points card and queue rules')
+    page(9, 'Puan kartı ile model aynı şey mi?', 'The separate points card and queue rules')
     p('Kart ayrı bir sınıf dengeli, L2 cezalı modelden gelir: 16 aday özellik, C = 0,3. Katsayılar 0,5 log-odds birimine bölünüp yuvarlanmış; sıfır puanlı satırlar çıkarılınca 14 satır kalmıştır. Ana modelin β katsayılarını doğrudan yuvarlamak değildir.',
       'The card comes from a separate class-balanced L2 model with 16 candidate features and C = 0.3. Coefficients were divided into 0.5 log-odds units and rounded; removing zero-point rows left 14 items. It is not a rounding of the main model’s β coefficients.')
     raw(r'{\small')
@@ -292,7 +292,7 @@ z={}&-1.608283515050-1.130177733759\\
     p('s değerleri 0 normal, 1 öncelikli, 2 acil kodlarıdır; max en büyüğü seçer. Tedavi kararı bekliyorsa u=2; aksi halde ailede belgeli P/LP kutusu seçiliyse u=1; değilse 0. B öneridir. A’da acil şerit, B’de model ≥%20 hızlı paketi tetikler. Aile P/LP kutusu β toplamını değiştirmez; ancak bilgi modelde olmadığı için kişisel yüzde başlığı bastırılır.',
       's values are lane codes: 0 normal, 1 priority, 2 urgent; max takes the highest. u=2 if a treatment decision awaits the result; otherwise u=1 for documented familial P/LP, else 0. B remains a proposal. A’s urgent lane triggers the rapid package; B uses model ≥20%. Familial P/LP does not change the β sum, but suppresses the personal probability headline because that information is absent from the model.')
 
-    page(10, 'Diğer ekran sayıları ve başarı ölçütleri', 'Other displayed numbers and performance measures')
+    page(10, 'Ekrandaki diğer sayılar ne demek?', 'Other displayed numbers and performance measures')
     heading('Aynı hastanın farklı sayılarını karıştırmayın', 'Do not confuse different numbers for one patient')
     math(r'N=\operatorname{round}(1/p)=\operatorname{round}(3.876824)=4')
     p('“Yaklaşık dört kişiden biri” yuvarlanmış anlatımdır; dört gözlenmiş kişi değildir. Round en yakın tamsayıya yuvarlar; kodda tam yarımlar çift tamsayıya gider.',
@@ -313,7 +313,7 @@ z={}&-1.608283515050-1.130177733759\\
     p('AUC: Area Under the Receiver Operating Characteristic Curve. Pozitif bir kaydı diğer etiketli bir kaydın üstünde sıralama yeteneğidir; 0,776 “kişilerin %77,6’sını doğru bildi” demek değildir. ROC, duyarlılığı yanlış pozitif oranına karşı çizer. PR-AUC: Precision–Recall eğrisi altındaki alan; pozitif sınıfı bulma performansını ele alır.',
       'AUC: Area Under the Receiver Operating Characteristic Curve. It measures ranking of a positive record above an other-labelled record; 0.776 does not mean 77.6% of individual answers are correct. ROC plots sensitivity against false-positive rate. PR-AUC is the area under the Precision–Recall curve, focusing on positive-class retrieval.')
 
-    page(11, 'Doğrulama, eşikler ve hata tablosu', 'Validation, thresholds and the error table')
+    page(11, 'Model ne kadar iyi? Bunu nasıl anlarız?', 'Validation, thresholds and the error table')
     math(r'\mathrm{Brier}=\frac{1}{n}\sum_{i=1}^{n}(p_i-y_i)^2')
     p('n değerlendirilen kişi sayısı; pᵢ kişinin tahmini, yᵢ kayıtlı sonucu. Brier, olasılık hatasını ölçer; düşük daha iyidir. Kalibrasyon, örneğin %20 denilen gruplarda gözlenen oranın buna yakın olup olmadığıdır. İyi sıralama, iyi kalibrasyonu garanti etmez.',
       'n is the number evaluated, pᵢ the prediction and yᵢ the recorded outcome. Brier measures probability error; lower is better. Calibration asks whether groups predicted at, for example, 20% have observed rates near that value. Good ranking does not guarantee good calibration.')
@@ -330,7 +330,7 @@ z={}&-1.608283515050-1.130177733759\\
     p('TP/FP: True/False Positive; TN/FN: True/False Negative, kayıt etiketlerine göre doğru/yanlış eşik sınıflaması. Duyarlılık pozitifleri yakalama; özgüllük diğerlerini aşağıda tutma; NPV (Negative Predictive Value) eşik altındakilerin diğer etiket oranı; PPV (Positive Predictive Value) eşik üstündekilerin pozitif oranıdır. Yüksek duyarlılık tek başına yeterli değildir. Bu örnek güncel %10/%20 sıra sınırları değildir; tek eşik tablosu AUC vermez.',
       'TP/FP: True/False Positive; TN/FN: True/False Negative, relative to the recorded labels. Sensitivity captures positives; specificity keeps others below threshold; NPV (Negative Predictive Value) is the other-label proportion below threshold; PPV (Positive Predictive Value) is the positive proportion above threshold. High sensitivity alone is insufficient. This is not the current 10%/20% queue boundary; one threshold table cannot give AUC.')
 
-    page(12, 'Laboratuvar kapasitesi: iş yükü ve verim', 'Laboratory capacity: workload and yield')
+    page(12, 'Daha az hızlı test yaparsak ne kazanır, ne kaybederiz?', 'Laboratory capacity: workload and yield')
     p('İki karar ayrıdır: kim sırada öne alınır, kime dar kapsamlı hızlı ilk test paketi uygulanır? Hızlı paket BRCA1 MLPA delesyon/duplikasyon incelemesi ve c.5266dupC hedefini kapsar. Bütün BRCA varyantlarını inceleyen tam test değildir. Hızlı test negatifliği taşıyıcılığı dışlamaz; tam test devam eder.',
       'Two decisions are distinct: who is prioritised in the queue, and who receives the narrow rapid first-test package? The package covers BRCA1 deletions/duplications by MLPA plus c.5266dupC. It is not complete testing for all BRCA variants. A negative rapid result does not exclude a carrier; full testing continues.')
     table(['Strateji','Paket','Saptanabilir hedef'],['Strategy','Packages','Detectable targets'],[
@@ -340,7 +340,7 @@ z={}&-1.608283515050-1.130177733759\\
     math(r'\Delta N=212.6-280=-67.4,\qquad\Delta T=26.6-29.4=-2.8')
     math(r'\mathrm{Yield}=\frac{26.6}{212.6}\times100=12.511759\%')
     math(r'\mathrm{Packages/target}=\frac{212.6}{26.6}=7.992481')
-    p('Δ fark demektir; burada N paket sayısı, T saptanabilir hedef sayısıdır. Daha az paket karşılığında daha az hedef saptama ödünleşimi vardır. Tekrar oranlarının ortalaması 8,013; ortalamaların oranı yaklaşık 7,992’dir. Farklı işlemlerdir.',
+    p('Δ, iki seçenek arasındaki farkı gösterir. N hızlı test paketi sayısı, T bu paketin saptayabildiği hedefleri taşıyan kişi sayısıdır. Daha az paket kullanınca iş yükü azalır; buna karşılık daha az hedef bulunabilir. İkisini birlikte görmek gerekir. Tekrarlardaki oranların ortalaması 8,013; ortalama sayıları birbirine bölünce sonuç yaklaşık 7,992’dir. Bunlar farklı hesaplar olduğu için eşit olmaları beklenmez.',
       'Δ means difference; here N is package count and T detectable-target count. Fewer packages trade off against fewer detectable targets. The mean of repeat-specific ratios is about 8.013; the ratio of means is about 7.992. These are different operations.')
     p('Kapasite paneli altı kayıtlı stratejinin toplu sonuçlarını okur; yeni hasta analizi yapmaz. Zamansal seçenek 477 kişi ve 52 taşıyıcıya aittir. Aciliyet kutularının ek iş yükü ölçülmemiştir. Aynı sayıda hasta seçilen karşılaştırmada kart ek üstünlük göstermemiş; elle kullanım ve açıklama değeri ayrıdır.',
       'The capacity panel reads aggregate results for six stored strategies; it performs no new patient analysis. The temporal option concerns 477 people and 52 carriers. Extra workload from urgency overrides was not measured. In the equal-workload comparison, the card showed no added advantage; its manual and explanatory value is separate.')
@@ -349,7 +349,7 @@ z={}&-1.608283515050-1.130177733759\\
     p('Varsayımsal azaltma politikası düşük olasılığa ek olarak kart ≥4, over, erkek meme, TNBC, ailede over, aciliyet ve sıkı seçenekte <45 yaşı dışlar. Kayıtlı üretim betiği bu pakette olmadığından toplu azaltma sonuçları burada bağımsız yeniden üretilmiş sayılmaz.',
       'The hypothetical reduction policy excludes card ≥4, ovarian cancer, male breast cancer, TNBC, ovarian family history, urgency and, in the strict option, age <45. Its generating script is absent from this package, so the stored aggregate reduction results are not independently regenerated here.')
 
-    page(13, 'Biyolojik bulgu ve istatistiksel belirsizlik', 'The biological finding and statistical uncertainty')
+    page(13, '87 ailede gördüğümüz farkı neden kesin sonuç saymıyoruz?', 'The biological finding and statistical uncertainty')
     p('Tahmin, hangi bilgi birleşiminin sonucu öngördüğünü sorar. Biyolojik ilişki araştırması ise örneğin iki varyant grubunun tümör boyutlarının farklı olup olmadığını sorar. İyi tahmin, neden-sonuç ilişkisi kanıtı değildir.',
       'Prediction asks which information combinations predict an outcome. Biological association research might ask whether tumour sizes differ between variant classes. Useful prediction does not establish causation.')
     p('Mevcut karşılaştırma 87 aile temsilcisidir: stop-gain grubunda 20, frameshift grubunda 67 aile. Stop-gain protein üretimine erken dur işareti getirir; frameshift DNA’nın üçlü okunma düzenini kaydırır. Yaş, yıl, gen, kayıtlı etnik köken, bölge ve genotip kaynağına göre düzeltilmiş kaydedilmiş boyut oranı aşağıdadır.',
@@ -366,10 +366,10 @@ z={}&-1.608283515050-1.130177733759\\
         (t('Güç','Power'),t('Belirli bir gerçek etkiyi belirli tasarımla saptayabilme olasılığı.','Probability of detecting a specified true effect with a specified design.')),
         ('FDR / False Discovery Rate',t('Çoklu karşılaştırmalarda yanlış keşif oranını kontrol eden yaklaşım.','An approach controlling false discoveries across multiple comparisons.')),
     ],r'p{.30\linewidth}X')
-    p('Çok karşılaştırma tesadüfi bulgu fırsatını artırır. İstatistiksel düzeltme bütün eksiklik, seçilim ve ölçüm yanlılıklarını gidermez. Bu gözlemde eksiklik/seçilim sorunları çözülmüş değildir; bağımsız doğrulama yoktur.',
+    p('Yeterince çok karşılaştırma yaparsak, yalnız şans eseri dikkat çekici farklar görebiliriz. Çoklu test düzeltmesi bunun için yapılır; eksik kayıtları veya bazı hastaların grupta daha fazla temsil edilmesini ise tek başına çözmez. Bu gözlemde o sorunlar sürüyor. Aynı farkın ayrı hastalarda da görülüp görülmediği henüz sınanmış değil.',
       'Many comparisons create more opportunities for chance findings. Statistical adjustment does not eliminate missingness, selection or measurement bias. These issues remain unresolved for this observation; independent validation is absent.')
 
-    page(14, 'Yeni kayıtlar neden henüz doğrulama sayılmıyor?', 'Why are the additional records not yet a validation set?')
+    page(14, 'Daha çok dosyamız var; neden hâlâ ayrı hastalara ihtiyacımız var?', 'Why are the additional records not yet a validation set?')
     p('Arşivin büyümesi, modelin yeniden eğitildiği veya bağımsız doğrulandığı anlamına gelmez. Bir kişi eğitimde kullanıldıysa ya da aynı aileden geliyorsa bağımsız test için uygun olmayabilir. Kayıtlı aile ayrılığı, genomik akrabasızlık kanıtı değildir.',
       'An expanded archive does not mean the model has been retrained or independently validated. A person used in development, or from the same family, may not be eligible for an independent test. Recorded family separation is not genomic proof of unrelatedness.')
     table(['Mevcut denetim aşaması','Sayı'],['Existing audit stage','Count'],[
@@ -391,8 +391,8 @@ z={}&-1.608283515050-1.130177733759\\
     p('Gerekenler: sonuç öncesi tarihli klinik değerlendirme ve model girdileri; izlenebilir genetik sonuç ve rapor tarihi; güvenilir kişi/aile bağlantıları; hem pozitif hem negatif sonuçlardan yeterli sayıda bağımsız kişi. Yeni katsayı, kalibrasyon veya eşik değişikliği sadece arşiv büyüklüğüyle gerekçelendirilemez.',
       'Needed: dated pre-result clinical assessment covering model inputs; traceable genetic outcomes and report dates; reliable identity/family links; enough independent positive and negative outcomes. Archive size alone does not justify new coefficients, recalibration or threshold changes.')
 
-    page(15, 'Yazılım, kaynaklar ve bütün hikâye', 'Software, sources and the complete story')
-    p('Bir girdi değişince model yeniden öğrenmez. Uygulama girdileri okur; kodlama/eksiklik kurallarını uygular; kayıtlı β’larla z, kayıtlı kalibrasyonla yüzde, ayrı kartla puan, A/B kurallarıyla sıra hesaplar. Eğitim sayfası yalnız kurgu profiller kullanır.',
+    page(15, 'Bütün bunları bir araya getirelim', 'Software, sources and the complete story')
+    p('Hesaplayıcıda yaşı değiştirdiğinizde bilgisayar yeni bir şey öğrenmez. Daha önce öğrenilmiş katsayılarla hesabı tekrar yapar: bilgilerin katkılarını toplar, toplamı yüzdeye çevirir, ayrıca puan kartını ve sıra kurallarını uygular. Eğitim sayfasındaki kurgu örnekler bu hesabı görmeniz içindir; gerçek hasta bilgileri değildir.',
       'An input edit does not retrain the model. The app reads inputs, applies encoding/missingness rules, calculates z with stored coefficients, a percentage with stored calibration, a separate card score and A/B queue lanes. The teaching page uses synthetic profiles only.')
     p('54 kurgu örnek ve 47 kayıtlı öz-test, hesap eşleşmesini kontrol eder. Otomatik testler ile canlı masaüstü/mobil kontroller, yazılımın amaçlanan hesabı yaptığını gösterebilir. Dil geçişi girdileri korumalı; sıfırlama seçili profilin başlangıcına dönmelidir. Bunlar yeni hastalarda klinik başarı kanıtı değildir.',
       'The 54 synthetic examples and 47 stored self-tests check arithmetic agreement. Automated tests and live desktop/mobile checks can establish intended software behaviour. Language switches should retain inputs; reset should restore the selected profile. These are not evidence of clinical performance in new patients.')

@@ -40,7 +40,8 @@ class ModelGuideTests(unittest.TestCase):
             self.assertEqual(asset.read_bytes(),(ROOT/f'output/pdf/{asset.name}').read_bytes())
             reader=PdfReader(asset)
             text=' '.join(page.extract_text() for page in reader.pages)
-            normalized=''.join(text.split())
+            # Arial's PDF mapping may extract a semicolon as the identical Greek glyph.
+            normalized=''.join(text.split()).replace('\u037e',';')
             for block in guide_additions(lang):
                 if block['type']=='chapter':
                     self.assertIn(''.join(block['text'].split()),normalized)

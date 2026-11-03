@@ -2,7 +2,7 @@
   {
     "type": "chapter",
     "number": 0,
-    "text": "Veriden kanıta: bütün hikâye"
+    "text": "Bu çalışma nereden çıktı?"
   },
   {
     "type": "paragraph",
@@ -14,19 +14,19 @@
   },
   {
     "type": "heading",
-    "text": "Birbirinden ayıracağımız üç iş"
+    "text": "Önce kayıtları anlamak, sonra doğru soruyu sormak"
   },
   {
     "type": "paragraph",
-    "text": "1. Arşiv: dosya, örnek, kişi ve aileleri eşleştirmek; hangi verilerin kullanılabildiğini belirlemek.\n2. Tahmin: özgün 1.295 kişide geliştirilen modelin hesabını ve değerlendirmesini açıklamak.\n3. Biyolojik araştırma: genetik özellikler ile klinik özellikler arasındaki mevcut karşılaştırmaları ve belirsizliklerini incelemek."
+    "text": "1. Kayıtları birleştirmek: Hangi dosya kime ait? Aynı kişi birkaç kez mi kaydedilmiş? Kimler aynı aileden?\n2. Sonucu tahmin etmek: 1.295 hastadan öğrenen model, yeni girilen bilgilerle nasıl bir hesap yapıyor?\n3. Biyolojik bir ilişki aramak: Genetik değişikliklerle tümör özellikleri arasında gördüğümüz fark gerçek olabilir mi, yoksa tesadüf ya da eksik kayıtlarla mı açıklanıyor?"
   },
   {
     "type": "heading",
-    "text": "Okuma yolu"
+    "text": "Rehberde nasıl ilerleyelim?"
   },
   {
     "type": "paragraph",
-    "text": "Biyoloji → arşiv → modelin hasta grubu → kodlama ve eksikler → öğrenme → katsayılar → elle hesap → puan kartı → istatistik → laboratuvar ödünleşimleri → biyolojik bulgu → bağımsız doğrulama → yazılım ve kaynaklar."
+    "text": "Önce genetiğin temelini ve elimizdeki dosyaları tanıyacağız. Ardından bilgisayarın bu bilgilerden nasıl öğrendiğini ve bir hasta için hesabın nasıl yapıldığını göreceğiz. Sonunda sayıların ne kadar güvenilir olduğunu, laboratuvarda ne anlama geldiğini ve hâlâ hangi verilere ihtiyaç duyduğumuzu konuşacağız."
   },
   {
     "type": "paragraph",
@@ -40,7 +40,7 @@
   {
     "type": "chapter",
     "number": 1,
-    "text": "Biyoloji ve genetik dili"
+    "text": "Genetik bilmeden başlayalım"
   },
   {
     "type": "paragraph",
@@ -98,11 +98,11 @@
   {
     "type": "chapter",
     "number": 2,
-    "text": "Gerçek arşiv: dosya, satır, kişi ve aile"
+    "text": "Elimizde ne vardı, kayıtları nasıl bir araya getirdik?"
   },
   {
     "type": "paragraph",
-    "text": "Başlangıçta tek bir temiz tablo yoktu. Drive’da bireysel hasta klasörleri, genetik raporlar, varyant çalışma kitapları ve 2019, 2020, 2022 gibi farklı yıllara ait klinik dosyalar bulunuyordu. Aynı hasta farklı sürümlerde veya tekrar örneklerle yer alabilir."
+    "text": "Çalışmanın başında önümüzde hazır, tek bir hasta tablosu yoktu. Drive’da hasta klasörleri, genetik raporlar, genetik değişiklik listeleri ve 2019, 2020, 2022 gibi farklı yıllardan klinik dosyalar vardı. Aynı kişi birkaç dosyada, hatta farklı örnek numaralarıyla bulunabiliyordu. Bu yüzden ilk iş sayıları toplamak değil, kayıtların kime ait olduğunu anlamaktı."
   },
   {
     "type": "table",
@@ -116,7 +116,7 @@
         "2,259"
       ],
       [
-        "Kabul edilmiş operasyonel genetik kişi kimlikleri",
+        "Genetik kayıtlarda ayrı kişi olarak izlenen kimlikler",
         "2,148"
       ],
       [
@@ -124,15 +124,15 @@
         "7,939"
       ],
       [
-        "Kabul edilmiş klinik bağlantısı olan genetik kişiler",
+        "Genetik ve klinik kayıtları güvenilir biçimde eşleştirilen kişiler",
         "1,445"
       ],
       [
-        "Tutarlı kayıtlı aile kimlikleri",
+        "Kayıtlarda tutarlı biçimde izlenen aile numaraları",
         "1,989"
       ],
       [
-        "Temkinli analizde tutulan varyant çağrı satırları",
+        "Kontrollerden sonra değerlendirmeye alınan genetik bulgu satırları",
         "84,492"
       ]
     ]
@@ -147,7 +147,7 @@
   },
   {
     "type": "paragraph",
-    "text": "Kimlik eşleştirmesinde hasta kodu, isim, doğum tarihi, aile numarası, protokol ve özgün rapor birlikte değerlendirilir. Çelişkili bağlantıları zorla kabul etmek, yanlış bir kişiye genetik veya klinik bilgi atayabilir."
+    "text": "İki dosyada benzer bir kod görmek yetmez. Hasta kodunu; isim, doğum tarihi, aile numarası, protokol numarası ve asıl raporla birlikte kontrol etmek gerekir. Bu ayrıntı önemlidir: yanlış eşleşme, bir kişinin tümör bilgisini başka birinin genetik sonucuyla karşılaştırmamıza yol açabilir."
   },
   {
     "type": "note",
@@ -156,7 +156,7 @@
   {
     "type": "chapter",
     "number": 3,
-    "text": "Modelin hasta grubu ve klinik alanlar"
+    "text": "Model hangi hastalardan öğrendi?"
   },
   {
     "type": "paragraph",
@@ -250,7 +250,7 @@
   {
     "type": "chapter",
     "number": 4,
-    "text": "Kodlama, tümör belirteçleri ve eksik bilgi"
+    "text": "Hasta bilgileri bilgisayarın anlayacağı sayılara nasıl çevrildi?"
   },
   {
     "type": "table",
@@ -308,11 +308,11 @@
   {
     "type": "chapter",
     "number": 5,
-    "text": "Öğrenme: katsayılar nasıl bulundu?"
+    "text": "Bilgisayar neye ne kadar önem vereceğini nasıl öğrendi?"
   },
   {
     "type": "paragraph",
-    "text": "Yöntem lojistik regresyondur; derin sinir ağı değildir. Bilgisayar katsayılarla tahmin yapar, tahminleri kayıtlı y sonuçlarıyla karşılaştırır ve hatayı azaltacak katsayıları arar. Katsayıları bulmaya eğitim veya model kurma denir."
+    "text": "Bilgisayara yalnız hasta bilgilerini değil, kayıtlardaki test sonuçlarını da verdik. Bilgisayar bir tahmin yaptı, bunu bildiğimiz sonuçla karşılaştırdı ve hatayı azaltmak için bilgilere verdiği ağırlıkları değiştirdi. Bu ağırlıklara katsayı, onları bulma işine eğitim denir. Kullandığımız yöntem lojistik regresyondur. Yani karmaşık bir sinir ağı değil, katkıları toplayan ve toplamı olasılığa çeviren bir modeldir."
   },
   {
     "type": "paragraph",
@@ -324,7 +324,7 @@
   },
   {
     "type": "paragraph",
-    "text": "L2 düzenlileştirme, katsayıların karelerine dayanan ceza ile aşırı büyük katsayıları sınırlar. C, cezanın ters güç ayarıdır: küçük C daha güçlü ceza demektir. Aşırı uyum (overfitting), geçmiş örneklere fazla özel uyup yeni örneklerde başarısız olma sorunudur."
+    "text": "Bir model geçmiş hastaları çok iyi ayırıp yeni hastalarda başarısız olabilir. Buna aşırı uyum, yani overfitting denir. Bunu sınırlamak için çok büyüyen katsayılara ek bir bedel koyulur: L2 cezası. Bu çalışmadaki C ayarı küçüldükçe ceza güçlenir. Amaç geçmiş kayıtları ezberlemektense yeni hastalarda da işe yarayabilecek bir ilişki öğrenmektir."
   },
   {
     "type": "paragraph",
@@ -341,11 +341,11 @@
   {
     "type": "chapter",
     "number": 6,
-    "text": "Öğrenilmiş 26 katsayı ve sabit"
+    "text": "Hesabın ağırlıkları: katsayılar ne anlatıyor?"
   },
   {
     "type": "paragraph",
-    "text": "Katsayı β, bir girdinin doğrusal skor z’ye katkısını belirler. Pozitif katsayı skoru artırır; negatif katsayı azaltır. Bu tablo yüzde puanları veya nedensel etkiler tablosu değildir. Gösterim yuvarlanmıştır; uygulama tam hassasiyeti kullanır."
+    "text": "Her hasta bilgisi, öğrenilmiş bir ağırlıkla çarpılır. Örneğin yaşın katkısı, yaş ile yaş katsayısının çarpımıdır. Bütün katkılar toplanınca z dediğimiz ara sayı oluşur. Katsayı pozitifse bu toplam artar, negatifse azalır. Bu sayılar doğrudan yüzde değildir; bir özelliğin hastalığa neden olduğunu da göstermez. Tabloda okumayı kolaylaştırmak için yuvarlanırlar, hesapta tam değerleri kullanılır."
   },
   {
     "type": "table",
@@ -471,7 +471,7 @@
   {
     "type": "chapter",
     "number": 7,
-    "text": "Örnek hasta: girdiler ve katkılar"
+    "text": "Bir örnek üzerinden birlikte hesaplayalım"
   },
   {
     "type": "note",
@@ -537,7 +537,7 @@
   {
     "type": "chapter",
     "number": 8,
-    "text": "Skordan yüzdeye: sigmoid ve kalibrasyon"
+    "text": "Topladığımız sayı nasıl yüzdeye dönüşüyor?"
   },
   {
     "type": "paragraph",
@@ -594,7 +594,7 @@
   {
     "type": "chapter",
     "number": 9,
-    "text": "Ayrı puan kartı ve sıra kuralları"
+    "text": "Puan kartı ile model aynı şey mi?"
   },
   {
     "type": "paragraph",
@@ -705,7 +705,7 @@
   {
     "type": "chapter",
     "number": 10,
-    "text": "Diğer ekran sayıları ve başarı ölçütleri"
+    "text": "Ekrandaki diğer sayılar ne demek?"
   },
   {
     "type": "heading",
@@ -783,7 +783,7 @@
   {
     "type": "chapter",
     "number": 11,
-    "text": "Doğrulama, eşikler ve hata tablosu"
+    "text": "Model ne kadar iyi? Bunu nasıl anlarız?"
   },
   {
     "type": "math",
@@ -853,7 +853,7 @@
   {
     "type": "chapter",
     "number": 12,
-    "text": "Laboratuvar kapasitesi: iş yükü ve verim"
+    "text": "Daha az hızlı test yaparsak ne kazanır, ne kaybederiz?"
   },
   {
     "type": "paragraph",
@@ -897,7 +897,7 @@
   },
   {
     "type": "paragraph",
-    "text": "Δ fark demektir; burada N paket sayısı, T saptanabilir hedef sayısıdır. Daha az paket karşılığında daha az hedef saptama ödünleşimi vardır. Tekrar oranlarının ortalaması 8,013; ortalamaların oranı yaklaşık 7,992’dir. Farklı işlemlerdir."
+    "text": "Δ, iki seçenek arasındaki farkı gösterir. N hızlı test paketi sayısı, T bu paketin saptayabildiği hedefleri taşıyan kişi sayısıdır. Daha az paket kullanınca iş yükü azalır; buna karşılık daha az hedef bulunabilir. İkisini birlikte görmek gerekir. Tekrarlardaki oranların ortalaması 8,013; ortalama sayıları birbirine bölünce sonuç yaklaşık 7,992’dir. Bunlar farklı hesaplar olduğu için eşit olmaları beklenmez."
   },
   {
     "type": "paragraph",
@@ -914,7 +914,7 @@
   {
     "type": "chapter",
     "number": 13,
-    "text": "Biyolojik bulgu ve istatistiksel belirsizlik"
+    "text": "87 ailede gördüğümüz farkı neden kesin sonuç saymıyoruz?"
   },
   {
     "type": "paragraph",
@@ -971,12 +971,12 @@
   },
   {
     "type": "paragraph",
-    "text": "Çok karşılaştırma tesadüfi bulgu fırsatını artırır. İstatistiksel düzeltme bütün eksiklik, seçilim ve ölçüm yanlılıklarını gidermez. Bu gözlemde eksiklik/seçilim sorunları çözülmüş değildir; bağımsız doğrulama yoktur."
+    "text": "Yeterince çok karşılaştırma yaparsak, yalnız şans eseri dikkat çekici farklar görebiliriz. Çoklu test düzeltmesi bunun için yapılır; eksik kayıtları veya bazı hastaların grupta daha fazla temsil edilmesini ise tek başına çözmez. Bu gözlemde o sorunlar sürüyor. Aynı farkın ayrı hastalarda da görülüp görülmediği henüz sınanmış değil."
   },
   {
     "type": "chapter",
     "number": 14,
-    "text": "Yeni kayıtlar neden henüz doğrulama sayılmıyor?"
+    "text": "Daha çok dosyamız var; neden hâlâ ayrı hastalara ihtiyacımız var?"
   },
   {
     "type": "paragraph",
@@ -1046,11 +1046,11 @@
   {
     "type": "chapter",
     "number": 15,
-    "text": "Yazılım, kaynaklar ve bütün hikâye"
+    "text": "Bütün bunları bir araya getirelim"
   },
   {
     "type": "paragraph",
-    "text": "Bir girdi değişince model yeniden öğrenmez. Uygulama girdileri okur; kodlama/eksiklik kurallarını uygular; kayıtlı β’larla z, kayıtlı kalibrasyonla yüzde, ayrı kartla puan, A/B kurallarıyla sıra hesaplar. Eğitim sayfası yalnız kurgu profiller kullanır."
+    "text": "Hesaplayıcıda yaşı değiştirdiğinizde bilgisayar yeni bir şey öğrenmez. Daha önce öğrenilmiş katsayılarla hesabı tekrar yapar: bilgilerin katkılarını toplar, toplamı yüzdeye çevirir, ayrıca puan kartını ve sıra kurallarını uygular. Eğitim sayfasındaki kurgu örnekler bu hesabı görmeniz içindir; gerçek hasta bilgileri değildir."
   },
   {
     "type": "paragraph",

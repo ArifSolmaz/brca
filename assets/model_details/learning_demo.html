@@ -1,0 +1,109 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;background:transparent}
+#learning-lab{color:#202b38;background:#fff;border:1px solid #dbe2ea;border-radius:16px;padding:20px;line-height:1.55;max-width:1250px;margin:12px auto;font-size:14px}
+#learning-lab *{box-sizing:border-box}#learning-lab h3{font-size:22px!important;margin:0 0 8px!important}#learning-lab h4{font-size:16px;margin:10px 0}
+#learning-lab p{font-size:14px;margin:7px 0}#learning-lab .ld-note{border-left:3px solid #7560ce;padding:8px 12px;background:#f5f2fc}
+#learning-lab button,#learning-lab select{font:inherit;border:1px solid #c4cdd8;border-radius:7px;background:white;color:#17212b;padding:8px 12px;min-height:44px}
+#learning-lab button{cursor:pointer}#learning-lab button:disabled{opacity:.4;cursor:default}#learning-lab button.primary{background:#554491;color:white;border-color:#554491}
+#learning-lab button:focus-visible,#learning-lab select:focus-visible,#learning-lab input:focus-visible{outline:3px solid #b29df5;outline-offset:2px}
+#learning-lab .ld-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:15px 0}#learning-lab label{display:inline-flex;align-items:center;gap:7px;flex-wrap:wrap}
+#learning-lab input[type=range]{min-width:120px;flex:1;accent-color:#554491}#learning-lab .ld-seek{display:flex;align-items:center;gap:12px}
+#learning-lab .ld-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}#learning-lab .ld-box{padding:14px;border:1px solid #e2e8f0;border-radius:12px;min-width:0}
+#learning-lab .ld-coeffs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}#learning-lab .ld-coeff{padding:8px;background:#eef2f7;border-radius:8px;font-variant-numeric:tabular-nums}
+#learning-lab .ld-coeff b{font-size:20px;display:block}#learning-lab small{color:#596579;font-size:12px}#learning-lab mark{background:#fff1c7;color:#784000}
+#learning-lab svg{display:block;width:100%;height:auto}#learning-lab svg text{font:11px system-ui;fill:#4b5563}#learning-lab .ld-table{overflow:auto}
+#learning-lab table{width:100%;font-variant-numeric:tabular-nums;border-collapse:collapse;font-size:13px}#learning-lab td,#learning-lab th{padding:7px 5px;border-bottom:1px solid #e2e8f0;text-align:right}#learning-lab th:first-child,#learning-lab td:first-child{text-align:left}
+#learning-lab .ld-equation{padding:8px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#learning-lab math{font-size:1.1em}#learning-lab .ld-update{margin:8px 0;padding:8px;background:#f8fafc;border-radius:8px}#learning-lab .ld-update strong{display:block}
+@media(max-width:700px){#learning-lab{padding:14px}#learning-lab .ld-grid{grid-template-columns:1fr}#learning-lab .ld-coeffs{gap:4px}#learning-lab .ld-coeff{padding:6px}#learning-lab .ld-coeff b{font-size:17px}#learning-lab .ld-controls label{width:100%;justify-content:space-between}#learning-lab table{font-size:11px}#learning-lab td,#learning-lab th{padding:6px 3px}}
+</style></head><body>
+<section id="learning-lab" aria-labelledby="ld-title">
+<h3 id="ld-title"></h3><p id="ld-intro"></p><p class="ld-note" id="ld-warning"></p>
+<div class="ld-controls"><button type="button" id="ld-back"></button><button type="button" id="ld-next" class="primary"></button><button type="button" id="ld-play"></button><button type="button" id="ld-reset"></button>
+<label><span id="ld-rate-label"></span><select id="ld-rate"><option value="0.1">0.1</option><option value="0.5">0.5</option><option value="1">1.0</option></select></label>
+<label><span id="ld-penalty-label"></span><select id="ld-penalty"><option value="0">0</option><option value="0.1">0.1</option><option value="0.5">0.5</option></select></label></div>
+<div class="ld-seek"><label for="ld-step" id="ld-step-label"></label><input type="range" min="0" max="60" step="1" value="0" id="ld-step"><output id="ld-position" for="ld-step" aria-live="polite"></output></div>
+<p id="ld-settings-note"></p><div class="ld-coeffs" id="ld-coeffs"></div>
+<div class="ld-grid"><div class="ld-box"><h4 id="ld-boundary-title"></h4><div id="ld-boundary" role="img"></div><p id="ld-boundary-note"></p></div>
+<div class="ld-box"><h4 id="ld-loss-title"></h4><div id="ld-loss" role="img"></div><p id="ld-loss-value" aria-live="polite"></p><p id="ld-loss-note"></p></div></div>
+<h4 id="ld-step-title"></h4><p id="ld-step-story"></p>
+<div class="ld-grid"><div class="ld-box"><h4 id="ld-rows-title"></h4><div class="ld-table" id="ld-rows"></div><p id="ld-rows-note"></p></div>
+<div class="ld-box"><h4 id="ld-update-title"></h4><div class="ld-equation" id="ld-general"></div><p id="ld-symbols"></p><div id="ld-updates"></div><details><summary id="ld-sums-title"></summary><div class="ld-equation" id="ld-sums"></div></details><p id="ld-gradient-note"></p></div></div>
+<p class="ld-note" id="ld-ending"></p><p id="ld-source"></p>
+</section>
+<script>
+(()=>{
+const data=__LESSON_DATA__,tr=data.lang==='tr',t=(a,b)=>tr?a:b,root=document.getElementById('learning-lab'),get=id=>root.querySelector('#ld-'+id);
+if(window.__brcaLearningTimer)clearInterval(window.__brcaLearningTimer);
+let saved={step:0,rate:'0.5',penalty:'0.1'};
+try{saved=JSON.parse(sessionStorage.getItem('brca-fictional-learning'))||saved;}catch(e){}
+if(!data.histories[saved.rate+':'+saved.penalty]||!Number.isInteger(saved.step)||saved.step<0||saved.step>60)saved={step:0,rate:'0.5',penalty:'0.1'};
+let step=saved.step,rate=saved.rate,penalty=saved.penalty,playing=false;
+const n=(v,d=4)=>v.toFixed(d).replace('.',tr?',':'.'),pct=v=>n(v*100,1)+'%';
+const text=(id,a,b)=>get(id).textContent=t(a,b);
+text('title','Model öğrenirken neler değişir?','Watch a model learn');
+text('intro','Sekiz kurgu örneğimiz var. Her örnekte A ve B adlı iki ölçüm ile bildiğimiz bir sonuç (0 veya 1) bulunuyor. Bilgisayar önce herkese %50 diyor. Sonra hatalarına bakıp üç katsayıyı birlikte değiştiriyor. Bir adım ilerleyin; çizginin ve tahminlerin nasıl değiştiğini izleyin.','We have eight fictional examples, each with two measurements, A and B, and a known outcome, 0 or 1. The computer starts by giving everyone 50%. It then uses its errors to update three coefficients together. Take one step and watch the boundary and predictions change.');
+text('warning','Bu, öğrenmenin mantığını anlatan küçük bir ders deneyidir. A ve B’nin tıbbi anlamı yoktur; örnekler hasta değildir. Gerçek BRCA verisi, hesaplayıcının katsayıları ve tarihsel eğitim süreci burada kullanılmaz. Dersi sade tutmak için sınıf ağırlıkları ve olasılık düzeltmesi yoktur. Buradaki λ, gerçek modeldeki C ayarıyla aynı şey değildir.','This is a small classroom experiment about learning. A and B have no medical meaning; the examples are not patients. It uses no actual BRCA records, calculator coefficients or reconstruction of the historical training run. To keep the lesson simple, there are no class weights or probability calibration. Here λ is not the actual model’s C setting.');
+text('back','← Geri','← Back');text('next','Bir adım ilerle →','One step →');text('reset','Başa dön','Restart');text('rate-label','Adım büyüklüğü η','Learning rate η');text('penalty-label','Katsayı cezası λ','Weight penalty λ');text('step-label','Eğitim adımı','Training step');
+text('settings-note','Ayarı değiştirirseniz kurgu eğitim baştan başlar. Oynat düğmesi 60. adımda durur; bu sayı modelin yeterince öğrendiği anlamına gelmez.','Changing a setting restarts the fictional training. Playback stops at step 60; that number does not establish that training is sufficient.');
+text('boundary-title','Aynı örnekler, değişen ayırma çizgisi','Same examples, a changing boundary');
+text('boundary-note','Turuncu noktalar: sonucu 1 olan örnekler. Mavi noktalar: sonucu 0 olanlar. Mor çizgi: modelin %50 dediği yer. Noktaların sonuçları değişmez; modelin onları ayırma biçimi değişir.','Orange dots have outcome 1; blue dots have outcome 0. The purple line marks a predicted probability of 50%. Outcomes do not change; the way the model separates them does.');
+text('loss-title','Hata azalıyor mu?','Is the error decreasing?');
+text('loss-note','Grafik, sekiz örnekteki ortalama logaritmik kayba katsayı cezasının eklenmiş halini gösterir. Yalnız bu kurgu eğitim grubunu ölçer; yeni örneklerde başarı veya klinik yarar göstermez.','The curve shows mean log loss over the eight examples plus the weight penalty. It measures this fictional training set only, not performance on new examples or clinical benefit.');
+text('rows-title','Güncellemede kullanılan sekiz örnek','The eight examples used in the update');
+text('rows-note','p: güncelleme öncesi tahmin; y: bildiğimiz sonuç. p − y, hatanın yönünü verir. Sağdaki yüzde, katsayılar güncellendikten sonraki tahmindir. A ve B, örnek ölçümlerdir; eksi değer almaları normaldir.','p is the prediction before the update; y is the known outcome. p − y gives the direction of the error. The last column is the prediction after updating the weights. A and B are abstract measurements that can be negative.');
+text('update-title','Hatalardan yeni katsayıya','From errors to new weights');
+get('general').innerHTML='<math display="block"><mi>z</mi><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>A</mi><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mi>B</mi></math><math display="block"><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>z</mi></mrow></msup></mrow></mfrac></math><math display="block"><msubsup><mi>β</mi><mi>j</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msubsup><mo>=</mo><msubsup><mi>β</mi><mi>j</mi><mi>t</mi></msubsup><mo>−</mo><mi>η</mi><msub><mi>g</mi><mi>j</mi></msub></math>';
+text('symbols','β: öğrenilen katsayı. t: adım numarası. η (eta): her adımın büyüklüğü. g: hatanın katsayıya göre değişim yönü ve büyüklüğü (gradyan). Pozitif g katsayıyı azaltır; negatif g artırır.','β is a learned weight; t is the step number; η (eta) controls step size; g is the direction and size of the loss change with respect to that weight (the gradient). A positive g reduces the weight; a negative g increases it.');
+text('sums-title','Sekiz hatadan g nasıl çıktı? Sayıları açın.','How did the eight errors give g? Show the numbers.');
+text('gradient-note','Her adımda sekiz örnek birlikte kullanılır. Başlangıç değeri β₀ için g, p − y değerlerinin ortalamasıdır. A ve B için hatalar ilgili ölçümle çarpılıp ortalanır; buna λ × mevcut katsayı eklenir. β₀ cezalandırılmaz. Ceza terimi λ(β₁² + β₂²)/2’dir.','Each step uses all eight examples together. For the intercept β₀, g is the mean of p − y. For A and B, errors are multiplied by that measurement and averaged, then λ times the current weight is added. The intercept is not penalised. The penalty is λ(β₁² + β₂²)/2.');
+text('ending','Burada öğrenmeyi izliyorsunuz. Gerçek hesaplayıcıyı kullanırken ise bu öğrenme döngüsü çalışmaz: daha önce öğrenilmiş katsayılar sabit kalır. Bir modeli iyi tanımak için nasıl hesap yaptığını görmek yetmez; hiç görmediği, ayrı ailelerden hastalarda ne kadar güvenilir olduğunu da sınamak gerekir.','Here you are watching learning. Using the actual calculator does not run this loop: previously learned coefficients stay fixed. Understanding its arithmetic is only part of the story; reliability also needs testing on unseen patients from separate families.');
+get('source').innerHTML=t('Yöntemi öğrenmek için: ','Method background: ')+'<a href="https://developers.google.com/machine-learning/crash-course/logistic-regression/loss-regularization" target="_blank" rel="noopener">Google · log loss</a> · <a href="https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent" target="_blank" rel="noopener">Google · gradient descent</a>';
+get('rate').value=rate;get('penalty').value=penalty;
+const svg=body=>'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 230">'+body+'</svg>';
+function drawBoundary(s){
+ const X=a=>50+(a+2)*80,Y=b=>190-(b+1.5)*50;
+ let body='<path d="M50 30V190H370" fill="none" stroke="#a0aec0"/>';
+ [-2,-1,0,1,2].forEach(a=>body+=`<text x="${X(a)-5}" y="207">${a}</text>`);
+ [-1,0,1].forEach(b=>body+=`<text x="28" y="${Y(b)+4}">${b}</text>`);
+ body+='<text x="205" y="225">A</text><text x="10" y="24">B</text>';
+ const [w0,w1,w2]=s.weights,edges=[];
+ if(Math.abs(w2)>1e-10)for(const a of [-2,2]){const b=-(w0+w1*a)/w2;if(b>=-1.5&&b<=1.7)edges.push([a,b]);}
+ if(Math.abs(w1)>1e-10)for(const b of [-1.5,1.7]){const a=-(w0+w2*b)/w1;if(a>=-2&&a<=2)edges.push([a,b]);}
+ if(edges.length>=2)body+=`<path d="M${X(edges[0][0])} ${Y(edges[0][1])}L${X(edges[1][0])} ${Y(edges[1][1])}" stroke="#7560ce" stroke-width="3" fill="none"/>`;
+ else if(s.weights.every(w=>Math.abs(w)<1e-10))body+=`<text x="110" y="40">${t('Başlangıç: herkes %50','Start: 50% for everyone')}</text>`;
+ s.rows.forEach((r,i)=>{body+=`<circle cx="${X(r.a)}" cy="${Y(r.b)}" r="7" fill="${r.y?'#d97706':'#187ba5'}"/><text x="${X(r.a)+10}" y="${Y(r.b)+4}">${i+1}</text>`;});
+ get('boundary').innerHTML=svg(body);get('boundary').setAttribute('aria-label',t('Kurgu örnekler ve güncel model çizgisi','Fictional examples and the current model boundary'));
+}
+function render(){
+ const hist=data.histories[rate+':'+penalty],s=hist[step],before=hist[Math.max(0,step-1)];
+ try{sessionStorage.setItem('brca-fictional-learning',JSON.stringify({step,rate,penalty}));}catch(e){}
+ get('step').value=step;get('position').textContent=step+' / 60';
+ get('back').disabled=step===0;get('next').disabled=step===60;text('play',playing?'Duraklat':'Oynat',playing?'Pause':'Play');
+ get('coeffs').innerHTML=s.weights.map((w,j)=>`<div class="ld-coeff">β${['₀','₁','₂'][j]} · ${j===0?t('başlangıç','intercept'):['','A','B'][j]}<b>${w===before.weights[j]?n(w):'<mark>'+n(w)+'</mark>'}</b><small>${t('önce','before')}: ${n(before.weights[j])}</small></div>`).join('');
+ drawBoundary(s);
+ const max=Math.max(.75,...hist.map(h=>h.loss))*1.08,points=hist.slice(0,step+1).map((h,i)=>`${50+i*320/60},${190-h.loss/max*160}`).join(' ');
+ get('loss').innerHTML=svg(`<path d="M50 30V190H370" fill="none" stroke="#a0aec0"/><text x="10" y="35">${n(max,2)}</text><text x="27" y="194">0</text><text x="47" y="207">0</text><text x="354" y="207">60</text><text x="178" y="225">${t('Eğitim adımı','Training step')}</text><polyline points="${points}" fill="none" stroke="#148579" stroke-width="3"/><circle cx="${50+step*320/60}" cy="${190-s.loss/max*160}" r="5" fill="#148579"/>`);
+ get('loss').setAttribute('aria-label',t('Eğitim hatası, adım ','Training loss, step ')+step+': '+n(s.loss));
+ get('loss-value').innerHTML=`<b>${t('Güncel hata','Current loss')}: ${n(s.loss,6)}</b> <small>← ${n(before.loss,6)}</small>`;
+ text('step-title',step?`${step-1}. adımdan ${step}. adıma: tam olarak ne oldu?`:'Başlangıç: henüz hiçbir katsayı öğrenilmedi',step?`From step ${step-1} to ${step}: what exactly happened?`:'The start: no weights learned yet');
+ text('step-story',step?'Önce eski katsayılarla sekiz tahmin yapıldı. Tahminler bilinen sonuçlarla karşılaştırıldı. Aşağıdaki hatalar birlikte kullanılarak üç katsayı aynı anda güncellendi; sağ sütunda yeni tahminler var.':'Katsayıların hepsi sıfır. Bu yüzden model bütün örneklere %50 diyor. Aşağıda ilk adımda kullanılacak hataları görüyorsunuz. “Bir adım ilerle” ile ilk güncellemeyi yapın.',step?'The previous weights produced eight predictions. These were compared with the known outcomes. All errors below were used to update the three weights simultaneously; the final column shows the new predictions.':'All weights are zero, so every example gets 50%. Below are the errors ready for the first step. Press “One step” to make the first update.');
+ get('rows').innerHTML='<table><thead><tr>'+['#','A','B','y',t('Önce p','Before p'),'p − y',t('Şimdi p','Now p')].map(v=>'<th scope="col">'+v+'</th>').join('')+'</tr></thead><tbody>'+before.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${n(r.a,1)}</td><td>${n(r.b,1)}</td><td>${r.y}</td><td>${pct(r.p)}</td><td>${n(r.error,3)}</td><td>${pct(s.rows[i].p)}</td></tr>`).join('')+'</tbody></table>';
+ get('sums').innerHTML=[0,1,2].map(j=>{const terms=before.rows.map(r=>r.error*([1,r.a,r.b][j]));return `<div class="ld-update"><strong>g${['₀','₁','₂'][j]}</strong>(${terms.map(v=>n(v,3)).join(' + ')}) / 8 + ${n(j?Number(penalty)*before.weights[j]:0)} = ${n(before.gradient[j])}<br><small>${t('Gösterim yuvarlanır; hesap tam değerlerle yapılır.','Displayed values are rounded; calculation uses full precision.')}</small></div>`;}).join('');
+ get('updates').innerHTML=[0,1,2].map(j=>{
+ const errMean=before.rows.reduce((sum,r)=>sum+r.error*([1,r.a,r.b][j]),0)/8,pen=j?Number(penalty)*before.weights[j]:0;
+ const update=step?`${n(before.weights[j])} − ${n(Number(rate),1)} × (${n(before.gradient[j])}) = <mark>${n(s.weights[j])}</mark>`:t('İlk adım için hazır; henüz uygulanmadı.','Ready for step 1; not applied yet.');
+ return `<div class="ld-update"><strong>β${['₀','₁','₂'][j]} · g = ${n(errMean)} + ${n(pen)} = ${n(before.gradient[j])}</strong><span>${update}</span></div>`;
+ }).join('');
+}
+function stop(){clearInterval(window.__brcaLearningTimer);window.__brcaLearningTimer=null;playing=false;}
+get('back').onclick=()=>{stop();step=Math.max(0,step-1);render();};get('next').onclick=()=>{stop();step=Math.min(60,step+1);render();};
+get('reset').onclick=()=>{stop();step=0;render();};get('step').oninput=()=>{stop();step=Number(get('step').value);render();};
+get('play').onclick=()=>{if(playing){stop();render();return;}if(step===60)step=0;playing=true;window.__brcaLearningTimer=setInterval(()=>{if(!root.isConnected){stop();return;}step++;if(step>=60)stop();render();},850);render();};
+for(const id of ['rate','penalty'])get(id).onchange=()=>{stop();rate=get('rate').value;penalty=get('penalty').value;step=0;render();};
+render();
+// Resize only this teaching frame; no access to calculator state or controls.
+function sizeFrame(){try{if(window.frameElement){const h=Math.ceil(root.getBoundingClientRect().height+30);window.frameElement.style.height=h+'px';window.frameElement.height=h;}}catch(e){}}
+new ResizeObserver(sizeFrame).observe(root);sizeFrame();
+})();
+</script>
+</body></html>

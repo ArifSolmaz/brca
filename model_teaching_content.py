@@ -74,10 +74,24 @@ ORIGIN_INTRO = {
         ],
     },
     'tr': {
-        'title': 'Bu model nasıl geliştirildi',
+        'title': 'Önce bir soru sorduk',
         'paragraphs': [
-            'Bu model, BRCA test sonucu kayıtlarda bulunan 1.295 hastanın geçmiş verileriyle geliştirildi. Bilgisayar; yaş, aile öyküsü ve tümör özelliklerini birlikte değerlendirerek pozitif test sonuçlarını diğer kayıtlı sonuçlardan ayırt etmeye yardımcı olan örüntüleri öğrendi.',
-            'Hesaplayıcı, girdiğiniz bilgilere bu öğrenilmiş örüntüyü uygular. Başarısını ilk hasta grubunun içinde kontrol ettik; başka hastalarda ne kadar güvenilir olduğunu göstermek için bağımsız bir hasta grubuna hâlâ ihtiyaç var. Arşivde daha fazla kayıt bulunması, tek başına bu doğrulamayı sağlamaz.',
+            'Bir hastanın yaşı, ailedeki kanser öyküsü ve tümörünün özellikleri, BRCA testinin sonucuna dair ipucu verebilir mi? Model bu soruyla başladı. Test sonucu kayıtlarda bulunan 1.295 hastanın bilgileri kullanıldı. Bilgisayar, hangi bilgilerin birlikte pozitif sonuçla daha sık görüldüğünü öğrenerek her birine bir ağırlık, yani katsayı verdi.',
+            'Arşivi büyütürken iş yalnız dosya toplamak değildi: aynı kişiye ait kayıtları bulmak, aileleri ayırmak ve raporlarla klinik bilgileri eşleştirmek gerekiyordu. Ama daha çok dosya, kendiliğinden daha güvenilir model demek değil. Hesaplayıcı hâlâ ilk hasta grubundan öğrendiği katsayıları kullanıyor. Başka hastalarda da işe yaradığını göstermek için ayrı bir hasta grubuyla sınanması gerekiyor.',
         ],
     },
 }
+
+# Readable names for encoded categories; the encoded inputs and weights stay unchanged.
+LABELS_TR.update({'grade=g1':'Tümör derecesi 1', 'grade=g3':'Tümör derecesi 3',
+ 'dx=bilateral':'İki memede kanser', 'dx=breast_ovary':'Meme ve yumurtalık kanseri',
+ 'dx=ovarian':'Yalnız yumurtalık kanseri', 'dx=male':'Erkekte meme kanseri'})
+LABELS_EN.update({'grade=g1':'Tumour grade 1', 'grade=g3':'Tumour grade 3',
+ 'dx=bilateral':'Bilateral breast cancer', 'dx=breast_ovary':'Breast and ovarian cancer',
+ 'dx=ovarian':'Ovarian-only cancer', 'dx=male':'Male breast cancer'})
+for _key, _tr, _en in [('balkans','Balkanlar','Balkans'),('black_sea','Karadeniz','Black Sea'),
+ ('middle_anatolia','İç Anadolu','Central Anatolia'),('eastern_anatolia','Doğu Anadolu','Eastern Anatolia'),
+ ('southeastern_anatolia','Güneydoğu Anadolu','Southeastern Anatolia'),('aegean','Ege','Aegean'),
+ ('mediterranean','Akdeniz','Mediterranean')]:
+ LABELS_TR['region='+_key]='Köken bölgesi: '+_tr
+ LABELS_EN['region='+_key]='Origin region: '+_en
