@@ -1,5 +1,6 @@
 """Visualise a frozen synthetic prediction, without fitting or changing any weights."""
 import math
+import base64
 from html import escape
 
 from model_teaching_content import LABELS_TR, LABELS_EN
@@ -53,14 +54,17 @@ def model_visual_html(current, change, lang):
     old_dot = ''
     if previous:
         old_dot = f'<circle cx="{x(previous["z"]):.2f}" cy="{y(previous["p_cal"]):.2f}" r="6" fill="white" stroke="#6b7280" stroke-width="2"/>'
-    graph = f'''<svg viewBox="0 0 380 190" role="img" aria-label="{t('Sabit kalibrasyon eğrisi üzerinde değişen skor', 'Changing score on the fixed calibration curve')}">
+    graph = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 190" role="img" aria-label="{t('Sabit kalibrasyon eğrisi üzerinde değişen skor', 'Changing score on the fixed calibration curve')}">
       <path d="M42 24V150H355" fill="none" stroke="#94a3b8"/>
       <text x="4" y="34">100%</text><text x="12" y="94">50%</text><text x="18" y="154">0%</text>
       <path d="M42 90H355" stroke="#e2e8f0"/>
       <polyline points="{points}" fill="none" stroke="#7560ce" stroke-width="3"/>
       {old_dot}<circle cx="{x(current['z']):.2f}" cy="{y(current['p_cal']):.2f}" r="5" fill="#0f766e" stroke="white" stroke-width="1.5"/>
       <text x="42" y="169">{fmt(low, 1)}</text><text x="326" y="169">{fmt(high, 1)}</text>
-      <text x="145" y="187">{t('Doğrusal skor z', 'Linear score z')}</text></svg>'''
+      <text x="145" y="187">{t('Doğrusal skor z', 'Linear score z')}</text>
+      <style>text{{font:11px Arial;fill:#4b5563}}</style></svg>'''
+    # st.html sanitises inline SVG; an SVG image preserves the fixed curve safely.
+    graph = '<img class="mv-curve" alt="'+t('Sabit eğri; güncel ve önceki skor noktaları', 'Fixed curve with current and previous score points')+'" src="data:image/svg+xml;base64,'+base64.b64encode(graph.encode()).decode()+'">'
     stages = []
     for label, key, multiplier, digits in [(t('Katkıların toplamı', 'Sum of contributions'), 'z', 1, 6),
         (t('Ham olasılık', 'Raw probability'), 'p_raw', 100, 2),
@@ -78,7 +82,7 @@ def model_visual_html(current, change, lang):
     .mv-bar{position:absolute;top:5px;height:7px;border-radius:2px}
     .mv-oldbar{position:absolute;top:1px;height:14px;border:1px dashed #596579;box-sizing:border-box}
     .mv-stages{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mv-stage{background:#eef2f7;padding:8px;border-radius:6px;min-width:0}
-    .mv-stage span,.mv-stage b{display:block}.mv-stage small{display:inline-block}.model-visual svg{width:100%;height:auto;display:block;overflow:visible}.model-visual svg text{font:11px Arial;fill:#4b5563}
+    .mv-stage span,.mv-stage b{display:block}.mv-stage small{display:inline-block}.model-visual .mv-curve{width:100%;height:auto;display:block}
     </style><div class="model-visual">''' + f'''
     <p><b>{t('Girdiyi değiştir → katkılar değişsin → sonuç değişsin.', 'Change an input → contributions change → the result changes.')}</b>
     {t('β katsayıları ve kalibrasyon sabittir; bu ekran modeli yeniden eğitmez.', 'The β coefficients and calibration stay fixed; this page does not retrain the model.')}</p>
