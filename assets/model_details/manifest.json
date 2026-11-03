@@ -128,6 +128,13 @@
       "tr": "8ea9145d6ddd6bf5238990ed0e965764819656221e803924752ea77112ffe838",
       "en": "7020e41be600848de2fcc638cab93d3f7726fbc2ee29d24ef14ceba5f85a5808",
       "byte_identical_to_published_assets": true
+    },
+    "live_downloads_verified": {
+      "date": "2026-11-03",
+      "viewport": "390x844",
+      "byte_identical_to_published_assets": true,
+      "tr": "2b7680b4d498179c89e4293ccc69e914ee62377dc1bf45e08a114e233ddde7d4",
+      "en": "4d3b9737c4a786e9ec312104d0cad95e9cb8ab242fa3c16e526a4f8b3056e6c0"
     }
   }
 }
