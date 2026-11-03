@@ -8,6 +8,7 @@ RUN: streamlit run app.py        Rule B preview: add ?kural=B to the address.
 import json, os, hmac, time
 import streamlit as st
 import brca_core as core
+from calculator_help import input_help
 import importlib
 import capacity_explorer
 import research_overview
@@ -256,6 +257,24 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .rv .rk{font-size:13px; color:var(--muted); margin:0 0 6px 0;} .rv ul{margin:6px 0 0 0; padding-left:20px;} .rv p{margin:6px 0 0 0;}
 .rv.ok{background:#E8F1FB; border:1px solid #9CC3EA; border-left:6px solid #1D70B8;} .rv.ok h5{color:#0B4F8A;}
 .rv.no{background:#F4F6F8; border:1px solid var(--line); border-left:6px solid #4C5966;}
+/* Small clickable information badges beside calculator inputs. */
+.st-key-formcard [data-testid="stTooltipIcon"] button,
+.st-key-robox [data-testid="stTooltipIcon"] button,
+[data-testid="stSegmentedControl"] [data-testid="stTooltipIcon"] button{
+  width:20px;height:20px;border-radius:50%;background:rgba(91,105,125,.09);
+  color:rgba(53,66,86,.65);cursor:pointer;line-height:1;
+}
+.st-key-formcard [data-testid="stTooltipIcon"] button svg,
+.st-key-robox [data-testid="stTooltipIcon"] button svg,
+[data-testid="stSegmentedControl"] [data-testid="stTooltipIcon"] button svg{display:none;}
+.st-key-formcard [data-testid="stTooltipIcon"] button::after,
+.st-key-robox [data-testid="stTooltipIcon"] button::after,
+[data-testid="stSegmentedControl"] [data-testid="stTooltipIcon"] button::after{
+  content:"i";font-family:Georgia,serif;font-size:14px;font-weight:700;
+}
+.st-key-formcard [data-testid="stTooltipIcon"] button:hover,
+.st-key-formcard [data-testid="stTooltipIcon"] button:focus-visible{color:#354256;background:rgba(91,105,125,.18);}
+
 .st-key-formcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:14px 16px 18px 16px;}
 .st-key-resultcard{background:var(--card); border-radius:18px; border:1px solid var(--line); padding:0 0 14px 0; overflow:hidden; gap:0;}
 .st-key-resultcard [data-testid='stExpander']{margin:0 16px; width:auto !important;}
@@ -440,7 +459,7 @@ b2.button(T["clear"], on_click=load, args=(DEFAULTS,), use_container_width=True,
 
 # use mode: priority order (default) or test reduction (clinic-policy option, v6.3)
 fl = lambda x: pct(x, 1 if round(x * 1000) % 10 else 0)
-st.segmented_control(T["mode_lbl"], ["order", "reduce"], format_func=lambda x: T["mode_" + x], key="mode")
+st.segmented_control(T["mode_lbl"], ["order", "reduce"], format_func=lambda x: T["mode_" + x], key="mode", help=input_help(L, "mode"))
 REDUCE = st.session_state.get("mode") == "reduce"
 RO_LINE = lambda: st.session_state.get("ro_line") or 0.05
 RO_STRICT = lambda: bool(st.session_state.get("ro_strict", True))
@@ -448,8 +467,8 @@ if REDUCE:
     with st.container(key="robox"):
         st.html(f"<p class='ro-h'>{T['ro_h']}</p><p class='ro-b'>{T['ro_b']}</p>")
         rc1, rc2 = st.columns([3, 2], vertical_alignment="bottom")
-        rc1.pills(T["ro_line"], list(core.RO_LINES), selection_mode="single", format_func=fl, key="ro_line")
-        rc2.toggle(T["ro_strict"], key="ro_strict")
+        rc1.pills(T["ro_line"], list(core.RO_LINES), selection_mode="single", format_func=fl, key="ro_line", help=input_help(L, "ro_line"))
+        rc2.toggle(T["ro_strict"], key="ro_strict", help=input_help(L, "ro_strict"))
         with st.expander(T["ro_tab_h"]):
             RO = core.RO; rows = ""
             for strict in (True, False):
@@ -472,24 +491,24 @@ with left:
             st.session_state.tnbc = False; st.session_state.ki67 = None
         with st.container(key="agerow"):
             c1, c2 = st.columns(2)
-        c1.number_input(T["age"], min_value=18, max_value=95, step=1, placeholder=T["age_ph"], key="age")
-        c2.number_input(T["ki67_ov"] if ovarian else T["ki67"], min_value=0.0, max_value=100.0, step=1.0, placeholder=T["ki67_ph"], key="ki67", disabled=ovarian)
-        st.pills(T["dx"], ["breast", "bilateral", "breast_ovary", "ovarian", "male"], selection_mode="single", format_func=lambda x: T["dx_lbl"][x], key="dx")
-        st.segmented_control(T["grade"], ["g1", "g2", "g3"], format_func=lambda x: T["grade_lbl"][x], key="grade")
-        st.toggle(T["tnbc_ov"] if ovarian else T["tnbc"], key="tnbc", disabled=ovarian)
-        st.selectbox(T["region"], M["categorical"]["region"], format_func=lambda x: T["reg_lbl"].get(x, x), key="region")
+        c1.number_input(T["age"], min_value=18, max_value=95, step=1, placeholder=T["age_ph"], key="age", help=input_help(L, "age"))
+        c2.number_input(T["ki67_ov"] if ovarian else T["ki67"], min_value=0.0, max_value=100.0, step=1.0, placeholder=T["ki67_ph"], key="ki67", help=input_help(L, "ki67"), disabled=ovarian)
+        st.pills(T["dx"], ["breast", "bilateral", "breast_ovary", "ovarian", "male"], selection_mode="single", format_func=lambda x: T["dx_lbl"][x], key="dx", help=input_help(L, "dx"))
+        st.segmented_control(T["grade"], ["g1", "g2", "g3"], format_func=lambda x: T["grade_lbl"][x], key="grade", help=input_help(L, "grade"))
+        st.toggle(T["tnbc_ov"] if ovarian else T["tnbc"], key="tnbc", help=input_help(L, "tnbc"), disabled=ovarian)
+        st.selectbox(T["region"], M["categorical"]["region"], format_func=lambda x: T["reg_lbl"].get(x, x), key="region", help=input_help(L, "region"))
         st.html(f"<div class='step' style='margin-top:14px'><b>2</b>{T['step2']}</div><p class='help'>{T['fam_help']}</p>")
         f1, f2 = st.columns(2)
         for i, k in enumerate(["fdr_breast_lt40", "fdr_breast_ge40", "fdr_ovary", "sdr_breast_lt40"]):
-            (f1 if i < 2 else f2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k)
+            (f1 if i < 2 else f2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k, help=input_help(L, k))
         more = sum(st.session_state[k] for k in ["sdr_breast_ge40", "sdr_ovary", "tdr_breast", "fdr_other"])
         with st.expander(T["fam_more"] + (f" · {more}" if more else "")):
             g1, g2 = st.columns(2)
             for i, k in enumerate(["sdr_breast_ge40", "sdr_ovary", "tdr_breast", "fdr_other"]):
-                (g1 if i < 2 else g2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k)
+                (g1 if i < 2 else g2).number_input(T["fam"][k], min_value=0, max_value=6, step=1, key=k, help=input_help(L, k))
         st.html(f"<div class='step' style='margin-top:14px'><b>3</b>{T['step3']}</div><p class='help'>{T['urg_help']}</p>")
-        st.toggle(T["urg_dec"], key="urg_dec")
-        st.toggle(T["urg_fam"], key="urg_fam")
+        st.toggle(T["urg_dec"], key="urg_dec", help=input_help(L, "urg_dec"))
+        st.toggle(T["urg_fam"], key="urg_fam", help=input_help(L, "urg_fam"))
 
 ss = st.session_state
 with right:
