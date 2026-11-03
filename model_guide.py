@@ -115,8 +115,8 @@ def render_model_guide(lang='tr'):
                 st.markdown(f'[{block["text"]}]({block["url"]})')
         back_to_contents(current_chapter)
         st.divider()
-        st.caption('PDF sürümleri giriş ve 1–15. bölümleri içerir. Yapay zekâ, öğrenme ve önceki yayın hakkındaki 16–18. bölümler bu web sayfasına eklenmiştir.' if tr else
-                   'The PDF editions contain the introduction and chapters 1–15. Chapters 16–18 on AI, learning and the earlier publication are additions to this web page.')
+        st.caption('PDF’ler giriş ve 1–18. bölümleri içerir; web rehberiyle aynı eğitim içeriğini taşır.' if tr else
+                   'The PDFs include the introduction and chapters 1–18, with the same educational content as the web guide.')
         left,right=st.columns(2)
         for column,language,label in [(left,'TR','Türkçe Model Rehberi · PDF'),(right,'EN','English Model Guide · PDF')]:
             pdf = ASSETS / f'BRCA_Model_Guide_{language}.pdf'

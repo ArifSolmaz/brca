@@ -6,6 +6,8 @@ from model_guide import guide_latex, guide_mobile_steps, NAV_SCRIPT
 from pathlib import Path
 from streamlit.testing.v1 import AppTest
 from scripts.build_model_guides import build
+from model_guide_additions import guide_additions
+from pypdf import PdfReader
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -31,6 +33,22 @@ class ModelGuideTests(unittest.TestCase):
         self.assertIn('guide-toc a',NAV_SCRIPT)
         self.assertIn('preventDefault()',NAV_SCRIPT)
         self.assertIn('scrollIntoView',NAV_SCRIPT)
+
+    def test_downloadable_pdfs_include_shared_additions_and_their_sources(self):
+        for lang in ['tr','en']:
+            asset=ROOT/f'assets/model_details/BRCA_Model_Guide_{lang.upper()}.pdf'
+            self.assertEqual(asset.read_bytes(),(ROOT/f'output/pdf/{asset.name}').read_bytes())
+            reader=PdfReader(asset)
+            text=' '.join(page.extract_text() for page in reader.pages)
+            normalized=''.join(text.split())
+            for block in guide_additions(lang):
+                if block['type']=='chapter':
+                    self.assertIn(''.join(block['text'].split()),normalized)
+            links={str(a.get_object().get('/A',{}).get('/URI','')) for page in reader.pages for a in page.get('/Annots',[])}
+            for block in guide_additions(lang):
+                if block['type']=='link': self.assertIn(block['url'],links)
+            for value in ['1.609','0.223','4.605','92.88' if lang=='en' else '92,88']:
+                self.assertIn(value,text)
 
     def test_fourth_view_deep_links_and_language_switch(self):
         for lang in ['tr','en']:

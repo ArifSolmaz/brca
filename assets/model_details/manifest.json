@@ -23,8 +23,11 @@
     "assets/model_details/BRCA_Model_Details_EN.pdf": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
     "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e",
-    "assets/model_details/BRCA_Model_Guide_TR.pdf": "8ea9145d6ddd6bf5238990ed0e965764819656221e803924752ea77112ffe838",
-    "assets/model_details/BRCA_Model_Guide_EN.pdf": "7020e41be600848de2fcc638cab93d3f7726fbc2ee29d24ef14ceba5f85a5808"
+    "assets/model_details/BRCA_Model_Guide_TR.pdf": "2b7680b4d498179c89e4293ccc69e914ee62377dc1bf45e08a114e233ddde7d4",
+    "assets/model_details/BRCA_Model_Guide_EN.pdf": "4d3b9737c4a786e9ec312104d0cad95e9cb8ab242fa3c16e526a4f8b3056e6c0",
+    "model_guide.py": "614a2e0095e2ea429a1c08dc32ba10f988c32bd48514d478331fb03de116c535",
+    "model_guide_additions.py": "0df49101600ad92eb311aa6e17b879793722b8e36eb5dea1eb70ad20ddf3d94d",
+    "scripts/build_model_guides.py": "4cdb6bd8d4d047073d54681f857a7de17e1fb7c13557374e985f5ca36a320720"
   },
   "live_pdf_downloads_verified": {
     "date": "2026-11-02",
@@ -107,18 +110,20 @@
       "tr",
       "en"
     ],
-    "pages_each": 16,
+    "pages_each": 19,
     "new_analyses": 0,
     "model_fit_calls": 0,
     "calculator_unchanged": true,
-    "pdf_pages_visually_reviewed": 32,
+    "pdf_pages_visually_reviewed": 38,
     "formula_typesetting": "XeLaTeX",
     "download_labels": [
       "Türkçe Model Rehberi · PDF",
       "English Model Guide · PDF"
     ],
-    "tests_passed": 33,
-    "live_downloads_verified": {
+    "tests_passed": 37,
+    "chapter_count": 18,
+    "web_pdf_same_content": true,
+    "previous_live_downloads_verified": {
       "date": "2026-11-03",
       "tr": "8ea9145d6ddd6bf5238990ed0e965764819656221e803924752ea77112ffe838",
       "en": "7020e41be600848de2fcc638cab93d3f7726fbc2ee29d24ef14ceba5f85a5808",

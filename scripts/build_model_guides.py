@@ -6,8 +6,12 @@ from pathlib import Path
 import json
 import shutil
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from model_guide_additions import guide_additions
+
 WORK = ROOT / 'tmp/pdfs/model_guides'
 OUT = ROOT / 'output/pdf'
 ASSETS = ROOT / 'assets/model_details'
@@ -18,7 +22,7 @@ def esc(value):
     text = ''.join({'\\': r'\textbackslash{}', '&': r'\&', '%': r'\%', '$': r'\$',
                     '#': r'\#', '_': r'\_', '{': r'\{', '}': r'\}', '~': r'\textasciitilde{}',
                     '^': r'\textasciicircum{}'}.get(c, c) for c in str(value))
-    for symbol,tex in [('xⱼ',r'$x_j$'),('βⱼ',r'$\beta_j$'),('β₀',r'$\beta_0$'),('pᵢ',r'$p_i$'),('yᵢ',r'$y_i$')]:text=text.replace(symbol,tex)
+    for symbol,tex in [('xⱼ',r'$x_j$'),('βⱼ',r'$\beta_j$'),('β₀',r'$\beta_0$'),('pᵢ',r'$p_i$'),('yᵢ',r'$y_i$'),('ℓ',r'$\ell$')]:text=text.replace(symbol,tex)
     return text
 
 
@@ -415,6 +419,19 @@ z={}&-1.608283515050-1.130177733759\\
 
     if web:
         return blocks
+    # The web and PDF share these exact teaching blocks; no analysis is run.
+    for block in guide_additions(lang):
+        kind = block['type']
+        text = block.get('text', '')
+        if kind == 'chapter': page(block['number'], text, text)
+        elif kind == 'paragraph': p(text, text)
+        elif kind == 'heading': heading(text, text)
+        elif kind == 'note': note(text, text)
+        elif kind == 'math': math(text)
+        elif kind == 'table':
+            table(block['headers'], block['headers'], block['rows'], r'p{.16\linewidth}XX')
+        elif kind == 'link':
+            raw(r'\href{' + esc(block['url']) + '}{' + esc(text) + r'}\par')
     raw(r'\end{document}')
     tex = WORK / f'BRCA_Model_Guide_{lang.upper()}.tex'
     tex.write_text(preamble + '\n'.join(parts))
