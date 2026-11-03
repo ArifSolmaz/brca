@@ -58,7 +58,7 @@ WORKBENCH_STYLE = """<style>
 @media(min-width:1100px){
 .block-container:has(.st-key-teaching_workbench){max-width:none!important;width:100%;padding:0 28px 36px!important}
 .block-container:has(.st-key-teaching_workbench) h1{font-size:28px!important;margin:8px 0 4px!important;padding:0!important}
-.st-key-teaching_inputs,.st-key-teaching_terms,.st-key-teaching_equations{height:calc(100dvh - 305px)!important;max-height:calc(100dvh - 305px)!important;overflow-y:auto;overflow-x:hidden;border:1px solid #dce1e8;border-radius:12px;padding:14px;background:#fff;box-sizing:border-box;scrollbar-gutter:stable}
+.st-key-teaching_inputs,.st-key-teaching_terms,.st-key-teaching_equations{height:auto!important;max-height:none!important;overflow:visible!important;border:1px solid #dce1e8;border-radius:12px;padding:14px;background:#fff;box-sizing:border-box}
 .st-key-teaching_inputs [data-testid=stVerticalBlock],.st-key-teaching_terms [data-testid=stVerticalBlock],.st-key-teaching_equations [data-testid=stVerticalBlock]{gap:6px}
 .st-key-teaching_inputs [data-testid=stWidgetLabel] p{font-size:12px;line-height:1.2}
 .st-key-teaching_inputs input{font-size:14px;min-height:30px}
@@ -335,8 +335,6 @@ def render_model_teaching(lang):
     with terms_col:
         terms_panel=st.container(key='teaching_terms')
     with terms_panel:
-        with st.expander(t('Hesabı gözünüzle izleyin: bilgiler değişir, katsayılar sabit kalır', 'See the model · fixed coefficients, changing contributions'), expanded=True):
-            st.html(model_visual_html(r,change,lang))
         st.subheader(t('Her bilgi hesaba ne katıyor?','Products and running sum'))
         st.caption(t('Sarı değer güncel; ← önceki değer. Birikimli toplamda değişen her hücre işaretlenir.', 'Yellow values are current; ← previous. Every affected running-sum cell is marked.'))
         st.html(contribution_html(r,change,lang))
@@ -361,6 +359,8 @@ def render_model_teaching(lang):
         st.caption(t('Kutudaki sayı güncel değerdir; yanındaki ← önceki değeri gösterir. Yalnız son düzenlemeden etkilenen değerler işaretlenir.', 'Boxed values are current; ← shows the previous value beside each one. Only quantities affected by the last edit are marked.'))
         if urg_fam:st.caption(t('Model ailede bilinen bu varyantı hesaba katmaz. Aşağıdaki yüzdeyi yalnız işlemleri öğrenmek için gösteriyoruz; kişisel olasılık olarak kullanmayın.', 'Familial information is absent from the model. The percentage below is internal teaching arithmetic only.'))
         render_compact_steps(r,lang,previous)
+    with st.expander(t('Hesabı gözünüzle izleyin: bilgiler değişir, katsayılar sabit kalır', 'See the model · fixed coefficients, changing contributions')):
+        st.html(model_visual_html(r,change,lang))
     with st.expander(t('Hesabın ayrıntıları: semboller ve sayılar ne anlama geliyor?','Detailed explanations and full-symbol walkthrough')):
         if change:
             with st.expander(t('Son değiştirdiğiniz bilgi hesabı nasıl etkiledi?','Last-edit contributions — what changed?'),expanded=True):
