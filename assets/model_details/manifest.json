@@ -143,15 +143,6 @@
     "interactive_learning": "Web only; PDF includes explanation and direct lesson link",
     "prediction_scope_and_clinical_utility_chapter": 19,
     "scope_note_on_first_page": true,
-    "live_downloads_verified": {
-      "date": "2026-11-03",
-      "viewport": "390x844",
-      "pages_each": 20,
-      "chapter19_explanations_and_table_match": true,
-      "byte_identical_to_published_assets": true,
-      "tr": "9e4a5527556cd629916ad3943a74f028ae18f53e19ff61c5a716aac0b276b1b3",
-      "en": "c80907ac26868911a4af14cf2a680f29284f8f4e7b5219de383d8ce79c120ded"
-    },
     "actual_training_explanation": {
       "chapter": 20,
       "steps": 8,
@@ -164,6 +155,24 @@
       "synthetic_demo_distinction_explicit": true,
       "calculator_unchanged": true,
       "new_analyses": 0
+    },
+    "prior_chapter19_live_download_verification": {
+      "date": "2026-11-03",
+      "viewport": "390x844",
+      "pages_each": 20,
+      "chapter19_explanations_and_table_match": true,
+      "byte_identical_to_published_assets": true,
+      "tr": "9e4a5527556cd629916ad3943a74f028ae18f53e19ff61c5a716aac0b276b1b3",
+      "en": "c80907ac26868911a4af14cf2a680f29284f8f4e7b5219de383d8ce79c120ded"
+    },
+    "live_downloads_verified": {
+      "date": "2026-11-03",
+      "pages_each": 22,
+      "byte_identical_to_published_assets": true,
+      "chapter20_visible_both_languages": true,
+      "chapter20_shared_paragraphs_and_table_match": true,
+      "tr": "030bcbc353ecb0dc6338823503dfee622d74c1f6275822a3fcaecf468806df56",
+      "en": "c2cd9c02bc3031e0f668ec245854c0cc9114b0cb03f97485a18fa3adc23ceb25"
     }
   },
   "fictional_learning_lesson": {
