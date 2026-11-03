@@ -258,18 +258,21 @@ h1,h2,h3,.disp{font-family:'Geist', system-ui, sans-serif !important; letter-spa
 .rv.ok{background:#E8F1FB; border:1px solid #9CC3EA; border-left:6px solid #1D70B8;} .rv.ok h5{color:#0B4F8A;}
 .rv.no{background:#F4F6F8; border:1px solid var(--line); border-left:6px solid #4C5966;}
 /* Small clickable information badges beside calculator inputs. */
+[data-testid="stTooltipContent"]{max-width:min(340px, calc(100vw - 32px))!important;white-space:normal!important;overflow-wrap:anywhere;}
+[data-testid="stTooltipContent"] p{white-space:normal!important;}
 .st-key-formcard [data-testid="stTooltipIcon"] button,
 .st-key-robox [data-testid="stTooltipIcon"] button,
-[data-testid="stSegmentedControl"] [data-testid="stTooltipIcon"] button{
-  width:20px;height:20px;border-radius:50%;background:rgba(91,105,125,.09);
+.st-key-calcmode [data-testid="stTooltipIcon"] button{
+  width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;
+  padding:0!important;border:0!important;border-radius:50%;background:rgba(91,105,125,.09);
   color:rgba(53,66,86,.65);cursor:pointer;line-height:1;
 }
 .st-key-formcard [data-testid="stTooltipIcon"] button svg,
 .st-key-robox [data-testid="stTooltipIcon"] button svg,
-[data-testid="stSegmentedControl"] [data-testid="stTooltipIcon"] button svg{display:none;}
+.st-key-calcmode [data-testid="stTooltipIcon"] button svg{display:none;}
 .st-key-formcard [data-testid="stTooltipIcon"] button::after,
 .st-key-robox [data-testid="stTooltipIcon"] button::after,
-[data-testid="stSegmentedControl"] [data-testid="stTooltipIcon"] button::after{
+.st-key-calcmode [data-testid="stTooltipIcon"] button::after{
   content:"i";font-family:Georgia,serif;font-size:14px;font-weight:700;
 }
 .st-key-formcard [data-testid="stTooltipIcon"] button:hover,
@@ -459,7 +462,8 @@ b2.button(T["clear"], on_click=load, args=(DEFAULTS,), use_container_width=True,
 
 # use mode: priority order (default) or test reduction (clinic-policy option, v6.3)
 fl = lambda x: pct(x, 1 if round(x * 1000) % 10 else 0)
-st.segmented_control(T["mode_lbl"], ["order", "reduce"], format_func=lambda x: T["mode_" + x], key="mode", help=input_help(L, "mode"))
+with st.container(key="calcmode"):
+    st.segmented_control(T["mode_lbl"], ["order", "reduce"], format_func=lambda x: T["mode_" + x], key="mode", help=input_help(L, "mode"))
 REDUCE = st.session_state.get("mode") == "reduce"
 RO_LINE = lambda: st.session_state.get("ro_line") or 0.05
 RO_STRICT = lambda: bool(st.session_state.get("ro_strict", True))
