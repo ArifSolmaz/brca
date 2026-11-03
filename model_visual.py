@@ -83,15 +83,28 @@ def model_visual_html(current, change, lang):
     .mv-oldbar{position:absolute;top:1px;height:14px;border:1px dashed #596579;box-sizing:border-box}
     .mv-stages{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mv-stage{background:#eef2f7;padding:8px;border-radius:6px;min-width:0}
     .mv-stage span,.mv-stage b{display:block}.mv-stage small{display:inline-block}.model-visual .mv-curve{width:100%;height:auto;display:block}
+
+    @media(min-width:1100px){
+      .st-key-teaching_terms .model-visual{font-size:12px;line-height:1.25}
+      .st-key-teaching_terms .model-visual p{font-size:11px!important;margin:3px 0 6px}
+      .st-key-teaching_terms .model-visual small{font-size:11px}
+      .st-key-teaching_terms .mv-terms{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+      .st-key-teaching_terms .mv-term{margin:0;min-width:0}
+      .st-key-teaching_terms .mv-product{font-size:11px;overflow-wrap:anywhere}
+      .st-key-teaching_terms .mv-outcome{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center}
+      .st-key-teaching_terms .mv-stages{gap:4px}
+      .st-key-teaching_terms .mv-stage{padding:5px;font-size:11px;overflow-wrap:anywhere}
+      .st-key-teaching_terms .mv-curve{min-width:0}
+    }
     </style><div class="model-visual">''' + f'''
     <p><b>{t('Bir hasta bilgisini değiştirin; hesaba katkısını ve sonucu birlikte izleyin.', 'Change an input → contributions change → the result changes.')}</b>
     {t('β katsayıları ve kalibrasyon sabittir; bu ekran modeli yeniden eğitmez.', 'The β coefficients and calibration stay fixed; this page does not retrain the model.')}</p>
     <p>{t('Sola uzanan çubuk toplamı azaltır, sağa uzanan artırır. Kesikli çizgi önceki katkıyı, sarı renk değişen sayıyı gösterir. Burada hesabın nasıl değiştiğine bakıyoruz; biyolojik bir neden-sonuç ilişkisi ölçmüyoruz.', 'Left: a contribution reducing the score. Right: a contribution increasing it. Dashed outline: previous contribution; yellow: a changed number. These are calculation effects in this example, not causal effects.')}</p>
-    {''.join(rows)}
+    <div class="mv-terms">{''.join(rows)}</div>
     <p>{t('Sıfır katkılı diğer terimler gösterilmiyor. Çubuklar yüzdeyi değil, z skoruna katkıyı gösterir.', 'Other zero-contribution terms are omitted. Bars show contributions to z, not percentages.')}</p>
-    <div class="mv-stages">{''.join(stages)}</div>
-    <p>{t('Sabit kalibrasyon:', 'Fixed calibration:')} a = {fmt(a, 6)}; b = {fmt(b, 6)}.</p>
-    {graph}
+    <div class="mv-outcome"><div class="mv-stages">{''.join(stages)}</div>
+    <div><p>{t('Sabit kalibrasyon:', 'Fixed calibration:')} a = {fmt(a, 6)}; b = {fmt(b, 6)}.</p>
+    {graph}</div></div>
     <p>{t('Mor eğri sabit model dönüşümüdür; yeşil nokta güncel, boş nokta önceki örnektir. Katsayıların değişmesi, etiketli hasta verileriyle yeniden eğitim gerektirir; burada yapılmaz.', 'The purple curve is the fixed model transformation; the green point is current and the hollow point is previous. Changing coefficients requires retraining with labelled patient data; that does not happen here.')}</p>
     {('<p><b>'+t('Ailede belgeli varyant seçili: bu yüzde yalnız iç eğitim hesabıdır, kişisel olasılık değildir.', 'Documented familial variant selected: this percentage is internal teaching arithmetic, not a personal probability.')+'</b></p>') if current['v'].get('urg_fam') else ''}
     </div>'''
