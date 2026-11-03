@@ -28,9 +28,10 @@
     "model_guide.py": "872ea51528b19ce3be9cf1011af45f8d503d4a7dbe6d67f98c0c421d3443d443",
     "model_guide_additions.py": "937dbdd7eae963adf902ca6cd232819fecbb6310520eadb18c5494fb6ada82bb",
     "scripts/build_model_guides.py": "bc601124e0c954444437ea049941873c7025d91d9966b387741049e5ac9b58a2",
-    "learning_demo.py": "10174e13a13a737c6f8ba8837e2dfa91ff3a531e1963279f9b168e3c40418eff",
+    "learning_demo.py": "6f0294e0e91050826a6a9ef1a5b0b86632928328adecf7db5ccffed5d6f7276d",
     "model_visual.py": "59752ee1cb1fc2abf31c2a5981613ffa24adc0d42f736633496792356c9096f9",
-    "assets/model_details/learning_demo.html": "94d41732ef0f9ddbf9412f2baeef4f0541b99bf01f9feb0a95bfeff54acbe781"
+    "assets/model_details/learning_demo.html": "a3b824ba8a9cd9b6f7f92ec67a6048cd04eacebc44d201d10efd171859504666",
+    "assets/model_details/learning_math.js": "ac80d174003e1305531832d3c36b4ecc98669be5f52a7f6a620607f9e26558e4"
   },
   "live_pdf_downloads_verified": {
     "date": "2026-11-02",
@@ -173,6 +174,16 @@
       "language switch preserves step"
     ],
     "live_verification_blocker": "Application password session expired on reopening; sign-in requested.",
-    "local_mobile_verified": false
+    "local_mobile_verified": false,
+    "editable_examples": true,
+    "input_bounds": [
+      -3,
+      3
+    ],
+    "editable_binary_outcomes": true,
+    "previous_dataset_comparison": true,
+    "browser_recomputes_from_edited_rows": true,
+    "language_switch_preserves_applied_rows": true,
+    "tests_passed": 43
   }
 }

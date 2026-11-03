@@ -3,7 +3,7 @@ html,body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;back
 #learning-lab{color:#202b38;background:#fff;border:1px solid #dbe2ea;border-radius:16px;padding:20px;line-height:1.55;max-width:1250px;margin:12px auto;font-size:14px}
 #learning-lab *{box-sizing:border-box}#learning-lab h3{font-size:22px!important;margin:0 0 8px!important}#learning-lab h4{font-size:16px;margin:10px 0}
 #learning-lab p{font-size:14px;margin:7px 0}#learning-lab .ld-note{border-left:3px solid #7560ce;padding:8px 12px;background:#f5f2fc}
-#learning-lab button,#learning-lab select{font:inherit;border:1px solid #c4cdd8;border-radius:7px;background:white;color:#17212b;padding:8px 12px;min-height:44px}
+#learning-lab button,#learning-lab select,#learning-lab input[type=number]{font:inherit;border:1px solid #c4cdd8;border-radius:7px;background:white;color:#17212b;padding:8px 12px;min-height:44px}
 #learning-lab button{cursor:pointer}#learning-lab button:disabled{opacity:.4;cursor:default}#learning-lab button.primary{background:#554491;color:white;border-color:#554491}
 #learning-lab button:focus-visible,#learning-lab select:focus-visible,#learning-lab input:focus-visible{outline:3px solid #b29df5;outline-offset:2px}
 #learning-lab .ld-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:15px 0}#learning-lab label{display:inline-flex;align-items:center;gap:7px;flex-wrap:wrap}
@@ -13,16 +13,18 @@ html,body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;back
 #learning-lab .ld-coeff b{font-size:20px;display:block}#learning-lab small{color:#596579;font-size:12px}#learning-lab mark{background:#fff1c7;color:#784000}
 #learning-lab svg{display:block;width:100%;height:auto}#learning-lab svg text{font:11px system-ui;fill:#4b5563}#learning-lab .ld-table{overflow:auto}
 #learning-lab table{width:100%;font-variant-numeric:tabular-nums;border-collapse:collapse;font-size:13px}#learning-lab td,#learning-lab th{padding:7px 5px;border-bottom:1px solid #e2e8f0;text-align:right}#learning-lab th:first-child,#learning-lab td:first-child{text-align:left}
-#learning-lab .ld-equation{padding:8px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#learning-lab math{font-size:1.1em}#learning-lab .ld-update{margin:8px 0;padding:8px;background:#f8fafc;border-radius:8px}#learning-lab .ld-update strong{display:block}
+#learning-lab .ld-editor input{width:80px;max-width:100%;min-width:0}#learning-lab .ld-editor select{width:64px;min-width:0}#learning-lab .ld-editor table{table-layout:fixed}#learning-lab .ld-editor th:first-child{width:34px}#learning-lab .ld-editor .edited{background:#fff1c7}#learning-lab .ld-editor summary{cursor:pointer;font-weight:650;padding:10px 0}#learning-lab .ld-status{padding:7px 0;font-weight:600}#learning-lab .ld-compare{border-left:3px dashed #64748b;padding:8px 12px;background:#f8fafc}#learning-lab .ld-equation{padding:8px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#learning-lab math{font-size:1.1em}#learning-lab .ld-update{margin:8px 0;padding:8px;background:#f8fafc;border-radius:8px}#learning-lab .ld-update strong{display:block}
 @media(max-width:700px){#learning-lab{padding:14px}#learning-lab .ld-grid{grid-template-columns:1fr}#learning-lab .ld-coeffs{gap:4px}#learning-lab .ld-coeff{padding:6px}#learning-lab .ld-coeff b{font-size:17px}#learning-lab .ld-controls label{width:100%;justify-content:space-between}#learning-lab table{font-size:11px}#learning-lab td,#learning-lab th{padding:6px 3px}}
 </style></head><body>
 <section id="learning-lab" aria-labelledby="ld-title">
 <h3 id="ld-title"></h3><p id="ld-intro"></p><p class="ld-note" id="ld-warning"></p>
+<details class="ld-editor" id="ld-editor"><summary id="ld-edit-title"></summary><p id="ld-edit-help"></p><div class="ld-table" id="ld-inputs"></div><button type="button" id="ld-restore"></button><p class="ld-status" id="ld-edit-status" role="status"></p></details>
 <div class="ld-controls"><button type="button" id="ld-back"></button><button type="button" id="ld-next" class="primary"></button><button type="button" id="ld-play"></button><button type="button" id="ld-reset"></button>
 <label><span id="ld-rate-label"></span><select id="ld-rate"><option value="0.1">0.1</option><option value="0.5">0.5</option><option value="1">1.0</option></select></label>
 <label><span id="ld-penalty-label"></span><select id="ld-penalty"><option value="0">0</option><option value="0.1">0.1</option><option value="0.5">0.5</option></select></label></div>
 <div class="ld-seek"><label for="ld-step" id="ld-step-label"></label><input type="range" min="0" max="60" step="1" value="0" id="ld-step"><output id="ld-position" for="ld-step" aria-live="polite"></output></div>
 <p id="ld-settings-note"></p><div class="ld-coeffs" id="ld-coeffs"></div>
+<p class="ld-compare" id="ld-data-compare" hidden></p>
 <div class="ld-grid"><div class="ld-box"><h4 id="ld-boundary-title"></h4><div id="ld-boundary" role="img"></div><p id="ld-boundary-note"></p></div>
 <div class="ld-box"><h4 id="ld-loss-title"></h4><div id="ld-loss" role="img"></div><p id="ld-loss-value" aria-live="polite"></p><p id="ld-loss-note"></p></div></div>
 <h4 id="ld-step-title"></h4><p id="ld-step-story"></p>
@@ -31,13 +33,20 @@ html,body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;back
 <p class="ld-note" id="ld-ending"></p><p id="ld-source"></p>
 </section>
 <script>
+__LESSON_MATH__
 (()=>{
 const data=__LESSON_DATA__,tr=data.lang==='tr',t=(a,b)=>tr?a:b,root=document.getElementById('learning-lab'),get=id=>root.querySelector('#ld-'+id);
 if(window.__brcaLearningTimer)clearInterval(window.__brcaLearningTimer);
 let saved={step:0,rate:'0.5',penalty:'0.1'};
 try{saved=JSON.parse(sessionStorage.getItem('brca-fictional-learning'))||saved;}catch(e){}
-if(!data.histories[saved.rate+':'+saved.penalty]||!Number.isInteger(saved.step)||saved.step<0||saved.step>60)saved={step:0,rate:'0.5',penalty:'0.1'};
-let step=saved.step,rate=saved.rate,penalty=saved.penalty,playing=false;
+if(![.1,.5,1].includes(Number(saved.rate))||![0,.1,.5].includes(Number(saved.penalty))||!Number.isInteger(saved.step)||saved.step<0||saved.step>60)saved={step:0,rate:'0.5',penalty:'0.1'};
+let step=saved.step,rate=String(Number(saved.rate)),penalty=String(Number(saved.penalty)),playing=false,draftValid=true;
+const copy=rows=>rows.map(r=>[...r]),defaults=copy(data.examples);
+let examples=ToyLearning.valid(saved.examples)?copy(saved.examples):copy(defaults);
+let previousExamples=ToyLearning.valid(saved.previousExamples)?copy(saved.previousExamples):null;
+let history,previousHistory;
+function rebuild(){history=ToyLearning.trajectory(Number(rate),Number(penalty),examples);previousHistory=previousExamples?ToyLearning.trajectory(Number(rate),Number(penalty),previousExamples):null;}
+rebuild();
 const n=(v,d=4)=>v.toFixed(d).replace('.',tr?',':'.'),pct=v=>n(v*100,1)+'%';
 const text=(id,a,b)=>get(id).textContent=t(a,b);
 text('title','Model öğrenirken neler değişir?','Watch a model learn');
@@ -46,7 +55,7 @@ text('warning','Bu, öğrenmenin mantığını anlatan küçük bir ders deneyid
 text('back','← Geri','← Back');text('next','Bir adım ilerle →','One step →');text('reset','Başa dön','Restart');text('rate-label','Adım büyüklüğü η','Learning rate η');text('penalty-label','Katsayı cezası λ','Weight penalty λ');text('step-label','Eğitim adımı','Training step');
 text('settings-note','Ayarı değiştirirseniz kurgu eğitim baştan başlar. Oynat düğmesi 60. adımda durur; bu sayı modelin yeterince öğrendiği anlamına gelmez.','Changing a setting restarts the fictional training. Playback stops at step 60; that number does not establish that training is sufficient.');
 text('boundary-title','Aynı örnekler, değişen ayırma çizgisi','Same examples, a changing boundary');
-text('boundary-note','Turuncu noktalar: sonucu 1 olan örnekler. Mavi noktalar: sonucu 0 olanlar. Mor çizgi: modelin %50 dediği yer. Noktaların sonuçları değişmez; modelin onları ayırma biçimi değişir.','Orange dots have outcome 1; blue dots have outcome 0. The purple line marks a predicted probability of 50%. Outcomes do not change; the way the model separates them does.');
+text('boundary-note','Turuncu noktaların sonucu 1, mavilerin 0. Mor çizgi modelin %50 dediği yer. Eğitim adımları sonuç etiketlerini değiştirmez; etiketi üstteki tablodan siz değiştirebilirsiniz. Kesikli gri çizgi varsa önceki veriyle aynı adımda öğrenilen sınırdır.','Orange dots have outcome 1; blue dots have outcome 0. The purple line marks 50%. Training does not change the outcome labels; you can edit them in the table above. A dashed grey line shows the boundary learned at the same step using the previous data.');
 text('loss-title','Hata azalıyor mu?','Is the error decreasing?');
 text('loss-note','Grafik, sekiz örnekteki ortalama logaritmik kayba katsayı cezasının eklenmiş halini gösterir. Yalnız bu kurgu eğitim grubunu ölçer; yeni örneklerde başarı veya klinik yarar göstermez.','The curve shows mean log loss over the eight examples plus the weight penalty. It measures this fictional training set only, not performance on new examples or clinical benefit.');
 text('rows-title','Güncellemede kullanılan sekiz örnek','The eight examples used in the update');
@@ -58,31 +67,77 @@ text('sums-title','Sekiz hatadan g nasıl çıktı? Sayıları açın.','How did
 text('gradient-note','Her adımda sekiz örnek birlikte kullanılır. Başlangıç değeri β₀ için g, p − y değerlerinin ortalamasıdır. A ve B için hatalar ilgili ölçümle çarpılıp ortalanır; buna λ × mevcut katsayı eklenir. β₀ cezalandırılmaz. Ceza terimi λ(β₁² + β₂²)/2’dir.','Each step uses all eight examples together. For the intercept β₀, g is the mean of p − y. For A and B, errors are multiplied by that measurement and averaged, then λ times the current weight is added. The intercept is not penalised. The penalty is λ(β₁² + β₂²)/2.');
 text('ending','Burada öğrenmeyi izliyorsunuz. Gerçek hesaplayıcıyı kullanırken ise bu öğrenme döngüsü çalışmaz: daha önce öğrenilmiş katsayılar sabit kalır. Bir modeli iyi tanımak için nasıl hesap yaptığını görmek yetmez; hiç görmediği, ayrı ailelerden hastalarda ne kadar güvenilir olduğunu da sınamak gerekir.','Here you are watching learning. Using the actual calculator does not run this loop: previously learned coefficients stay fixed. Understanding its arithmetic is only part of the story; reliability also needs testing on unseen patients from separate families.');
 get('source').innerHTML=t('Yöntemi öğrenmek için: ','Method background: ')+'<a href="https://developers.google.com/machine-learning/crash-course/logistic-regression/loss-regularization" target="_blank" rel="noopener">Google · log loss</a> · <a href="https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent" target="_blank" rel="noopener">Google · gradient descent</a>';
+text('edit-title','Sekiz kurgu örneği düzenleyin: A, B ve sonuç','Edit the eight fictional examples: A, B and outcome');
+text('edit-help','A ve B için −3 ile 3 arasında sayı girin; sonuç için 0 veya 1 seçin. Enter’a basınca veya alandan çıkınca değişiklik uygulanır, oynatma durur ve eğitim sıfırdan başlar. Aynı adıma ilerleyerek önceki veriyle karşılaştırabilirsiniz. Gerçek hasta bilgisi girmeyin.','Enter A and B between −3 and 3, and choose outcome 0 or 1. Press Enter or leave the field to apply the change, pause playback and restart training from zero. Advance to the same step to compare with the previous data. Do not enter actual patient information.');
+text('restore','Örnek veriye dön','Restore example data');
 get('rate').value=rate;get('penalty').value=penalty;
+get('loss-note').textContent+=' '+t('Veriyi değiştirince hata geçici olarak artabilir; büyük adımlar her zaman iyileşme sağlamaz. Kesikli gri çizgi önceki verinin aynı adımlardaki hatasıdır.','After data edits, loss can increase; large steps do not always improve it. A dashed grey curve shows loss on the previous data at the same steps.');
+function editStatus(message){get('edit-status').textContent=message;}
+function buildEditor(){
+ const table=document.createElement('table');table.innerHTML='<thead><tr><th>#</th><th>A</th><th>B</th><th>'+t('Sonuç y','Outcome y')+'</th></tr></thead>';
+ const body=document.createElement('tbody');
+ examples.forEach((row,i)=>{const tr=document.createElement('tr'),number=document.createElement('td');number.textContent=i+1;tr.appendChild(number);
+  row.forEach((value,j)=>{const cell=document.createElement('td'),control=document.createElement(j===2?'select':'input');
+   if(j===2){[0,1].forEach(y=>{const option=document.createElement('option');option.value=y;option.textContent=y;control.appendChild(option);});}
+   else {control.type='number';control.min='-3';control.max='3';control.step='any';}
+   control.value=value;control.dataset.row=i;control.dataset.column=j;
+   control.setAttribute('aria-label',t('Örnek ','Example ')+(i+1)+': '+(j===2?t('sonuç','outcome'):['A','B'][j]));
+   if(previousExamples&&previousExamples[i][j]!==value)control.classList.add('edited');
+   control.onfocus=()=>{if(playing){stop();render();}};
+   control.oninput=()=>{draftValid=readEditor()!==null;editStatus(t('Değişiklik için Enter’a basın veya alandan çıkın.','Press Enter or leave the field to apply.'));render();};
+   control.onchange=applyEditor;control.onblur=applyEditor;
+   if(j!==2)control.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();applyEditor();control.blur();}};
+   cell.appendChild(control);tr.appendChild(cell);
+  });body.appendChild(tr);
+ });table.appendChild(body);get('inputs').replaceChildren(table);
+}
+function readEditor(){
+ const rows=copy(examples);for(const control of get('inputs').querySelectorAll('input,select')){
+  if(control.value.trim()==='')return null;
+  const value=Number(control.value);if(!Number.isFinite(value))return null;
+  rows[Number(control.dataset.row)][Number(control.dataset.column)]=value;
+ }return ToyLearning.valid(rows)?rows:null;
+}
+function applyEditor(){
+ stop();const next=readEditor();draftValid=next!==null;
+ if(!draftValid){editStatus(t('Boş veya geçersiz alan var. A ve B −3 ile 3 arasında, sonuç 0 veya 1 olmalı. Önceki geçerli veri korunuyor; düzeltmeden oynatamazsınız.','A field is empty or invalid. A and B must be between −3 and 3; outcome must be 0 or 1. The previous valid data is kept; fix the field before playback.'));render();return;}
+ if(JSON.stringify(next)!==JSON.stringify(examples)){previousExamples=copy(examples);examples=next;step=0;rebuild();buildEditor();editStatus(t('Veri değişti. Eğitim sıfırlandı; aynı adımda kesikli çizgiyle önceki veriyi karşılaştırın.','Data changed. Training restarted; the dashed curve compares the previous data at the same step.'));}
+ render();
+}
+buildEditor();
+
 const svg=body=>'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 230">'+body+'</svg>';
-function drawBoundary(s){
- const X=a=>50+(a+2)*80,Y=b=>190-(b+1.5)*50;
+function drawBoundary(s,old){
+ const all=s.rows.concat(old?old.rows:[]),limit=Math.max(2,...all.map(r=>Math.max(Math.abs(r.a),Math.abs(r.b))))+.3;
+ const X=a=>50+(a+limit)/(2*limit)*320,Y=b=>190-(b+limit)/(2*limit)*160;
  let body='<path d="M50 30V190H370" fill="none" stroke="#a0aec0"/>';
- [-2,-1,0,1,2].forEach(a=>body+=`<text x="${X(a)-5}" y="207">${a}</text>`);
- [-1,0,1].forEach(b=>body+=`<text x="28" y="${Y(b)+4}">${b}</text>`);
+ [-limit,-limit/2,0,limit/2,limit].forEach(a=>body+=`<text x="${X(a)-8}" y="207">${n(a,1)}</text>`);
+ [-limit,0,limit].forEach(b=>body+=`<text x="8" y="${Y(b)+4}">${n(b,1)}</text>`);
  body+='<text x="205" y="225">A</text><text x="10" y="24">B</text>';
- const [w0,w1,w2]=s.weights,edges=[];
- if(Math.abs(w2)>1e-10)for(const a of [-2,2]){const b=-(w0+w1*a)/w2;if(b>=-1.5&&b<=1.7)edges.push([a,b]);}
- if(Math.abs(w1)>1e-10)for(const b of [-1.5,1.7]){const a=-(w0+w2*b)/w1;if(a>=-2&&a<=2)edges.push([a,b]);}
- if(edges.length>=2)body+=`<path d="M${X(edges[0][0])} ${Y(edges[0][1])}L${X(edges[1][0])} ${Y(edges[1][1])}" stroke="#7560ce" stroke-width="3" fill="none"/>`;
- else if(s.weights.every(w=>Math.abs(w)<1e-10))body+=`<text x="110" y="40">${t('Başlangıç: herkes %50','Start: 50% for everyone')}</text>`;
+ function boundary(state,grey){const [w0,w1,w2]=state.weights,edges=[];
+  if(Math.abs(w2)>1e-10)for(const a of [-limit,limit]){const b=-(w0+w1*a)/w2;if(b>=-limit&&b<=limit)edges.push([a,b]);}
+  if(Math.abs(w1)>1e-10)for(const b of [-limit,limit]){const a=-(w0+w2*b)/w1;if(a>=-limit&&a<=limit)edges.push([a,b]);}
+  if(edges.length>=2)return `<path d="M${X(edges[0][0])} ${Y(edges[0][1])}L${X(edges[1][0])} ${Y(edges[1][1])}" stroke="${grey?'#64748b':'#7560ce'}" stroke-width="${grey?2:3}" ${grey?'stroke-dasharray="6 4"':''} fill="none"/>`;
+  return '';
+ }
+ if(old)body+=boundary(old,true);body+=boundary(s,false);
+ if(s.weights.every(w=>Math.abs(w)<1e-10))body+=`<text x="110" y="40">${t('Başlangıç: herkes %50','Start: 50% for everyone')}</text>`;
  s.rows.forEach((r,i)=>{body+=`<circle cx="${X(r.a)}" cy="${Y(r.b)}" r="7" fill="${r.y?'#d97706':'#187ba5'}"/><text x="${X(r.a)+10}" y="${Y(r.b)+4}">${i+1}</text>`;});
  get('boundary').innerHTML=svg(body);get('boundary').setAttribute('aria-label',t('Kurgu örnekler ve güncel model çizgisi','Fictional examples and the current model boundary'));
 }
 function render(){
- const hist=data.histories[rate+':'+penalty],s=hist[step],before=hist[Math.max(0,step-1)];
- try{sessionStorage.setItem('brca-fictional-learning',JSON.stringify({step,rate,penalty}));}catch(e){}
+ const hist=history,s=hist[step],before=hist[Math.max(0,step-1)],oldData=previousHistory?previousHistory[step]:null;
+ try{sessionStorage.setItem('brca-fictional-learning',JSON.stringify({step,rate,penalty,examples,previousExamples}));}catch(e){}
  get('step').value=step;get('position').textContent=step+' / 60';
- get('back').disabled=step===0;get('next').disabled=step===60;text('play',playing?'Duraklat':'Oynat',playing?'Pause':'Play');
+ get('back').disabled=step===0||!draftValid;get('next').disabled=step===60||!draftValid;get('play').disabled=!draftValid;get('step').disabled=!draftValid;text('play',playing?'Duraklat':'Oynat',playing?'Pause':'Play');
  get('coeffs').innerHTML=s.weights.map((w,j)=>`<div class="ld-coeff">β${['₀','₁','₂'][j]} · ${j===0?t('başlangıç','intercept'):['','A','B'][j]}<b>${w===before.weights[j]?n(w):'<mark>'+n(w)+'</mark>'}</b><small>${t('önce','before')}: ${n(before.weights[j])}</small></div>`).join('');
- drawBoundary(s);
- const max=Math.max(.75,...hist.map(h=>h.loss))*1.08,points=hist.slice(0,step+1).map((h,i)=>`${50+i*320/60},${190-h.loss/max*160}`).join(' ');
- get('loss').innerHTML=svg(`<path d="M50 30V190H370" fill="none" stroke="#a0aec0"/><text x="10" y="35">${n(max,2)}</text><text x="27" y="194">0</text><text x="47" y="207">0</text><text x="354" y="207">60</text><text x="178" y="225">${t('Eğitim adımı','Training step')}</text><polyline points="${points}" fill="none" stroke="#148579" stroke-width="3"/><circle cx="${50+step*320/60}" cy="${190-s.loss/max*160}" r="5" fill="#148579"/>`);
+ drawBoundary(s,oldData);
+ const comparison=get('data-compare');comparison.hidden=!oldData;
+ if(oldData)comparison.textContent=t('Önceki veriyle karşılaştırma, aynı eğitim adımı ','Previous-data comparison, same training step ')+step+': '+oldData.weights.map((w,j)=>'β'+['₀','₁','₂'][j]+' = '+n(w)).join('; ')+t(' · hata ',' · loss ')+n(oldData.loss,6)+'. '+t('Kesikli gri çizgiler önceki veriye aittir; kartlardaki “önce” ise bir önceki eğitim adımıdır.','Dashed grey curves refer to previous data; “before” in the cards refers to the previous training step.');
+
+ const max=Math.max(.75,...hist.map(h=>h.loss),...(previousHistory||[]).map(h=>h.loss))*1.08,points=hist.slice(0,step+1).map((h,i)=>`${50+i*320/60},${190-h.loss/max*160}`).join(' ');
+ const oldLoss=previousHistory?'<polyline points="'+previousHistory.slice(0,step+1).map((h,i)=>`${50+i*320/60},${190-h.loss/max*160}`).join(' ')+'" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>':'';
+ get('loss').innerHTML=svg(`${oldLoss}<path d="M50 30V190H370" fill="none" stroke="#a0aec0"/><text x="10" y="35">${n(max,2)}</text><text x="27" y="194">0</text><text x="47" y="207">0</text><text x="354" y="207">60</text><text x="178" y="225">${t('Eğitim adımı','Training step')}</text><polyline points="${points}" fill="none" stroke="#148579" stroke-width="3"/><circle cx="${50+step*320/60}" cy="${190-s.loss/max*160}" r="5" fill="#148579"/>`);
  get('loss').setAttribute('aria-label',t('Eğitim hatası, adım ','Training loss, step ')+step+': '+n(s.loss));
  get('loss-value').innerHTML=`<b>${t('Güncel hata','Current loss')}: ${n(s.loss,6)}</b> <small>← ${n(before.loss,6)}</small>`;
  text('step-title',step?`${step-1}. adımdan ${step}. adıma: tam olarak ne oldu?`:'Başlangıç: henüz hiçbir katsayı öğrenilmedi',step?`From step ${step-1} to ${step}: what exactly happened?`:'The start: no weights learned yet');
@@ -99,7 +154,8 @@ function stop(){clearInterval(window.__brcaLearningTimer);window.__brcaLearningT
 get('back').onclick=()=>{stop();step=Math.max(0,step-1);render();};get('next').onclick=()=>{stop();step=Math.min(60,step+1);render();};
 get('reset').onclick=()=>{stop();step=0;render();};get('step').oninput=()=>{stop();step=Number(get('step').value);render();};
 get('play').onclick=()=>{if(playing){stop();render();return;}if(step===60)step=0;playing=true;window.__brcaLearningTimer=setInterval(()=>{if(!root.isConnected){stop();return;}step++;if(step>=60)stop();render();},850);render();};
-for(const id of ['rate','penalty'])get(id).onchange=()=>{stop();rate=get('rate').value;penalty=get('penalty').value;step=0;render();};
+for(const id of ['rate','penalty'])get(id).onchange=()=>{stop();rate=get('rate').value;penalty=get('penalty').value;step=0;rebuild();render();};
+get('restore').onclick=()=>{stop();if(JSON.stringify(examples)!==JSON.stringify(defaults))previousExamples=copy(examples);examples=copy(defaults);step=0;draftValid=true;rebuild();buildEditor();editStatus(t('Örnek veri geri yüklendi.','Example data restored.'));render();};
 render();
 // Resize only this teaching frame; no access to calculator state or controls.
 function sizeFrame(){try{if(window.frameElement){const h=Math.ceil(root.getBoundingClientRect().height+30);window.frameElement.style.height=h+'px';window.frameElement.height=h;}}catch(e){}}
