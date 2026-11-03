@@ -130,10 +130,14 @@ def _tex_parts(formula, separators):
     return parts
 
 
+def stack_previous_tex(formula):
+    return re.sub(r'(\\boxed\{)([-\d.,{}]+)\\;\{\\scriptstyle\\color\{#596579\}\{(\[\\leftarrow .*?\])\}\}',
+                   lambda m:m[1]+r'\substack{'+m[2]+r'\\{\scriptstyle\color{#596579}{'+m[3]+r'}}}',formula)
+
+
 def mobile_formula_steps(formula):
     # Place the previous value below the current value inside its existing box.
-    formula=re.sub(r'(\\boxed\{)([-\d.,{}]+)\\;\{\\scriptstyle\\color\{#596579\}\{(\[\\leftarrow .*?\])\}\}',
-                   lambda m:m[1]+r'\substack{'+m[2]+r'\\{\scriptstyle\color{#596579}{'+m[3]+r'}}}',formula)
+    formula=stack_previous_tex(formula)
     groups=[]
     for equation in re.split(r',?\\q(?:quad|uad)\s*',formula):
         chain=_tex_parts(equation,'=')
@@ -238,16 +242,20 @@ def render_compact_steps(r,lang,previous=None):
     show(r'z=\beta_0+\textstyle\sum_{j=1}^{26}\beta_jx_j='+field('z'))
     st.markdown(t('**2 · Toplamı olasılığa çevirelim (sigmoid)**','**2 · Raw sigmoid (not the final percentage)**'))
     raw_equation=r'p_{\mathrm{raw}}=\frac{1}{1+e^{-('+field('z')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['z']))+r'}='+field('p_raw')
-    show(raw_equation)
+    raw_desktop=[r'e^{-z}=e^{-( '+num(r['z'])+r' )}='+derived(lambda x:math.exp(-x['z'])),
+                 r'p_{\mathrm{raw}}=\frac{1}{1+e^{-z}}='+field('p_raw')]
+    teaching_latex(raw_equation,desktop_steps=[stack_previous_tex(f) for f in raw_desktop])
     st.markdown(t('**3 · Önceden öğrenilmiş düzeltmeyi uygulayalım**','**3 · Substitute into stored calibration**'))
     show(r'\eta='+num(a)+r'+('+num(b)+r'\times('+field('z')+r'))')
     show(r'\eta='+field('eta'))
     st.markdown(t('**4 · Son olasılığı yüzde olarak yazalım**','**4 · Final sigmoid → percentage**'))
     final_equation=r'p_{\mathrm{cal}}=\frac{1}{1+e^{-('+field('eta')+r')}}=\frac{1}{1+'+derived(lambda x:math.exp(-x['eta']))+r'}='+field('p_cal',9)
-    show(final_equation)
+    final_desktop=[r'e^{-\eta}=e^{-( '+num(r['eta'])+r' )}='+derived(lambda x:math.exp(-x['eta'])),
+                   r'p_{\mathrm{cal}}=\frac{1}{1+e^{-\eta}}='+field('p_cal',9)]
+    teaching_latex(final_equation,desktop_steps=[stack_previous_tex(f) for f in final_desktop])
     show(r'100p_{\mathrm{cal}}='+derived(lambda x:100*x['p_cal'],6)+r'\%\approx'+paired_tex(100*r['p_cal'],100*previous['p_cal'] if previous else None,lang,1,rounded=True)+r'\%')
     st.markdown(t('**5 · Puan kartını ve öncelik sırasını ayrıca bulalım**','**5 · Card and lanes (separate calculation)**'))
-    for formula in decision_formulas(r,previous,lang):show(formula)
+    for formula in decision_formulas(r,previous,lang):teaching_latex(formula,desktop_steps=[stack_previous_tex(formula)])
 
 
 def render_model_teaching(lang):

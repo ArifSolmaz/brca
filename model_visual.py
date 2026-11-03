@@ -97,14 +97,13 @@ def model_visual_html(current, change, lang):
       .st-key-teaching_terms .mv-curve{min-width:0}
     }
     </style><div class="model-visual">''' + f'''
-    <p><b>{t('Bir hasta bilgisini değiştirin; hesaba katkısını ve sonucu birlikte izleyin.', 'Change an input → contributions change → the result changes.')}</b>
-    {t('β katsayıları ve kalibrasyon sabittir; bu ekran modeli yeniden eğitmez.', 'The β coefficients and calibration stay fixed; this page does not retrain the model.')}</p>
-    <p>{t('Sola uzanan çubuk toplamı azaltır, sağa uzanan artırır. Kesikli çizgi önceki katkıyı, sarı renk değişen sayıyı gösterir. Burada hesabın nasıl değiştiğine bakıyoruz; biyolojik bir neden-sonuç ilişkisi ölçmüyoruz.', 'Left: a contribution reducing the score. Right: a contribution increasing it. Dashed outline: previous contribution; yellow: a changed number. These are calculation effects in this example, not causal effects.')}</p>
+    <p><b>{t('Bilgiden sonuca: katsayılar sabit, katkılar değişir.', 'Inputs to result: fixed coefficients, changing contributions.')}</b></p>
     <div class="mv-terms">{''.join(rows)}</div>
-    <p>{t('Sıfır katkılı diğer terimler gösterilmiyor. Çubuklar yüzdeyi değil, z skoruna katkıyı gösterir.', 'Other zero-contribution terms are omitted. Bars show contributions to z, not percentages.')}</p>
     <div class="mv-outcome"><div class="mv-stages">{''.join(stages)}</div>
-    <div><p>{t('Sabit kalibrasyon:', 'Fixed calibration:')} a = {fmt(a, 6)}; b = {fmt(b, 6)}.</p>
-    {graph}</div></div>
-    <p>{t('Mor eğri sabit model dönüşümüdür; yeşil nokta güncel, boş nokta önceki örnektir. Katsayıların değişmesi, etiketli hasta verileriyle yeniden eğitim gerektirir; burada yapılmaz.', 'The purple curve is the fixed model transformation; the green point is current and the hollow point is previous. Changing coefficients requires retraining with labelled patient data; that does not happen here.')}</p>
+    <div><p>{t('Sabit kalibrasyon:', 'Fixed calibration:')} a = {fmt(a, 6)}; b = {fmt(b, 6)}.</p>{graph}</div></div>
+    <p>{t('Çubuklar z’ye katkıdır; sola azaltır, sağa artırır. Kesikli çubuk ve boş nokta önceki değerdir; sarı sayılar değişmiştir. Yeşil nokta günceldir.', 'Bars contribute to z: left reduces, right increases. Dashed bars and the hollow point show previous values; yellow marks changes. The green point is current.')}</p>
+    <details><summary>{t('Grafikleri nasıl okuyalım?', 'How to read these charts')}</summary>
+    <p>{t('Bir hasta bilgisini değiştirin; hesaba katkısını ve sonucu birlikte izleyin. β katsayıları ve kalibrasyon sabittir; bu ekran modeli yeniden eğitmez. Sıfır katkılı diğer terimler gösterilmiyor. Çubuklar yüzdeyi değil, z skoruna katkıyı gösterir.', 'Change an input and follow its contribution and result together. The β coefficients and calibration stay fixed; this page does not retrain the model. Other zero-contribution terms are omitted. Bars show contributions to z, not percentages.')}</p>
+    <p>{t('Mor eğri sabit model dönüşümüdür. Katsayıların değişmesi, etiketli hasta verileriyle yeniden eğitim gerektirir; burada yapılmaz. Burada hesabın nasıl değiştiğine bakıyoruz; biyolojik bir neden-sonuç ilişkisi ölçmüyoruz.', 'The purple curve is the fixed model transformation. Changing coefficients requires retraining with labelled patient data; that does not happen here. These are calculation effects in this example, not causal effects.')}</p></details>
     {('<p><b>'+t('Ailede belgeli varyant seçili: bu yüzde yalnız iç eğitim hesabıdır, kişisel olasılık değildir.', 'Documented familial variant selected: this percentage is internal teaching arithmetic, not a personal probability.')+'</b></p>') if current['v'].get('urg_fam') else ''}
     </div>'''

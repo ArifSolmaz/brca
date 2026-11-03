@@ -176,7 +176,7 @@ class ModelTeachingTests(unittest.TestCase):
             self.assertNotIn('boxed{-1.82409575',formulas)  # Calibration coefficient is fixed.
             at.checkbox(key='teaching_urg_dec').set_value(True).run()
             self.assertFalse(at.exception)
-            compact=[n.proto.body for n in at if n.type=='latex'][:9]
+            compact=[n.proto.body for n in at if n.type=='latex']
             self.assertNotIn('boxed',' '.join(compact[:6]))  # No false propagation through probability math.
             self.assertIn(mobile_formula_steps(paired_tex(2,0,lang,0))[0],' '.join(compact))
             saved=at.session_state['_teaching_change']['previous']
