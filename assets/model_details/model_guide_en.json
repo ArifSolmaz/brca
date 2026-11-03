@@ -13,6 +13,10 @@
     "text": "This guide explains the existing work. No new patient analysis, hypothesis test, model fitting or calculator change was performed."
   },
   {
+    "type": "note",
+    "text": "The calculator predicts a recorded BRCA result in people already diagnosed with cancer. It does not estimate future cancer risk or treatment response; clinical benefit has not yet been demonstrated. Chapter 19 explains this distinction."
+  },
+  {
     "type": "heading",
     "text": "Three distinct parts of the work"
   },

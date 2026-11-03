@@ -13,6 +13,10 @@
     "text": "Bu rehber mevcut çalışmayı açıklar. Yeni hasta analizi, hipotez testi, yeniden eğitim veya hesaplayıcı değişikliği yapılmadı."
   },
   {
+    "type": "note",
+    "text": "Hesaplayıcı kanser tanısı almış kişilerde kayıtlı BRCA sonucunu tahmin eder. Gelecekte kanser riskini veya tedavi yanıtını hesaplamaz; klinik faydası henüz gösterilmiş değildir. Bu ayrım 19. bölümde açıklanıyor."
+  },
+  {
     "type": "heading",
     "text": "Önce kayıtları anlamak, sonra doğru soruyu sormak"
   },

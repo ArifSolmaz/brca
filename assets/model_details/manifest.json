@@ -23,11 +23,11 @@
     "assets/model_details/BRCA_Model_Details_EN.pdf": "4ba3d71e3947aadaaa18e1dc893a9b742e362727035d1919d1eefaa50b7d1211",
     "assets/model_details/synthetic_examples.json": "40c9398961e99e2b4c6c6c4ec2d7e1c6d81ad67e2bb99406d4aeb51cc22c6b56",
     "assets/model_details/BRCA_Model_Details_TR.pdf": "65f91cfe9763efedae765bcd912b00620e7c681422ba13217b47caa71f75466e",
-    "assets/model_details/BRCA_Model_Guide_TR.pdf": "630c036071f4017dd4c00f08f64b31f5147e98889fbbe8d58357102358bc85ed",
-    "assets/model_details/BRCA_Model_Guide_EN.pdf": "609334e0c6b8d1ae1014bd9e18d0fb56d5e57f8d9e4c01767f4f78817961d43d",
-    "model_guide.py": "872ea51528b19ce3be9cf1011af45f8d503d4a7dbe6d67f98c0c421d3443d443",
-    "model_guide_additions.py": "937dbdd7eae963adf902ca6cd232819fecbb6310520eadb18c5494fb6ada82bb",
-    "scripts/build_model_guides.py": "bc601124e0c954444437ea049941873c7025d91d9966b387741049e5ac9b58a2",
+    "assets/model_details/BRCA_Model_Guide_TR.pdf": "9e4a5527556cd629916ad3943a74f028ae18f53e19ff61c5a716aac0b276b1b3",
+    "assets/model_details/BRCA_Model_Guide_EN.pdf": "c80907ac26868911a4af14cf2a680f29284f8f4e7b5219de383d8ce79c120ded",
+    "model_guide.py": "796fcd7d205391c849342d364662147d4bc25e9dd27e5f5ed3d24026ccb070c5",
+    "model_guide_additions.py": "4836da7b34bb4c6f7007c812945b41d3e66eacb4d73e736c3f6f0e6017e9dea9",
+    "scripts/build_model_guides.py": "478cad588b032d855dfd8a9955e44cdc65178d4c770783cb6fac9cb1bc9a0e9e",
     "learning_demo.py": "6f0294e0e91050826a6a9ef1a5b0b86632928328adecf7db5ccffed5d6f7276d",
     "model_visual.py": "59752ee1cb1fc2abf31c2a5981613ffa24adc0d42f736633496792356c9096f9",
     "assets/model_details/learning_demo.html": "a3b824ba8a9cd9b6f7f92ec67a6048cd04eacebc44d201d10efd171859504666",
@@ -114,18 +114,18 @@
       "tr",
       "en"
     ],
-    "pages_each": 19,
+    "pages_each": 20,
     "new_analyses": 0,
     "model_fit_calls": 0,
     "calculator_unchanged": true,
-    "pdf_pages_visually_reviewed": 38,
+    "pdf_pages_visually_reviewed": 40,
     "formula_typesetting": "XeLaTeX",
     "download_labels": [
       "Türkçe Model Rehberi · PDF",
       "English Model Guide · PDF"
     ],
-    "tests_passed": 41,
-    "chapter_count": 18,
+    "tests_passed": 44,
+    "chapter_count": 19,
     "web_pdf_same_content": true,
     "previous_live_downloads_verified": {
       "date": "2026-11-03",
@@ -135,7 +135,9 @@
       "en": "4d3b9737c4a786e9ec312104d0cad95e9cb8ab242fa3c16e526a4f8b3056e6c0"
     },
     "plain_language_revision": "2026-11-03",
-    "interactive_learning": "Web only; PDF includes explanation and direct lesson link"
+    "interactive_learning": "Web only; PDF includes explanation and direct lesson link",
+    "prediction_scope_and_clinical_utility_chapter": 19,
+    "scope_note_on_first_page": true
   },
   "fictional_learning_lesson": {
     "date": "2026-11-03",
@@ -185,5 +187,17 @@
     "browser_recomputes_from_edited_rows": true,
     "language_switch_preserves_applied_rows": true,
     "tests_passed": 43
+  },
+  "prediction_scope_update": {
+    "date": "2026-11-03",
+    "languages": [
+      "tr",
+      "en"
+    ],
+    "chapter": 19,
+    "clinical_model_changed": false,
+    "new_patient_analyses": 0,
+    "plain_conversation_explanation_added_to_site": false,
+    "research_report_date_unchanged": "2026-10-25"
   }
 }

@@ -102,6 +102,8 @@ def build(lang, web=False):
       'For students starting without prior knowledge of genetics, statistics or programming.')
     note('Bu rehber mevcut çalışmayı açıklar. Yeni hasta analizi, hipotez testi, yeniden eğitim veya hesaplayıcı değişikliği yapılmadı.',
          'This guide explains the existing work. No new patient analysis, hypothesis test, model fitting or calculator change was performed.')
+    note('Hesaplayıcı kanser tanısı almış kişilerde kayıtlı BRCA sonucunu tahmin eder. Gelecekte kanser riskini veya tedavi yanıtını hesaplamaz; klinik faydası henüz gösterilmiş değildir. Bu ayrım 19. bölümde açıklanıyor.',
+         'The calculator predicts a recorded BRCA result in people already diagnosed with cancer. It does not estimate future cancer risk or treatment response; clinical benefit has not yet been demonstrated. Chapter 19 explains this distinction.')
     heading('Önce kayıtları anlamak, sonra doğru soruyu sormak', 'Three distinct parts of the work')
     p('1. Kayıtları birleştirmek: Hangi dosya kime ait? Aynı kişi birkaç kez mi kaydedilmiş? Kimler aynı aileden?\n2. Sonucu tahmin etmek: 1.295 hastadan öğrenen model, yeni girilen bilgilerle nasıl bir hesap yapıyor?\n3. Biyolojik bir ilişki aramak: Genetik değişikliklerle tümör özellikleri arasında gördüğümüz fark gerçek olabilir mi, yoksa tesadüf ya da eksik kayıtlarla mı açıklanıyor?',
       '1. Archive: link files, specimens, people and families, and establish which data are usable.\n2. Prediction: explain the calculations and evaluation of the model developed in the original 1,295 people.\n3. Biological research: understand existing comparisons between genetic and clinical features and their uncertainty.')
